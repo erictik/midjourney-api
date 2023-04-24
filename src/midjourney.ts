@@ -2,9 +2,9 @@ import axios from 'axios';
 import { MidjourneyMessage } from './midjourney.message';
 
 export class Midjourney extends MidjourneyMessage {
-    constructor(public ServerId: string, public ChannelId: string, protected SalaiToken: string) {
-        super(ChannelId, SalaiToken)
-        console.log("Midjourney constructor")
+    constructor(public ServerId: string, public ChannelId: string, protected SalaiToken: string, public debug = false) {
+        super(ChannelId, SalaiToken,debug)
+        this.log("Midjourney constructor")
     }
 
     async Imagine(prompt: string) {

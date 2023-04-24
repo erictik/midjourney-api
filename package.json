@@ -28,7 +28,10 @@
   },
   "homepage": "https://github.com/erictik/midjourney-api#readme",
   "devDependencies": {
+    "@types/node": "^18.16.0",
+    "dotenv": "^16.0.3",
     "tsup": "^6.7.0",
+    "tsx": "^3.12.6",
     "typescript": "^5.0.4"
   },
   "dependencies": {
