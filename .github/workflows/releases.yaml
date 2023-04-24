@@ -1,0 +1,27 @@
+name: Node.js Package
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+     - 'master'
+    paths:
+     - '**.ts'
+jobs:
+  publish-gpr:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3.6.0
+        with:
+            node-version: '16.x'
+            registry-url: 'https://registry.npmjs.org'
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - run: yarn install
+      - run: sed -i '3s/\([0-9]\{1,3\}\.[0-9]\{1,3\}\)\.[0-9]\{1,3\}/\1.${{ github.run_number }}/g' package.json
+      - run: npm run build
+      - run: npm publish
