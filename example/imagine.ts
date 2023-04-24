@@ -8,11 +8,11 @@ import { Midjourney } from '../src';
  * ```
  */
 async function main() {
-    const client = new Midjourney(<string>process.env.SERVER_ID, <string>process.env.CHANNEL_ID,<string>process.env.SALAI_TOKEN,true)
-    const msg = await client.Imagine("A little pink elephant",(uri:string)=>{
-        console.log("loading",uri)
+    const client = new Midjourney(<string>process.env.SERVER_ID, <string>process.env.CHANNEL_ID, <string>process.env.SALAI_TOKEN, true)
+    const msg = await client.Imagine("A little pink elephant", (uri: string) => {
+        console.log("loading", uri)
     })
-    console.log({msg})
+    console.log({ msg })
 }
 main().catch((err) => {
     console.error(err);

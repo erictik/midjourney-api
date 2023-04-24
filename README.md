@@ -1,6 +1,24 @@
 # midjourney-api
 
 Node.js client for the unofficial MidJourney API.
+## Install
+npm
+```bash
+npm i midjourney
+```
+yarn
+```bash
+yarn add midjourney
+```
+## Usage
+```typescript
+import { MidJourney } from 'midjourney'
+const client = new Midjourney(<string>process.env.SERVER_ID, <string>process.env.CHANNEL_ID, <string>process.env.SALAI_TOKEN, true)
+const msg = await client.Imagine("A little pink elephant", (uri: string) => {
+    console.log("loading", uri)
+})
+console.log({ msg })
+``` 
 
 ## Example
 To run the included example, you must have [Node.js](https://nodejs.org/en/) installed. Then, run the following commands in the root directory of this project:
