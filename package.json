@@ -2,14 +2,15 @@
   "name": "midjourney",
   "version": "1.0.0",
   "description": "Node.js client for the unofficial MidJourney API.",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "libs/index.js",
+  "types": "libs/index.d.ts",
   "source": "./src/index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsup"
   },
   "files": [
-    "lib/*",
+    "libs/*",
     "*.md"
   ],
   "repository": {
@@ -27,6 +28,10 @@
   },
   "homepage": "https://github.com/erictik/midjourney-api#readme",
   "devDependencies": {
+    "tsup": "^6.7.0",
     "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "axios": "^1.3.6"
   }
 }
