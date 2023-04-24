@@ -7,13 +7,14 @@ export class Midjourney extends MidjourneyMessage {
         this.log("Midjourney constructor")
     }
 
-    async Imagine(prompt: string) {
+    async Imagine(prompt: string,loading?: (uri: string) => void) {
         const httpStatus =  await this.ImagineApi(prompt)
         if (httpStatus !== 204) {
             throw new Error(`ImagineApi failed with status ${httpStatus}`)
         }
-        return await this.WaitMessage(prompt)
+        return await this.WaitMessage(prompt,loading)
     }
+ 
 
 
     protected async ImagineApi(prompt: string) {
@@ -67,7 +68,20 @@ export class Midjourney extends MidjourneyMessage {
         return response.status;
     }
 
-    protected async VariationApi(index: number, messageId: string, messageHash: string) {
+    async Variation(content: string,index:number, msgId: string, msgHash: string,loading?: (uri: string) => void) {
+        // index is 1-4
+        if (index < 1 || index > 4) {
+            throw new Error(`Variation index must be between 1 and 4, got ${index}`)
+        }
+        const httpStatus =   await this.VariationOldApi(index, msgId, msgHash)
+        // const httpStatus =   await this.VariationApi(content,index, msgId, msgHash)
+        if (httpStatus !== 204) {
+            throw new Error(`VariationApi failed with status ${httpStatus}`)
+        }
+        return await this.WaitOptionMessage(content,`Variations`,loading)
+
+    }
+    protected async VariationOldApi(index: number, messageId: string, messageHash: string) {
         const payload = {
             "type": 3,
             "guild_id": this.ServerId,
@@ -88,6 +102,66 @@ export class Midjourney extends MidjourneyMessage {
         return response.status;
     }
 
+    protected async VariationApi(content: string,index: number, messageId: string, messageHash: string) {
+        const payload = {
+            "type": 5,
+            "application_id": "936929561302675456",
+            "channel_id": this.ChannelId,
+            "guild_id": this.ServerId,
+            "data": {
+                "id": "1100105238322618488",
+                "custom_id": `MJ::RemixModal::${messageHash}::${index}`,
+                "components": [
+                    {
+                        "type": 1,
+                        "components": [
+                            {
+                                "type": 4,
+                                "custom_id": "MJ::RemixModal::new_prompt",
+                                "value": content,
+                            }
+                        ]
+                    }
+                ]
+            },
+            "session_id": "ec6524c8d2926e285a8232f7ed1ced98",
+        }
+
+        // const payload = {
+        //     "type": 3,
+        //     "guild_id": this.ServerId,
+        //     "channel_id": this.ChannelId,
+        //     "message_flags": 0,
+        //     "message_id": messageId,
+        //     "application_id": "936929561302675456",
+        //     "session_id": "1f3dbdf09efdf93d81a3a6420882c92c",
+        //     "data": {
+        //         "component_type": 2,
+        //         "custom_id": `MJ::JOB::variation::${index}::${messageHash}`
+        //     }
+        // };
+        const headers = { authorization: this.SalaiToken };
+        const response = await axios.post('https://discord.com/api/v9/interactions', payload, {
+            headers,
+        });
+        return response.status;
+    }
+
+
+
+    async Upscale(content: string,index:number, msgId: string, msgHash: string,loading?: (uri: string) => void) {
+        // index is 1-4
+        if (index < 1 || index > 4) {
+            throw new Error(`Variation index must be between 1 and 4, got ${index}`)
+        }
+        const httpStatus =   await this.UpscaleApi(index, msgId, msgHash)
+        if (httpStatus !== 204) {
+            throw new Error(`VariationApi failed with status ${httpStatus}`)
+        }
+        return await this.WaitOptionMessage(content,`Upscaled`,loading)
+    }
+
+    // 
     protected async UpscaleApi(index: number, messageId: string, messageHash: string) {
         const payload = {
             type: 3,
@@ -95,7 +169,6 @@ export class Midjourney extends MidjourneyMessage {
             channel_id: this.ChannelId,
             message_flags: 0,
             message_id: messageId,
-            nonce: messageId,
             application_id: "936929561302675456",
             session_id: "ec6524c8d2926e285a8232f7ed1ced98",
             data: {
