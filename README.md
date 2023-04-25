@@ -58,5 +58,5 @@ export SALAI_TOKEN="your-salai-token"
 Then, run the example with the following command:
 
 ```bash
-npx tsx example/imagine.ts4
+npx tsx example/imagine.ts
 ```
