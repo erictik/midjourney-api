@@ -76,6 +76,7 @@ export class Midjourney extends MidjourneyMessage {
         if (httpStatus !== 204) {
             throw new Error(`VariationApi failed with status ${httpStatus}`)
         }
+        this.log(`await generate image`)
         return await this.WaitOptionMessage(content, `Variations`, loading)
 
     }
@@ -142,6 +143,7 @@ export class Midjourney extends MidjourneyMessage {
         if (httpStatus !== 204) {
             throw new Error(`VariationApi failed with status ${httpStatus}`)
         }
+        this.log(`await generate image`)
         return await this.WaitOptionMessage(content, `Upscaled`, loading)
     }
 
