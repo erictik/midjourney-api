@@ -15,7 +15,7 @@ export class Midjourney extends MidjourneyMessage {
         return await this.WaitMessage(prompt, loading)
     }
 
-    protected async ImagineApi(prompt: string) {
+    async ImagineApi(prompt: string) {
         const payload = {
             type: 2,
             application_id: '936929561302675456',
@@ -78,7 +78,7 @@ export class Midjourney extends MidjourneyMessage {
         return await this.WaitOptionMessage(content, `Variations`, loading)
 
     }
-    protected async VariationApi(index: number, messageId: string, messageHash: string) {
+    async VariationApi(index: number, messageId: string, messageHash: string) {
         const payload = {
             "type": 3,
             "guild_id": this.ServerId,
@@ -99,7 +99,7 @@ export class Midjourney extends MidjourneyMessage {
         return response.status;
     }
     //FIXME this is not working
-    protected async RemixModelApi(content: string, index: number, messageId: string, messageHash: string) {
+    async RemixModelApi(content: string, index: number, messageId: string, messageHash: string) {
         const payload = {
             "type": 5,
             "application_id": "936929561302675456",
@@ -144,8 +144,7 @@ export class Midjourney extends MidjourneyMessage {
         return await this.WaitOptionMessage(content, `Upscaled`, loading)
     }
 
-    // 
-    protected async UpscaleApi(index: number, messageId: string, messageHash: string) {
+    async UpscaleApi(index: number, messageId: string, messageHash: string) {
         const payload = {
             type: 3,
             guild_id: this.ServerId,
