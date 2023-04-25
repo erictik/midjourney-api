@@ -41,7 +41,7 @@ cd midjourney-api
 2. install dependencies
 
 ```bash
-yarn install
+yarn
 ```
 
 3. set the environment variables
