@@ -48,7 +48,7 @@ export class MidjourneyMessage {
         }
         return null
     }
-    protected UriToHash(uri: string) {
+    UriToHash(uri: string) {
         return uri.split('_').pop()?.split('.')[0] ?? '';
     }
     async WaitMessage(prompt: string, loading?: (uri: string) => void) {
@@ -79,5 +79,14 @@ export class MidjourneyMessage {
         const headers = { 'authorization': this.SalaiToken };
         const response = await axios.get(`https://discord.com/api/v10/channels/${this.ChannelId}/messages?limit=${limit}`, { headers: headers });
         return response.data;
+    }
+
+    async GetMessgeById(id: string) {
+        console.log("GetMessgeById", id)
+        // GET/channels/{channel.id}/messages/{message.id}
+        const url = `https://discord.com/api/v12/channels/${this.ChannelId}/messages/${id}`
+        const headers = { authorization: this.SalaiToken };
+        const response = await axios.get(url, { headers });
+        return response.data
     }
 }
