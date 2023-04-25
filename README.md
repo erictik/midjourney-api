@@ -19,7 +19,7 @@ yarn add midjourney
 ## Usage
 
 ```typescript
-import { MidJourney } from 'midjourney'
+import { Midjourney } from 'midjourney'
 const client = new Midjourney(process.env.SERVER_ID, process.env.CHANNEL_ID, process.env.SALAI_TOKEN)
 const msg = await client.Imagine("A little pink elephant", (uri: string) => {
     console.log("loading", uri)
