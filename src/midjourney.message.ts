@@ -18,7 +18,7 @@ export class MidjourneyMessage {
         for (let i = 0; i < data.length; i++) {
             const item = data[i]
             if (item.author.id === "936929561302675456" && item.content.includes(`**${prompt}`)) {
-                this.log(JSON.stringify(item))
+                // this.log(JSON.stringify(item))
                 if (options && !item.content.includes(options)) {
                     this.log("no options")
                     continue
@@ -33,10 +33,7 @@ export class MidjourneyMessage {
                     loading && loading(imageUrl)
                     break
                 }
-
-                // content: '**A little pink elephant** - <@1017020769332637730> (fast, stealth)'
                 const content = item.content.split('**')[1]
-
                 const msg: Message = {
                     id: item.id,
                     uri: imageUrl,
@@ -57,6 +54,7 @@ export class MidjourneyMessage {
             if (msg !== null) {
                 return msg
             }
+            this.log(i,"wait no message found")
             await this.Wait(1000 * 2)
         }
     }
@@ -66,7 +64,7 @@ export class MidjourneyMessage {
             if (msg !== null) {
                 return msg
             }
-            this.log(i, "no message found")
+            this.log(i, "wait no message found")
             await this.Wait(1000 * 2)
         }
     }

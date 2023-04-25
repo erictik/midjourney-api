@@ -12,6 +12,7 @@ export class Midjourney extends MidjourneyMessage {
         if (httpStatus !== 204) {
             throw new Error(`ImagineApi failed with status ${httpStatus}`)
         }
+        this.log(`await generate image`)
         return await this.WaitMessage(prompt, loading)
     }
 
