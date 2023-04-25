@@ -7,7 +7,7 @@
   "source": "./src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsup"
+    "build": "tsc"
   },
   "files": [
     "libs/*",
@@ -30,7 +30,6 @@
   "devDependencies": {
     "@types/node": "^18.16.0",
     "dotenv": "^16.0.3",
-    "tsup": "^6.7.0",
     "tsx": "^3.12.6",
     "typescript": "^5.0.4"
   },
