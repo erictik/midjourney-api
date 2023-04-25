@@ -1,6 +1,13 @@
 # midjourney-api
 
 Node.js client for the unofficial MidJourney API.
+<div align="center">
+	<p>
+		<a href="https://discord.gg/dP95gZ8z"><img src="https://img.shields.io/discord/1082500871478329374?color=5865F2&logo=discord&logoColor=white" alt="Discord server" /></a>
+		<a href="https://www.npmjs.com/package/midjourney"><img src="https://img.shields.io/npm/v/midjourney-discord.svg?maxAge=3600" alt="npm version" /></a>
+	</p>
+</div>
+[discord bot example](https://github.com/erictik/midjourney-discord)
 
 ## Install
 
@@ -59,4 +66,10 @@ Then, run the example with the following command:
 
 ```bash
 npx tsx example/imagine.ts
+```
+```bash
+npx tsx example/upscale.ts
+```
+```bash
+npx tsx example/variation.ts
 ```
