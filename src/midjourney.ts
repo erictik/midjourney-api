@@ -3,19 +3,17 @@ import { MidjourneyMessage } from './midjourney.message';
 
 export class Midjourney extends MidjourneyMessage {
     constructor(public ServerId: string, public ChannelId: string, protected SalaiToken: string, public debug = false) {
-        super(ChannelId, SalaiToken,debug)
+        super(ChannelId, SalaiToken, debug)
         this.log("Midjourney constructor")
     }
 
-    async Imagine(prompt: string,loading?: (uri: string) => void) {
-        const httpStatus =  await this.ImagineApi(prompt)
+    async Imagine(prompt: string, loading?: (uri: string) => void) {
+        const httpStatus = await this.ImagineApi(prompt)
         if (httpStatus !== 204) {
             throw new Error(`ImagineApi failed with status ${httpStatus}`)
         }
-        return await this.WaitMessage(prompt,loading)
+        return await this.WaitMessage(prompt, loading)
     }
- 
-
 
     protected async ImagineApi(prompt: string) {
         const payload = {
@@ -68,20 +66,19 @@ export class Midjourney extends MidjourneyMessage {
         return response.status;
     }
 
-    async Variation(content: string,index:number, msgId: string, msgHash: string,loading?: (uri: string) => void) {
+    async Variation(content: string, index: number, msgId: string, msgHash: string, loading?: (uri: string) => void) {
         // index is 1-4
         if (index < 1 || index > 4) {
             throw new Error(`Variation index must be between 1 and 4, got ${index}`)
         }
-        const httpStatus =   await this.VariationOldApi(index, msgId, msgHash)
-        // const httpStatus =   await this.VariationApi(content,index, msgId, msgHash)
+        const httpStatus = await this.VariationApi(index, msgId, msgHash)
         if (httpStatus !== 204) {
             throw new Error(`VariationApi failed with status ${httpStatus}`)
         }
-        return await this.WaitOptionMessage(content,`Variations`,loading)
+        return await this.WaitOptionMessage(content, `Variations`, loading)
 
     }
-    protected async VariationOldApi(index: number, messageId: string, messageHash: string) {
+    protected async VariationApi(index: number, messageId: string, messageHash: string) {
         const payload = {
             "type": 3,
             "guild_id": this.ServerId,
@@ -101,8 +98,8 @@ export class Midjourney extends MidjourneyMessage {
         });
         return response.status;
     }
-
-    protected async VariationApi(content: string,index: number, messageId: string, messageHash: string) {
+    //FIXME this is not working
+    protected async RemixModelApi(content: string, index: number, messageId: string, messageHash: string) {
         const payload = {
             "type": 5,
             "application_id": "936929561302675456",
@@ -126,20 +123,6 @@ export class Midjourney extends MidjourneyMessage {
             },
             "session_id": "ec6524c8d2926e285a8232f7ed1ced98",
         }
-
-        // const payload = {
-        //     "type": 3,
-        //     "guild_id": this.ServerId,
-        //     "channel_id": this.ChannelId,
-        //     "message_flags": 0,
-        //     "message_id": messageId,
-        //     "application_id": "936929561302675456",
-        //     "session_id": "1f3dbdf09efdf93d81a3a6420882c92c",
-        //     "data": {
-        //         "component_type": 2,
-        //         "custom_id": `MJ::JOB::variation::${index}::${messageHash}`
-        //     }
-        // };
         const headers = { authorization: this.SalaiToken };
         const response = await axios.post('https://discord.com/api/v9/interactions', payload, {
             headers,
@@ -149,16 +132,16 @@ export class Midjourney extends MidjourneyMessage {
 
 
 
-    async Upscale(content: string,index:number, msgId: string, msgHash: string,loading?: (uri: string) => void) {
+    async Upscale(content: string, index: number, msgId: string, msgHash: string, loading?: (uri: string) => void) {
         // index is 1-4
         if (index < 1 || index > 4) {
             throw new Error(`Variation index must be between 1 and 4, got ${index}`)
         }
-        const httpStatus =   await this.UpscaleApi(index, msgId, msgHash)
+        const httpStatus = await this.UpscaleApi(index, msgId, msgHash)
         if (httpStatus !== 204) {
             throw new Error(`VariationApi failed with status ${httpStatus}`)
         }
-        return await this.WaitOptionMessage(content,`Upscaled`,loading)
+        return await this.WaitOptionMessage(content, `Upscaled`, loading)
     }
 
     // 
