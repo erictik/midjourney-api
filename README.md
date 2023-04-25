@@ -7,7 +7,8 @@ Node.js client for the unofficial MidJourney API.
 		<a href="https://www.npmjs.com/package/midjourney"><img src="https://img.shields.io/npm/v/midjourney-discord.svg?maxAge=3600" alt="npm version" /></a>
 	</p>
 </div>
-[discord bot example](https://github.com/erictik/midjourney-discord)
+
+[discord bot example](https://github.com/erictik/midjourney-discord/)
 
 ## Install
 
