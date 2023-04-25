@@ -12,8 +12,7 @@ jobs:
   publish-gpr:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      packages: write
+      contents: write
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3.6.0
