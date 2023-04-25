@@ -42,6 +42,8 @@ cd midjourney-api
 
 ```bash
 yarn
+# or npm
+npm install
 ```
 
 3. set the environment variables
