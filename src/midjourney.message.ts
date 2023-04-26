@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export type Message = {
+export type MJMessage = {
     id: string;
     uri: string;
     hash: string;
@@ -34,7 +34,7 @@ export class MidjourneyMessage {
                     break
                 }
                 const content = item.content.split('**')[1]
-                const msg: Message = {
+                const msg: MJMessage = {
                     id: item.id,
                     uri: imageUrl,
                     hash: this.UriToHash(imageUrl),
@@ -77,14 +77,5 @@ export class MidjourneyMessage {
         const headers = { 'authorization': this.SalaiToken };
         const response = await axios.get(`https://discord.com/api/v10/channels/${this.ChannelId}/messages?limit=${limit}`, { headers: headers });
         return response.data;
-    }
-
-    async GetMessgeById(id: string) {
-        console.log("GetMessgeById", id)
-        // GET/channels/{channel.id}/messages/{message.id}
-        const url = `https://discord.com/api/v12/channels/${this.ChannelId}/messages/${id}`
-        const headers = { authorization: this.SalaiToken };
-        const response = await axios.get(url, { headers });
-        return response.data
     }
 }
