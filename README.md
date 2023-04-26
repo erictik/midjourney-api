@@ -8,7 +8,7 @@ Node.js client for the unofficial MidJourney API.
 	</p>
 </div>
 
-[discord bot example](https://github.com/erictik/midjourney-discord/)
+[discord bot example](https://github.com/erictik/midjourney-discord-wrapper/)
 
 ## Install
 
