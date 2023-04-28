@@ -1,11 +1,6 @@
 import axios from "axios";
+import { MJMessage } from "./interfaces";
 
-export type MJMessage = {
-  id: string;
-  uri: string;
-  hash: string;
-  content: string;
-};
 export class MidjourneyMessage {
   constructor(
     public ChannelId: string,
@@ -81,7 +76,7 @@ export class MidjourneyMessage {
       if (msg !== null) {
         return msg;
       }
-      this.log(i, "wait no message found");
+      this.log(i, content, "wait no message found");
       await this.Wait(1000 * 2);
     }
   }

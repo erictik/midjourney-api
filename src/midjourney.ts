@@ -1,7 +1,11 @@
 import axios from "axios";
 import { MidjourneyMessage } from "./midjourney.message";
+import { CreateQueue, QueueTask } from "./queue";
+import { random, sleep } from "./utls";
+import { QueueObject, tryEach } from "async";
 
 export class Midjourney extends MidjourneyMessage {
+  ApiQueue: QueueObject<QueueTask<any>>;
   constructor(
     public ServerId: string,
     public ChannelId: string,
@@ -10,27 +14,66 @@ export class Midjourney extends MidjourneyMessage {
   ) {
     super(ChannelId, SalaiToken, debug);
     this.log("Midjourney constructor");
+    this.ApiQueue = CreateQueue(1);
   }
 
   async Imagine(prompt: string, loading?: (uri: string) => void) {
+    //if prompt not include --seed, use it
+    if (!prompt.includes("--seed")) {
+      const speed = random(1000, 9999);
+      prompt = `${prompt} --seed ${speed}`;
+    }
+
     const httpStatus = await this.ImagineApi(prompt);
     if (httpStatus !== 204) {
       throw new Error(`ImagineApi failed with status ${httpStatus}`);
     }
     this.log(`await generate image`);
-    return await this.WaitMessage(prompt, loading);
+    const msg = await this.WaitMessage(prompt, loading);
+    this.log(`image generated`, prompt, msg?.uri);
+    return msg;
+  }
+  // limit the number of concurrent interactions
+  protected async safeIteractions(payload: any) {
+    const httpStatus: number = await new Promise((resolve, reject) => {
+      this.ApiQueue.push(
+        {
+          task: this.interactions.bind(this, payload, (res) => {
+            resolve(res);
+          }),
+        },
+        (err) => {
+          reject(err);
+        }
+      );
+    });
+    return httpStatus;
   }
 
-  protected async interactions(payload: any) {
+  protected async interactions(
+    payload: any,
+    callback: (result: number) => void
+  ) {
     const headers = { authorization: this.SalaiToken };
-    const response = await axios.post(
-      "https://discord.com/api/v9/interactions",
-      payload,
-      {
-        headers,
-      }
-    );
-    return response.status;
+    const t0 = performance.now();
+    try {
+      const response = await axios.post(
+        "https://discord.com/api/v9/interactions",
+        payload,
+        {
+          headers,
+        }
+      );
+      const t1 = performance.now();
+      this.log(`Execution time: ${t1 - t0} milliseconds.`);
+      callback && callback(response.status);
+      //discord api rate limit
+      await sleep(950);
+      return response.status;
+    } catch (error) {
+      console.log(error);
+      callback && callback(500);
+    }
   }
 
   async ImagineApi(prompt: string) {
@@ -75,7 +118,7 @@ export class Midjourney extends MidjourneyMessage {
         attachments: [],
       },
     };
-    return this.interactions(payload);
+    return this.safeIteractions(payload);
   }
 
   async Variation(
@@ -110,47 +153,7 @@ export class Midjourney extends MidjourneyMessage {
         custom_id: `MJ::JOB::variation::${index}::${messageHash}`,
       },
     };
-    return this.interactions(payload);
-  }
-  //FIXME this is not working
-  async RemixModelApi(
-    content: string,
-    index: number,
-    messageId: string,
-    messageHash: string
-  ) {
-    const payload = {
-      type: 5,
-      application_id: "936929561302675456",
-      channel_id: this.ChannelId,
-      guild_id: this.ServerId,
-      data: {
-        id: "1100105238322618488",
-        custom_id: `MJ::RemixModal::${messageHash}::${index}`,
-        components: [
-          {
-            type: 1,
-            components: [
-              {
-                type: 4,
-                custom_id: "MJ::RemixModal::new_prompt",
-                value: content,
-              },
-            ],
-          },
-        ],
-      },
-      session_id: "ec6524c8d2926e285a8232f7ed1ced98",
-    };
-    const headers = { authorization: this.SalaiToken };
-    const response = await axios.post(
-      "https://discord.com/api/v9/interactions",
-      payload,
-      {
-        headers,
-      }
-    );
-    return response.status;
+    return this.safeIteractions(payload);
   }
 
   async Upscale(
@@ -186,7 +189,7 @@ export class Midjourney extends MidjourneyMessage {
         custom_id: `MJ::JOB::upsample::${index}::${messageHash}`,
       },
     };
-    return this.interactions(payload);
+    return this.safeIteractions(payload);
   }
   async UpscaleByCustomID(messageId: string, customId: string) {
     const payload = {
@@ -202,6 +205,6 @@ export class Midjourney extends MidjourneyMessage {
         custom_id: customId,
       },
     };
-    return this.interactions(payload);
+    return this.safeIteractions(payload);
   }
 }
