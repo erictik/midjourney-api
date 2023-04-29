@@ -2,10 +2,8 @@ import axios from "axios";
 import { MidjourneyMessage } from "./midjourney.message";
 import { CreateQueue, QueueTask } from "./queue";
 import { random, sleep } from "./utls";
-import { QueueObject, tryEach } from "async";
-
 export class Midjourney extends MidjourneyMessage {
-  ApiQueue: QueueObject<QueueTask<any>>;
+  private ApiQueue = CreateQueue(1);
   constructor(
     public ServerId: string,
     public ChannelId: string,
@@ -13,8 +11,6 @@ export class Midjourney extends MidjourneyMessage {
     public debug = false
   ) {
     super(ChannelId, SalaiToken, debug);
-    this.log("Midjourney constructor");
-    this.ApiQueue = CreateQueue(1);
   }
 
   async Imagine(prompt: string, loading?: (uri: string) => void) {
@@ -52,7 +48,7 @@ export class Midjourney extends MidjourneyMessage {
 
   protected async interactions(
     payload: any,
-    callback: (result: number) => void
+    callback?: (result: number) => void
   ) {
     const headers = { authorization: this.SalaiToken };
     const t0 = performance.now();
