@@ -1,7 +1,9 @@
 import axios from "axios";
 import { MJMessage } from "./interfaces";
+import { CreateQueue } from "./queue";
 
 export class MidjourneyMessage {
+  private magApiQueue = CreateQueue(1);
   constructor(
     public ChannelId: string,
     protected SalaiToken: string,
@@ -19,7 +21,7 @@ export class MidjourneyMessage {
     loading?: (uri: string) => void,
     options?: string
   ) {
-    const data = await this.RetrieveMessages(this.Limit);
+    const data = await this.safeRetrieveMessages(this.Limit);
     for (let i = 0; i < data.length; i++) {
       const item = data[i];
       if (
@@ -35,7 +37,6 @@ export class MidjourneyMessage {
           this.log("no attachment");
           break;
         }
-
         const imageUrl = item.attachments[0].url;
         if (!imageUrl.endsWith(".png")) {
           loading && loading(imageUrl);
@@ -66,6 +67,7 @@ export class MidjourneyMessage {
       await this.Wait(1000 * 2);
     }
   }
+
   async WaitOptionMessage(
     content: string,
     options: string,
@@ -85,6 +87,23 @@ export class MidjourneyMessage {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
+  // limit the number of concurrent interactions
+  protected async safeRetrieveMessages(limit = 50) {
+    const item: any = await new Promise((resolve, reject) => {
+      this.magApiQueue.push(
+        {
+          task: this.RetrieveMessages.bind(this, limit),
+          callback: (data) => {
+            resolve(data);
+          },
+        },
+        (err) => {
+          reject(err);
+        }
+      );
+    });
+    return item;
+  }
   async RetrieveMessages(limit = 50) {
     const headers = { authorization: this.SalaiToken };
     const response = await axios.get(
