@@ -1,6 +1,6 @@
 import axios from "axios";
 import { MidjourneyMessage } from "./midjourney.message";
-import { CreateQueue, QueueTask } from "./queue";
+import { CreateQueue } from "./queue";
 import { random, sleep } from "./utls";
 export class Midjourney extends MidjourneyMessage {
   private ApiQueue = CreateQueue(1);
@@ -14,12 +14,11 @@ export class Midjourney extends MidjourneyMessage {
   }
 
   async Imagine(prompt: string, loading?: (uri: string) => void) {
-    //if prompt not include --seed, use it
     if (!prompt.includes("--seed")) {
       const speed = random(1000, 9999);
       prompt = `${prompt} --seed ${speed}`;
     }
-
+    this.log(`Imagine`, prompt);
     const httpStatus = await this.ImagineApi(prompt);
     if (httpStatus !== 204) {
       throw new Error(`ImagineApi failed with status ${httpStatus}`);
@@ -31,19 +30,14 @@ export class Midjourney extends MidjourneyMessage {
   }
   // limit the number of concurrent interactions
   protected async safeIteractions(payload: any) {
-    const httpStatus: number = await new Promise((resolve, reject) => {
-      this.ApiQueue.push(
-        {
-          task: this.interactions.bind(this, payload, (res) => {
+    return this.ApiQueue.addTask(
+      () =>
+        new Promise<number>((resolve) => {
+          this.interactions(payload, (res) => {
             resolve(res);
-          }),
-        },
-        (err) => {
-          reject(err);
-        }
-      );
-    });
-    return httpStatus;
+          });
+        })
+    );
   }
 
   protected async interactions(

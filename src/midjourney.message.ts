@@ -1,6 +1,7 @@
 import axios from "axios";
 import { MJMessage } from "./interfaces";
 import { CreateQueue } from "./queue";
+import { sleep } from "./utls";
 
 export class MidjourneyMessage {
   private magApiQueue = CreateQueue(1);
@@ -64,7 +65,7 @@ export class MidjourneyMessage {
         return msg;
       }
       this.log(i, "wait no message found");
-      await this.Wait(1000 * 2);
+      await sleep(1000 * 2);
     }
   }
 
@@ -79,30 +80,13 @@ export class MidjourneyMessage {
         return msg;
       }
       this.log(i, content, "wait no message found");
-      await this.Wait(1000 * 2);
+      await sleep(1000 * 2);
     }
-  }
-
-  Wait(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   // limit the number of concurrent interactions
   protected async safeRetrieveMessages(limit = 50) {
-    const item: any = await new Promise((resolve, reject) => {
-      this.magApiQueue.push(
-        {
-          task: this.RetrieveMessages.bind(this, limit),
-          callback: (data) => {
-            resolve(data);
-          },
-        },
-        (err) => {
-          reject(err);
-        }
-      );
-    });
-    return item;
+    return this.magApiQueue.addTask(() => this.RetrieveMessages(limit));
   }
   async RetrieveMessages(limit = 50) {
     const headers = { authorization: this.SalaiToken };
