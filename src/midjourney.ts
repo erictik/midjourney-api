@@ -45,7 +45,6 @@ export class Midjourney extends MidjourneyMessage {
     callback?: (result: number) => void
   ) {
     const headers = { authorization: this.SalaiToken };
-    const t0 = performance.now();
     try {
       const response = await axios.post(
         "https://discord.com/api/v9/interactions",
@@ -54,8 +53,6 @@ export class Midjourney extends MidjourneyMessage {
           headers,
         }
       );
-      const t1 = performance.now();
-      this.log(`Execution time: ${t1 - t0} milliseconds.`);
       callback && callback(response.status);
       //discord api rate limit
       await sleep(950);
