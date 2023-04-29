@@ -1,10 +1,11 @@
-import PLimit from "p-limit";
+import PQueue from "p-queue";
+
 class ConcurrentQueue {
-  private limit: any;
   private queue: (() => Promise<any>)[] = [];
+  private limit: any;
 
   constructor(concurrency: number) {
-    this.limit = PLimit(concurrency);
+    this.limit = new PQueue({ concurrency });
   }
 
   public getWaiting(): number {
@@ -12,7 +13,7 @@ class ConcurrentQueue {
   }
 
   public async addTask<T>(task: () => Promise<T>): Promise<T> {
-    return await this.limit(async () => {
+    return await this.limit.add(async () => {
       const result = await task();
       return result;
     });
@@ -26,7 +27,6 @@ class ConcurrentQueue {
     );
   }
 }
-
 export function CreateQueue<T>(concurrency: number) {
   return new ConcurrentQueue(5);
 }
