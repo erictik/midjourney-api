@@ -1,6 +1,6 @@
 import axios from "axios";
 import { MidjourneyMessage } from "./midjourney.message";
-import { CreateQueue, QueueTask } from "./queue";
+import { CreateQueue } from "./queue";
 import { random, sleep } from "./utls";
 export class Midjourney extends MidjourneyMessage {
   private ApiQueue = CreateQueue(1);
@@ -31,25 +31,21 @@ export class Midjourney extends MidjourneyMessage {
   }
   // limit the number of concurrent interactions
   protected async safeIteractions(payload: any) {
-    const httpStatus: number = await new Promise((resolve, reject) => {
-      this.ApiQueue.push(
-        {
-          task: this.interactions.bind(this, payload, (res) => {
+    return this.ApiQueue.addTask(
+      () =>
+        new Promise<number>((resolve) => {
+          this.interactions.bind(this, payload, (res) => {
             resolve(res);
-          }),
-        },
-        (err) => {
-          reject(err);
-        }
-      );
-    });
-    return httpStatus;
+          });
+        })
+    );
   }
 
   protected async interactions(
     payload: any,
     callback?: (result: number) => void
   ) {
+    console.debug("12131231");
     const headers = { authorization: this.SalaiToken };
     const t0 = performance.now();
     try {
