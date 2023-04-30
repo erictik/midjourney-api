@@ -1,4 +1,3 @@
-import axios from "axios";
 import { MJMessage } from "./interfaces";
 import { CreateQueue } from "./queue";
 import { sleep } from "./utls";
@@ -90,10 +89,13 @@ export class MidjourneyMessage {
   }
   async RetrieveMessages(limit = 50) {
     const headers = { authorization: this.SalaiToken };
-    const response = await axios.get(
+    const response = await fetch(
       `https://discord.com/api/v10/channels/${this.ChannelId}/messages?limit=${limit}`,
-      { headers: headers }
+      {
+        headers: headers,
+      }
     );
-    return response.data;
+    const data = await response.json();
+    return data;
   }
 }

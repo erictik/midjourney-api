@@ -1,4 +1,3 @@
-import axios from "axios";
 import { MidjourneyMessage } from "./midjourney.message";
 import { CreateQueue } from "./queue";
 import { random, sleep } from "./utls";
@@ -44,15 +43,16 @@ export class Midjourney extends MidjourneyMessage {
     payload: any,
     callback?: (result: number) => void
   ) {
-    const headers = { authorization: this.SalaiToken };
     try {
-      const response = await axios.post(
-        "https://discord.com/api/v9/interactions",
-        payload,
-        {
-          headers,
-        }
-      );
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: this.SalaiToken,
+      };
+      const response = await fetch("https://discord.com/api/v9/interactions", {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: headers,
+      });
       callback && callback(response.status);
       //discord api rate limit
       await sleep(950);
