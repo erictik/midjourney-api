@@ -1,3 +1,4 @@
+import { LoadingHandler } from "./interfaces";
 import { MidjourneyMessage } from "./midjourney.message";
 import { CreateQueue } from "./queue";
 import { random, sleep } from "./utls";
@@ -12,7 +13,7 @@ export class Midjourney extends MidjourneyMessage {
     super(ChannelId, SalaiToken, debug);
   }
 
-  async Imagine(prompt: string, loading?: (uri: string) => void) {
+  async Imagine(prompt: string, loading?: LoadingHandler) {
     if (!prompt.includes("--seed")) {
       const speed = random(1000, 9999);
       prompt = `${prompt} --seed ${speed}`;
@@ -113,7 +114,7 @@ export class Midjourney extends MidjourneyMessage {
     index: number,
     msgId: string,
     msgHash: string,
-    loading?: (uri: string) => void
+    loading?: LoadingHandler
   ) {
     // index is 1-4
     if (index < 1 || index > 4) {
@@ -148,7 +149,7 @@ export class Midjourney extends MidjourneyMessage {
     index: number,
     msgId: string,
     msgHash: string,
-    loading?: (uri: string) => void
+    loading?: LoadingHandler
   ) {
     // index is 1-4
     if (index < 1 || index > 4) {
