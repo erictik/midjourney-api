@@ -159,7 +159,7 @@ export class Midjourney extends MidjourneyMessage {
       throw new Error(`VariationApi failed with status ${httpStatus}`);
     }
     this.log(`await generate image`);
-    return await this.WaitOptionMessage(content, `Upscaled`, loading);
+    return await this.WaitUpscaledMessage(content, index, loading);
   }
 
   async UpscaleApi(index: number, messageId: string, messageHash: string) {

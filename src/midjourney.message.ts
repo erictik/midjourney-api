@@ -19,7 +19,8 @@ export class MidjourneyMessage {
   async FilterMessages(
     prompt: string,
     loading?: (uri: string) => void,
-    options?: string
+    options?: string,
+    index?: number
   ) {
     const data = await this.safeRetrieveMessages(this.Limit);
     for (let i = 0; i < data.length; i++) {
@@ -28,8 +29,16 @@ export class MidjourneyMessage {
         item.author.id === "936929561302675456" &&
         item.content.includes(`**${prompt}`)
       ) {
-        // this.log(JSON.stringify(item))
-        if (options && !item.content.includes(options)) {
+        this.log(JSON.stringify(item));
+        // Upscaled or Variation
+        if (
+          options &&
+          !(
+            item.content.includes(options) ||
+            (options === "Upscaled" &&
+              item.content.includes(` - Image #${index}`))
+          )
+        ) {
           this.log("no options");
           continue;
         }
@@ -39,7 +48,7 @@ export class MidjourneyMessage {
         }
         const imageUrl = item.attachments[0].url;
         if (!imageUrl.endsWith(".png")) {
-          loading && loading(imageUrl);
+          loading?.(imageUrl);
           break;
         }
         const content = item.content.split("**")[1];
@@ -75,6 +84,25 @@ export class MidjourneyMessage {
   ) {
     for (let i = 0; i < this.maxWait; i++) {
       const msg = await this.FilterMessages(content, loading, options);
+      if (msg !== null) {
+        return msg;
+      }
+      this.log(i, content, "wait no message found");
+      await sleep(1000 * 2);
+    }
+  }
+  async WaitUpscaledMessage(
+    content: string,
+    index: number,
+    loading?: (uri: string) => void
+  ) {
+    for (let i = 0; i < this.maxWait; i++) {
+      const msg = await this.FilterMessages(
+        content,
+        loading,
+        "Upscaled",
+        index
+      );
       if (msg !== null) {
         return msg;
       }
