@@ -14,7 +14,7 @@ async function main() {
     <string>process.env.SALAI_TOKEN,
     true
   );
-  const msg = await client.Imagine("a cool cat, blue ears, red hat");
+  const msg = await client.Imagine("a cool cat, blue ears, yellow hat");
   console.log({ msg });
   if (!msg) {
     console.log("no message");
