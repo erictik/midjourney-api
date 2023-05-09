@@ -8,4 +8,7 @@ export interface MJMessage {
   uri: string;
   hash: string;
   content: string;
+  progress?: string;
 }
+
+export type LoadingHandler = (uri: string, progress: string) => void;
