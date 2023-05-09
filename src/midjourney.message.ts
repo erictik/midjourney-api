@@ -1,4 +1,4 @@
-import { MJMessage } from "./interfaces";
+import { LoadingHandler, MJMessage } from "./interfaces";
 import { CreateQueue } from "./queue";
 import { sleep } from "./utls";
 
@@ -18,7 +18,7 @@ export class MidjourneyMessage {
   }
   async FilterMessages(
     prompt: string,
-    loading?: (uri: string) => void,
+    loading?: LoadingHandler,
     options?: string,
     index?: number
   ) {
@@ -35,8 +35,7 @@ export class MidjourneyMessage {
           options &&
           !(
             item.content.includes(options) ||
-            (options === "Upscaled" &&
-              item.content.includes(` - Image #${index}`))
+            (options === "Upscaled" && item.content.includes(`Image #${index}`))
           )
         ) {
           this.log("no options");
@@ -48,7 +47,16 @@ export class MidjourneyMessage {
         }
         const imageUrl = item.attachments[0].url;
         if (!imageUrl.endsWith(".png")) {
-          loading?.(imageUrl);
+          this.log(`content`, item.content);
+          const regex = /\(([^)]+)\)/; // matches the value inside the first parenthesis
+          const match = item.content.match(regex);
+          let progress = "wait";
+          if (match) {
+            progress = match[1];
+          } else {
+            this.log("No match found");
+          }
+          loading?.(imageUrl, progress);
           break;
         }
         const content = item.content.split("**")[1];
@@ -57,6 +65,7 @@ export class MidjourneyMessage {
           uri: imageUrl,
           hash: this.UriToHash(imageUrl),
           content: content,
+          progress: "done",
         };
         return msg;
       }
@@ -66,7 +75,7 @@ export class MidjourneyMessage {
   UriToHash(uri: string) {
     return uri.split("_").pop()?.split(".")[0] ?? "";
   }
-  async WaitMessage(prompt: string, loading?: (uri: string) => void) {
+  async WaitMessage(prompt: string, loading?: LoadingHandler) {
     for (let i = 0; i < this.maxWait; i++) {
       const msg = await this.FilterMessages(prompt, loading);
       if (msg !== null) {
@@ -80,7 +89,7 @@ export class MidjourneyMessage {
   async WaitOptionMessage(
     content: string,
     options: string,
-    loading?: (uri: string) => void
+    loading?: LoadingHandler
   ) {
     for (let i = 0; i < this.maxWait; i++) {
       const msg = await this.FilterMessages(content, loading, options);
@@ -94,7 +103,7 @@ export class MidjourneyMessage {
   async WaitUpscaledMessage(
     content: string,
     index: number,
-    loading?: (uri: string) => void
+    loading?: LoadingHandler
   ) {
     for (let i = 0; i < this.maxWait; i++) {
       const msg = await this.FilterMessages(

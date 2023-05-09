@@ -14,9 +14,12 @@ async function main() {
     <string>process.env.SALAI_TOKEN,
     true
   );
-  const msg = await client.Imagine("A little pink elephant", (uri: string) => {
-    console.log("loading", uri);
-  });
+  const msg = await client.Imagine(
+    "A little white elephant",
+    (uri: string, progress: string) => {
+      console.log("loading", uri, "progress", progress);
+    }
+  );
   console.log({ msg });
 }
 main().catch((err) => {
