@@ -1,5 +1,5 @@
 {
-  "name": "midjourney",
+  "name": "kmidjourney",
   "version": "1.1.0",
   "description": "Node.js client for the unofficial MidJourney API.",
   "main": "libs/index.js",
@@ -17,7 +17,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/erictik/midjourney-api.git"
+    "url": "git+https://github.com/kevinn142857/midjourney-api.git"
   },
   "keywords": [
     "midjourney-api",
