@@ -41,12 +41,18 @@ export class MidjourneyMessage {
           this.log("no options");
           continue;
         }
+        console.log("[test]testsetestset");
+
         if (item.attachments.length === 0) {
           this.log("no attachment");
           break;
         }
         const imageUrl = item.attachments[0].url;
-        if (!imageUrl.endsWith(".png")) {
+        //waiting
+        if (
+          item.attachments[0].filename.startsWith("grid") ||
+          item.components.length === 0
+        ) {
           this.log(`content`, item.content);
           const regex = /\(([^)]+)\)/; // matches the value inside the first parenthesis
           const match = item.content.match(regex);
@@ -59,6 +65,7 @@ export class MidjourneyMessage {
           loading?.(imageUrl, progress);
           break;
         }
+        //finished
         const content = item.content.split("**")[1];
         const msg: MJMessage = {
           id: item.id,
