@@ -27,7 +27,7 @@ export class MidjourneyMessage {
       const item = data[i];
       if (
         item.author.id === "936929561302675456" &&
-        item.content.includes(`**${prompt}`)
+        item.content.replace(/<([^<>]*)>/, '$1').includes(`**${prompt}`)
       ) {
         this.log(JSON.stringify(item));
         // Upscaled or Variation
