@@ -41,8 +41,6 @@ export class MidjourneyMessage {
           this.log("no options");
           continue;
         }
-        console.log("[test]testsetestset");
-
         if (item.attachments.length === 0) {
           this.log("no attachment");
           break;
