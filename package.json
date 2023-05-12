@@ -1,6 +1,6 @@
 {
   "name": "kmidjourney",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Node.js client for the unofficial MidJourney API.",
   "main": "libs/index.js",
   "types": "libs/index.d.ts",
