@@ -21,6 +21,20 @@ async function main() {
     }
   );
   console.log({ msg });
+  if (!msg) {
+    console.log("no message");
+    return;
+  }
+  const msg2 = await client.Upscale(
+    msg.content,
+    2,
+    msg.id,
+    msg.hash,
+    (uri: string, progress: string) => {
+      console.log("loading", uri, "progress", progress);
+    }
+  );
+  console.log({ msg2 });
 }
 main().catch((err) => {
   console.error(err);

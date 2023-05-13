@@ -23,7 +23,8 @@ export class MidjourneyMessage {
     index?: number
   ) {
     // remove urls
-    prompt = prompt.replace(/\bhttps?:\/\/\S+/gi, "");
+    const regex = /(<)?(https?:\/\/[^\s]*)(>)?/gi;
+    prompt = prompt.replace(regex, "");
     // remove multiple spaces
     prompt = prompt.trim();
 
