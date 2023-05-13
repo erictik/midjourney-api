@@ -14,6 +14,8 @@ async function main() {
     <string>process.env.SALAI_TOKEN,
     true
   );
+  client.Limit = 50;
+  client.maxWait = 200;
   const msg = await client.Imagine(
     "A little white elephant",
     (uri: string, progress: string) => {
