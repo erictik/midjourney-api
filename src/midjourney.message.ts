@@ -22,12 +22,17 @@ export class MidjourneyMessage {
     options?: string,
     index?: number
   ) {
+    // remove urls
+    prompt = prompt.replace(/\bhttps?:\/\/\S+/gi, "");
+    // remove multiple spaces
+    prompt = prompt.trim();
+
     const data = await this.safeRetrieveMessages(this.Limit);
     for (let i = 0; i < data.length; i++) {
       const item = data[i];
       if (
         item.author.id === "936929561302675456" &&
-        item.content.includes(`**${prompt}`)
+        item.content.includes(`${prompt}`)
       ) {
         this.log(JSON.stringify(item));
         // Upscaled or Variation
