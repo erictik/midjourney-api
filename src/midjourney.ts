@@ -8,9 +8,11 @@ export class Midjourney extends MidjourneyMessage {
     public ServerId: string,
     public ChannelId: string,
     protected SalaiToken: string,
-    public debug = false
+    public debug = false,
+    public Limit = 50,
+    public maxWait = 100
   ) {
-    super(ChannelId, SalaiToken, debug);
+    super(ChannelId, SalaiToken, debug, Limit, maxWait);
   }
 
   async Imagine(prompt: string, loading?: LoadingHandler) {
