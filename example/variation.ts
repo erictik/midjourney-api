@@ -8,12 +8,12 @@ import { Midjourney } from "../src";
  * ```
  */
 async function main() {
-  const client = new Midjourney(
-    <string>process.env.SERVER_ID,
-    <string>process.env.CHANNEL_ID,
-    <string>process.env.SALAI_TOKEN,
-    true
-  );
+  const client = new Midjourney({
+    ServerId: <string>process.env.SERVER_ID,
+    ChannelId: <string>process.env.CHANNEL_ID,
+    SalaiToken: <string>process.env.SALAI_TOKEN,
+    Debug: true,
+  });
   const msg = await client.Imagine("a dog, blue ears, and a red nose");
   console.log({ msg });
   if (!msg) {

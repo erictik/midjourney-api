@@ -1,20 +1,25 @@
-import { LoadingHandler, MJMessage } from "./interfaces";
+import {
+  DefaultMessageConfig,
+  LoadingHandler,
+  MJMessage,
+  MessageConfig,
+  MessageConfigParam,
+  MidjourneyConfig,
+} from "./interfaces";
 import { CreateQueue } from "./queue";
 import { sleep } from "./utls";
 
 export class MidjourneyMessage {
   private magApiQueue = CreateQueue(1);
-  constructor(
-    public ChannelId: string,
-    protected SalaiToken: string,
-    public debug = false,
-    public Limit = 50,
-    public maxWait = 100
-  ) {
-    this.log("MidjourneyMessage constructor");
+  public config: MessageConfig;
+  constructor(defaults: MessageConfigParam) {
+    this.config = {
+      ...DefaultMessageConfig,
+      ...defaults,
+    };
   }
   protected log(...args: any[]) {
-    this.debug && console.log(...args, new Date().toISOString());
+    this.config.Debug && console.log(...args, new Date().toISOString());
   }
   async FilterMessages(
     prompt: string,
@@ -28,7 +33,7 @@ export class MidjourneyMessage {
     // remove multiple spaces
     prompt = prompt.trim();
 
-    const data = await this.safeRetrieveMessages(this.Limit);
+    const data = await this.safeRetrieveMessages(this.config.Limit);
     for (let i = 0; i < data.length; i++) {
       const item = data[i];
       if (
@@ -87,7 +92,7 @@ export class MidjourneyMessage {
     return uri.split("_").pop()?.split(".")[0] ?? "";
   }
   async WaitMessage(prompt: string, loading?: LoadingHandler) {
-    for (let i = 0; i < this.maxWait; i++) {
+    for (let i = 0; i < this.config.MaxWait; i++) {
       const msg = await this.FilterMessages(prompt, loading);
       if (msg !== null) {
         return msg;
@@ -102,7 +107,7 @@ export class MidjourneyMessage {
     options: string,
     loading?: LoadingHandler
   ) {
-    for (let i = 0; i < this.maxWait; i++) {
+    for (let i = 0; i < this.config.MaxWait; i++) {
       const msg = await this.FilterMessages(content, loading, options);
       if (msg !== null) {
         return msg;
@@ -116,7 +121,7 @@ export class MidjourneyMessage {
     index: number,
     loading?: LoadingHandler
   ) {
-    for (let i = 0; i < this.maxWait; i++) {
+    for (let i = 0; i < this.config.MaxWait; i++) {
       const msg = await this.FilterMessages(
         content,
         loading,
@@ -132,13 +137,13 @@ export class MidjourneyMessage {
   }
 
   // limit the number of concurrent interactions
-  protected async safeRetrieveMessages(limit = 50) {
+  protected async safeRetrieveMessages(limit = this.config.Limit) {
     return this.magApiQueue.addTask(() => this.RetrieveMessages(limit));
   }
-  async RetrieveMessages(limit = 50) {
-    const headers = { authorization: this.SalaiToken };
+  async RetrieveMessages(limit = this.config.Limit) {
+    const headers = { authorization: this.config.SalaiToken };
     const response = await fetch(
-      `https://discord.com/api/v10/channels/${this.ChannelId}/messages?limit=${limit}`,
+      `https://discord.com/api/v10/channels/${this.config.ChannelId}/messages?limit=${limit}`,
       {
         headers: headers,
       }

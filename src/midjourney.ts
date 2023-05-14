@@ -1,16 +1,21 @@
-import { LoadingHandler } from "./interfaces";
+import {
+  DefaultMidjourneyConfig,
+  LoadingHandler,
+  MidjourneyConfig,
+  MidjourneyConfigParam,
+} from "./interfaces";
 import { MidjourneyMessage } from "./midjourney.message";
 import { CreateQueue } from "./queue";
 import { random, sleep } from "./utls";
 export class Midjourney extends MidjourneyMessage {
   private ApiQueue = CreateQueue(1);
-  constructor(
-    public ServerId: string,
-    public ChannelId: string,
-    protected SalaiToken: string,
-    public debug = false
-  ) {
-    super(ChannelId, SalaiToken, debug);
+  public config: MidjourneyConfig;
+  constructor(defaults: MidjourneyConfigParam) {
+    super(defaults);
+    this.config = {
+      ...DefaultMidjourneyConfig,
+      ...defaults,
+    };
   }
 
   async Imagine(prompt: string, loading?: LoadingHandler) {
@@ -47,7 +52,7 @@ export class Midjourney extends MidjourneyMessage {
     try {
       const headers = {
         "Content-Type": "application/json",
-        Authorization: this.SalaiToken,
+        Authorization: this.config.SalaiToken,
       };
       const response = await fetch("https://discord.com/api/v9/interactions", {
         method: "POST",
@@ -68,9 +73,9 @@ export class Midjourney extends MidjourneyMessage {
     const payload = {
       type: 2,
       application_id: "936929561302675456",
-      guild_id: this.ServerId,
-      channel_id: this.ChannelId,
-      session_id: "2fb980f65e5c9a77c96ca01f2c242cf6",
+      guild_id: this.config.ServerId,
+      channel_id: this.config.ChannelId,
+      session_id: this.config.SessionId,
       data: {
         version: "1077969938624553050",
         id: "938956540159881230",
@@ -130,8 +135,8 @@ export class Midjourney extends MidjourneyMessage {
   async VariationApi(index: number, messageId: string, messageHash: string) {
     const payload = {
       type: 3,
-      guild_id: this.ServerId,
-      channel_id: this.ChannelId,
+      guild_id: this.config.ServerId,
+      channel_id: this.config.ChannelId,
       message_flags: 0,
       message_id: messageId,
       application_id: "936929561302675456",
@@ -166,8 +171,8 @@ export class Midjourney extends MidjourneyMessage {
   async UpscaleApi(index: number, messageId: string, messageHash: string) {
     const payload = {
       type: 3,
-      guild_id: this.ServerId,
-      channel_id: this.ChannelId,
+      guild_id: this.config.ServerId,
+      channel_id: this.config.ChannelId,
       message_flags: 0,
       message_id: messageId,
       application_id: "936929561302675456",
@@ -182,12 +187,12 @@ export class Midjourney extends MidjourneyMessage {
   async UpscaleByCustomID(messageId: string, customId: string) {
     const payload = {
       type: 3,
-      guild_id: this.ServerId,
-      channel_id: this.ChannelId,
+      guild_id: this.config.ServerId,
+      channel_id: this.config.ChannelId,
       message_flags: 0,
       message_id: messageId,
       application_id: "936929561302675456",
-      session_id: "ec6524c8d2926e285a8232f7ed1ced98",
+      session_id: this.config.SessionId,
       data: {
         component_type: 2,
         custom_id: customId,
