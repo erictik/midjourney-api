@@ -4,16 +4,17 @@ const { Midjourney } = require("../libs");
  *
  * a simple example of how to use the imagine command
  * ```
- * npx tsx example/imagine.ts
+ * node example/imagine.js
  * ```
  */
 async function main() {
-  const client = new Midjourney(
-    process.env.SERVER_ID,
-    process.env.CHANNEL_ID,
-    process.env.SALAI_TOKEN,
-    true
-  );
+  const client = new Midjourney({
+    ServerId: process.env.SERVER_ID,
+    ChannelId: process.env.CHANNEL_ID,
+    SalaiToken: process.env.SALAI_TOKEN,
+    Debug: true,
+    SessionId: process.env.SALAI_TOKEN || "8bb7f5b79c7a49f7d0824ab4b8773a81",
+  } );
   const msg = await client.Imagine("A little pink elephant", (uri) => {
     console.log("loading", uri);
   });

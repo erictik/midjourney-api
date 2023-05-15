@@ -32,11 +32,12 @@ yarn add midjourney
 
 ```typescript
 import { Midjourney } from "midjourney";
-const client = new Midjourney(
-  process.env.SERVER_ID,
-  process.env.CHANNEL_ID,
-  process.env.SALAI_TOKEN
-);
+  const client = new Midjourney({
+    ServerId: <string>process.env.SERVER_ID,
+    ChannelId: <string>process.env.CHANNEL_ID,
+    SalaiToken: <string>process.env.SALAI_TOKEN,
+    Debug: true,
+  });
 const msg = await client.Imagine("A little pink elephant", (uri: string) => {
   console.log("loading", uri);
 });
