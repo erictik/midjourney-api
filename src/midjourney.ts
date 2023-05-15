@@ -62,6 +62,9 @@ export class Midjourney extends MidjourneyMessage {
       callback && callback(response.status);
       //discord api rate limit
       await sleep(950);
+      if (response.status >= 400) {
+        this.log("error config", { config: this.config });
+      }
       return response.status;
     } catch (error) {
       console.log(error);

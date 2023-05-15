@@ -137,7 +137,7 @@ export class MidjourneyMessage {
   }
 
   // limit the number of concurrent interactions
-  protected async safeRetrieveMessages(limit = this.config.Limit) {
+  protected async safeRetrieveMessages(limit = 50) {
     return this.magApiQueue.addTask(() => this.RetrieveMessages(limit));
   }
   async RetrieveMessages(limit = this.config.Limit) {
@@ -148,6 +148,10 @@ export class MidjourneyMessage {
         headers: headers,
       }
     );
+    if (!response.ok) {
+      this.log("error config", { config: this.config });
+      this.log(`HTTP error! status: ${response.status}`);
+    }
     const data = await response.json();
     return data;
   }
