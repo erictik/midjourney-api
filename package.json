@@ -34,6 +34,7 @@
   "homepage": "https://github.com/erictik/midjourney-api#readme",
   "devDependencies": {
     "@types/node": "^18.16.0",
+    "@types/ws": "^8.5.4",
     "dotenv": "^16.0.3",
     "prettier": "^2.8.8",
     "ts-node": "^10.9.1",
@@ -43,6 +44,7 @@
   "dependencies": {
     "p-queue": "^6.6.2",
     "throat": "^6.0.2",
-    "tslib": "^2.5.0"
+    "tslib": "^2.5.0",
+    "ws": "^8.13.0"
   }
 }
