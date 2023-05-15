@@ -11,6 +11,10 @@ export class Midjourney extends MidjourneyMessage {
   private ApiQueue = CreateQueue(1);
   public config: MidjourneyConfig;
   constructor(defaults: MidjourneyConfigParam) {
+    const { ServerId, SalaiToken, ChannelId } = defaults;
+    if (!ServerId || !SalaiToken || !ChannelId) {
+      throw new Error("ServerId, ChannelId and SalaiToken are required");
+    }
     super(defaults);
     this.config = {
       ...DefaultMidjourneyConfig,

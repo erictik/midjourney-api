@@ -13,6 +13,11 @@ export class MidjourneyMessage {
   private magApiQueue = CreateQueue(1);
   public config: MessageConfig;
   constructor(defaults: MessageConfigParam) {
+    const { ChannelId, SalaiToken } = defaults;
+    if (!ChannelId || !SalaiToken) {
+      throw new Error("ChannelId and SalaiToken are required");
+    }
+
     this.config = {
       ...DefaultMessageConfig,
       ...defaults,
