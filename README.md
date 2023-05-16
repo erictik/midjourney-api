@@ -85,3 +85,8 @@ npx tsx example/upscale.ts
 ```bash
 npx tsx example/variation.ts
 ```
+
+
+
+## Star History
+[![Star History Chart](https://api.star-history.com/svg?repos=erictik/midjourney-api&type=Date)](https://star-history.com/#erictik/midjourney-api&Date)
