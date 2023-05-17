@@ -11,8 +11,7 @@ Node.js client for the unofficial MidJourney API.
 
 [discord bot example](https://github.com/erictik/midjourney-discord-wrapper/)
 
-[web ui example](https://github.com/erictik/midjourney-ui/)
-
+[web ui example](https://github.com/erictik/midjourney-ui/)  
 
 ## Install
 
@@ -37,6 +36,7 @@ import { Midjourney } from "midjourney";
     ChannelId: <string>process.env.CHANNEL_ID,
     SalaiToken: <string>process.env.SALAI_TOKEN,
     Debug: true,
+    Ws:true,
   });
 const msg = await client.Imagine("A little pink elephant", (uri: string) => {
   console.log("loading", uri);
@@ -75,16 +75,22 @@ export SALAI_TOKEN="your-salai-token"
 Then, run the example with the following command:
 
 ```bash
-npx tsx example/imagine.ts
+npx tsx example/imagine-ws.ts
 ```
 
 ```bash
-npx tsx example/upscale.ts
+npx tsx example/upscale-w.ts
 ```
 
 ```bash
-npx tsx example/variation.ts
+npx tsx example/variation-ws.ts
 ```
+
+
+## route-map
+- [x] websocket get message
+- [ ] call back error
+- [ ] add `/info`  `/fast` and `/relax`
 
 
 

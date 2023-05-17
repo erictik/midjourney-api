@@ -23,8 +23,8 @@ async function main() {
   const msg2 = await client.Upscale(
     msg.content,
     2,
-    msg.id,
-    msg.hash,
+    <string>msg.id,
+    <string>msg.hash,
     (uri: string, progress: string) => {
       console.log("loading", uri, "progress", progress);
     }

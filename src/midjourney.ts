@@ -46,7 +46,7 @@ export class Midjourney extends MidjourneyMessage {
       throw new Error(`ImagineApi failed with status ${httpStatus}`);
     }
     if (this.wsClient) {
-      return await this.wsClient.waitMessage(nonce, loading);
+      return await this.wsClient.waitMessage("imagine", nonce, loading);
     } else {
       this.log(`await generate image`);
       const msg = await this.WaitMessage(prompt, loading);
@@ -154,14 +154,23 @@ export class Midjourney extends MidjourneyMessage {
     if (index < 1 || index > 4) {
       throw new Error(`Variation index must be between 1 and 4, got ${index}`);
     }
-    const httpStatus = await this.VariationApi(index, msgId, msgHash);
+    const nonce = SnowflakeUtil.generate().toString();
+    const httpStatus = await this.VariationApi(index, msgId, msgHash, nonce);
     if (httpStatus !== 204) {
       throw new Error(`VariationApi failed with status ${httpStatus}`);
     }
-    this.log(`await generate image`);
-    return await this.WaitOptionMessage(content, `Variations`, loading);
+    if (this.wsClient) {
+      return await this.wsClient.waitMessage("variation", nonce, loading);
+    } else {
+      return await this.WaitOptionMessage(content, `Variations`, loading);
+    }
   }
-  async VariationApi(index: number, messageId: string, messageHash: string) {
+  async VariationApi(
+    index: number,
+    messageId: string,
+    messageHash: string,
+    nonce?: Snowflake
+  ) {
     const payload = {
       type: 3,
       guild_id: this.config.ServerId,
@@ -174,6 +183,7 @@ export class Midjourney extends MidjourneyMessage {
         component_type: 2,
         custom_id: `MJ::JOB::variation::${index}::${messageHash}`,
       },
+      nonce,
     };
     return this.safeIteractions(payload);
   }
@@ -189,15 +199,24 @@ export class Midjourney extends MidjourneyMessage {
     if (index < 1 || index > 4) {
       throw new Error(`Variation index must be between 1 and 4, got ${index}`);
     }
-    const httpStatus = await this.UpscaleApi(index, msgId, msgHash);
+    const nonce = SnowflakeUtil.generate().toString();
+    const httpStatus = await this.UpscaleApi(index, msgId, msgHash, nonce);
     if (httpStatus !== 204) {
       throw new Error(`VariationApi failed with status ${httpStatus}`);
     }
     this.log(`await generate image`);
+    if (this.wsClient) {
+      return await this.wsClient.waitMessage("upscale", nonce, loading);
+    }
     return await this.WaitUpscaledMessage(content, index, loading);
   }
 
-  async UpscaleApi(index: number, messageId: string, messageHash: string) {
+  async UpscaleApi(
+    index: number,
+    messageId: string,
+    messageHash: string,
+    nonce?: Snowflake
+  ) {
     const payload = {
       type: 3,
       guild_id: this.config.ServerId,
@@ -210,6 +229,7 @@ export class Midjourney extends MidjourneyMessage {
         component_type: 2,
         custom_id: `MJ::JOB::upsample::${index}::${messageHash}`,
       },
+      nonce,
     };
     return this.safeIteractions(payload);
   }

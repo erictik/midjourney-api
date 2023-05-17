@@ -1,6 +1,6 @@
 name: Node.js Package
 env:
-  APPVERSION: v2.1.${{ github.run_number }}
+  APPVERSION: v2.2.${{ github.run_number }}
 on:
   workflow_dispatch:
   push:

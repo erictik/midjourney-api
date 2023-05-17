@@ -2,9 +2,9 @@ import "dotenv/config";
 import { Midjourney } from "../src";
 /**
  *
- * a simple example of how to use the Variation command
+ * a simple example of how to use the Variation with ws command
  * ```
- * npx tsx example/variation.ts
+ * npx tsx example/variation-ws.ts
  * ```
  */
 async function main() {
@@ -13,7 +13,9 @@ async function main() {
     ChannelId: <string>process.env.CHANNEL_ID,
     SalaiToken: <string>process.env.SALAI_TOKEN,
     Debug: true,
+    Ws: true,
   });
+  await client.init();
   const msg = await client.Imagine("a dog, blue ears, and a red nose");
   console.log({ msg });
   if (!msg) {

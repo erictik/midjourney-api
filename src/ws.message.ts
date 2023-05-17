@@ -209,12 +209,22 @@ export class WsMessage {
     return progress;
   }
 
+  matchContent(content: string | undefined) {
+    if (!content) return "";
+    const pattern = /\*\*(.*?)\*\*/; // Match **middle content
+    const matches = content.match(pattern);
+    if (matches && matches.length > 1) {
+      return matches[1]; // Get the matched content
+    } else {
+      this.log("No match found.", content);
+      return "";
+    }
+  }
+
   private filterMessages(MJmsg: MJMessage) {
-    // str.replace(/<@(.*?)>.*$/, "")
+    // this.log("filterMessages", MJmsg, this.waitMjEvent);
     const index = this.waitMjEvent.findIndex(
-      (e) =>
-        e.prompt?.replace(/<@(.*?)>.*$/, "") ===
-        MJmsg.content.replace(/<@(.*?)>.*$/, "")
+      (e) => this.matchContent(e.prompt) === this.matchContent(MJmsg.content)
     );
     if (index < 0) {
       this.log("FilterMessages not found", MJmsg, this.waitMjEvent);
@@ -307,9 +317,13 @@ export class WsMessage {
     this.onceImage("imagine", nonce, callback);
   }
 
-  async waitMessage(nonce: string, loading?: LoadingHandler) {
+  async waitMessage(
+    type: ImageEventType,
+    nonce: string,
+    loading?: LoadingHandler
+  ) {
     return new Promise<MJMessage | null>((resolve, reject) => {
-      this.onceImagine(nonce, ({ message, error }) => {
+      this.onceImage(type, nonce, ({ message, error }) => {
         if (error) {
           reject(error);
           return;
@@ -318,7 +332,6 @@ export class WsMessage {
           resolve(message);
           return;
         }
-        this.log("loading");
         message && loading && loading(message.uri, message.progress || "");
       });
     });

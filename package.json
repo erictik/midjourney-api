@@ -1,6 +1,6 @@
 {
   "name": "midjourney",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Node.js client for the unofficial MidJourney API.",
   "main": "libs/index.js",
   "types": "libs/index.d.ts",
