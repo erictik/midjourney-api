@@ -4,6 +4,7 @@ export interface MessageConfig {
   Debug: boolean;
   Limit: number;
   MaxWait: number;
+  Ws?: boolean;
 }
 export interface MessageConfigParam {
   ChannelId: string;
@@ -11,6 +12,7 @@ export interface MessageConfigParam {
   Debug?: boolean;
   Limit?: number;
   MaxWait?: number;
+  Ws?: boolean;
 }
 export interface MidjourneyConfig extends MessageConfig {
   ServerId: string;
