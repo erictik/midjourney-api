@@ -140,25 +140,26 @@ export class WsMessage {
     if (!(author && author.id === this.MJBotId)) return;
     if (channel_id !== this.config.ChannelId) return;
     this.log("has message", content, nonce, id);
-    //done image
-    if (msg.t === "MESSAGE_CREATE" && !nonce && !application_id) {
-      this.log("done image");
-      //match done image
-      const MJmsg: MJMessage = {
-        id,
-        hash: this.uriToHash(attachments[0].url),
-        progress: "done",
-        uri: attachments[0].url,
-        content,
-      };
-      this.filterMessages(MJmsg);
-      return;
-    }
 
     //waiting start image or info or error
     if (nonce && msg.t === "MESSAGE_CREATE") {
       this.log("waiting start image or info or error");
       this.updateMjEventIdByNonce(id, nonce);
+      if (
+        embeds &&
+        embeds.length > 0 &&
+        embeds[0].title === "Invalid parameter"
+      ) {
+        //error
+        const error = new Error(embeds[0].description);
+        this.EventError(id, error);
+      }
+    }
+    //done image
+    if (msg.t === "MESSAGE_CREATE" && !nonce && !application_id) {
+      this.log("done image");
+      this.done(message);
+      return;
     }
 
     //processing image
@@ -189,14 +190,31 @@ export class WsMessage {
       };
       this.emitImage(<ImageEventType>event.type, eventMsg);
     }
-    // this.log(message);
-    // this.log("message", {
-    //   id,
-    //   nonce,
-    //   attachments,
-    //   content,
-    //   embeds,
-    // });
+  }
+  private EventError(id: string, error: Error) {
+    this.log("EventError", id, error);
+    const index = this.waitMjEvent.findIndex((e) => e.id === id);
+    if (index < 0 || !this.waitMjEvent[index]) {
+      return;
+    }
+    const event = this.waitMjEvent[index];
+    const eventMsg: WsEventMsg = {
+      error,
+    };
+    this.emit(event.type, eventMsg);
+  }
+
+  private done(message: any) {
+    const { content, id, attachments } = message;
+    const MJmsg: MJMessage = {
+      id,
+      hash: this.uriToHash(attachments[0].url),
+      progress: "done",
+      uri: attachments[0].url,
+      content,
+    };
+    this.filterMessages(MJmsg);
+    return;
   }
 
   protected content2progress(content: string) {
