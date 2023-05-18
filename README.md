@@ -89,7 +89,7 @@ npx tsx example/variation-ws.ts
 
 ## route-map
 - [x] websocket get message
-- [ ] call back error
+- [x] call back error
 - [ ] add `/info`  `/fast` and `/relax`
 
 
