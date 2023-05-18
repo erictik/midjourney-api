@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { Midjourney, MidjourneyMessage } from "../src";
+import { WsMessage } from "../src";
 /**
  *
  * a simple example of how to use the imagine command
@@ -8,12 +8,12 @@ import { Midjourney, MidjourneyMessage } from "../src";
  * ```
  */
 async function main() {
-  const client = new MidjourneyMessage({
+  const client = new WsMessage({
     ChannelId: <string>process.env.CHANNEL_ID,
     SalaiToken: <string>process.env.SALAI_TOKEN,
+    Debug: true,
   });
-  const msg = await client.RetrieveMessages();
-  console.log({ msg });
+  console.log("client");
 }
 main().catch((err) => {
   console.error(err);

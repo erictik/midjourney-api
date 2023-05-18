@@ -105,6 +105,7 @@ export class MidjourneyMessage {
       this.log(i, "wait no message found");
       await sleep(1000 * 2);
     }
+    return null;
   }
 
   async WaitOptionMessage(
@@ -120,6 +121,7 @@ export class MidjourneyMessage {
       this.log(i, content, "wait no message found");
       await sleep(1000 * 2);
     }
+    return null;
   }
   async WaitUpscaledMessage(
     content: string,
@@ -139,6 +141,7 @@ export class MidjourneyMessage {
       this.log(i, content, "wait no message found");
       await sleep(1000 * 2);
     }
+    return null;
   }
 
   // limit the number of concurrent interactions
