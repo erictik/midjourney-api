@@ -10,7 +10,6 @@ import {
   WsEventMsg,
   ImageEventType,
 } from "./interfaces";
-import { error } from "console";
 
 export class WsMessage {
   DISCORD_GATEWAY =
@@ -145,11 +144,7 @@ export class WsMessage {
     if (nonce && msg.t === "MESSAGE_CREATE") {
       this.log("waiting start image or info or error");
       this.updateMjEventIdByNonce(id, nonce);
-      if (
-        embeds &&
-        embeds.length > 0 &&
-        embeds[0].title === "Invalid parameter"
-      ) {
+      if (embeds && embeds.length > 0 && embeds[0].title.includes("Invalid")) {
         //error
         const error = new Error(embeds[0].description);
         this.EventError(id, error);

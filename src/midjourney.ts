@@ -1,4 +1,3 @@
-import { Snowflake, SnowflakeUtil } from "discord.js";
 import {
   DefaultMidjourneyConfig,
   LoadingHandler,
@@ -7,7 +6,7 @@ import {
 } from "./interfaces";
 import { MidjourneyMessage } from "./midjourney.message";
 import { CreateQueue } from "./queue";
-import { random, sleep } from "./utls";
+import { nextNonce, random, sleep } from "./utls";
 import { WsMessage } from "./ws.message";
 export class Midjourney extends MidjourneyMessage {
   private ApiQueue = CreateQueue(1);
@@ -39,7 +38,8 @@ export class Midjourney extends MidjourneyMessage {
       const speed = random(1000, 9999);
       prompt = `${prompt} --seed ${speed}`;
     }
-    const nonce = SnowflakeUtil.generate().toString();
+
+    const nonce = nextNonce();
     this.log(`Imagine`, prompt, "nonce", nonce);
     const httpStatus = await this.ImagineApi(prompt, nonce);
     if (httpStatus !== 204) {
@@ -94,10 +94,7 @@ export class Midjourney extends MidjourneyMessage {
     }
   }
 
-  async ImagineApi(
-    prompt: string,
-    nonce: Snowflake = SnowflakeUtil.generate().toString()
-  ) {
+  async ImagineApi(prompt: string, nonce: string = nextNonce()) {
     const payload = {
       type: 2,
       application_id: "936929561302675456",
@@ -154,7 +151,7 @@ export class Midjourney extends MidjourneyMessage {
     if (index < 1 || index > 4) {
       throw new Error(`Variation index must be between 1 and 4, got ${index}`);
     }
-    const nonce = SnowflakeUtil.generate().toString();
+    const nonce = nextNonce();
     const httpStatus = await this.VariationApi(index, msgId, msgHash, nonce);
     if (httpStatus !== 204) {
       throw new Error(`VariationApi failed with status ${httpStatus}`);
@@ -169,7 +166,7 @@ export class Midjourney extends MidjourneyMessage {
     index: number,
     messageId: string,
     messageHash: string,
-    nonce?: Snowflake
+    nonce?: string
   ) {
     const payload = {
       type: 3,
@@ -199,7 +196,7 @@ export class Midjourney extends MidjourneyMessage {
     if (index < 1 || index > 4) {
       throw new Error(`Variation index must be between 1 and 4, got ${index}`);
     }
-    const nonce = SnowflakeUtil.generate().toString();
+    const nonce = nextNonce();
     const httpStatus = await this.UpscaleApi(index, msgId, msgHash, nonce);
     if (httpStatus !== 204) {
       throw new Error(`VariationApi failed with status ${httpStatus}`);
@@ -215,7 +212,7 @@ export class Midjourney extends MidjourneyMessage {
     index: number,
     messageId: string,
     messageHash: string,
-    nonce?: Snowflake
+    nonce?: string
   ) {
     const payload = {
       type: 3,

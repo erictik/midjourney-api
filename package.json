@@ -42,8 +42,6 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
-    "discord-api-types": "^0.37.42",
-    "discord.js": "^14.11.0",
     "p-queue": "^6.6.2",
     "throat": "^6.0.2",
     "tslib": "^2.5.0",
