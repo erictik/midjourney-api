@@ -13,6 +13,7 @@
   },
   "files": [
     "libs/*",
+    "src/*",
     "*.md"
   ],
   "repository": {
