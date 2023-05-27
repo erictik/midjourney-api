@@ -186,7 +186,7 @@ export class WsMessage {
       }
       const MJmsg: MJMessage = {
         uri: attachments[0].url,
-        content: this.content2prompt(content),
+        content: content,
         progress: this.content2progress(content),
       };
       const eventMsg: WsEventMsg = {
@@ -282,7 +282,7 @@ export class WsMessage {
       hash: this.uriToHash(attachments[0].url),
       progress: "done",
       uri: attachments[0].url,
-      content: this.content2progress(content),
+      content: content,
     };
     this.filterMessages(MJmsg);
     return;
@@ -393,6 +393,9 @@ export class WsMessage {
   ) {
     const once = (data: WsEventMsg) => {
       const { message, error } = data;
+      if (message) {
+        message.content = this.content2prompt(message.content);
+      }
       if (error || (message && message.progress === "done")) {
         this.log("onceImage", type, "done", data, error);
         this.remove(type, once);
