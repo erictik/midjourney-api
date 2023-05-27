@@ -79,7 +79,7 @@ npx tsx example/imagine-ws.ts
 ```
 
 ```bash
-npx tsx example/upscale-w.ts
+npx tsx example/upscale-ws.ts
 ```
 
 ```bash
