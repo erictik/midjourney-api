@@ -10,6 +10,7 @@ import {
   WsEventMsg,
   ImageEventType,
 } from "./interfaces";
+import { VerifyHuman } from "./verify.human";
 
 export class WsMessage {
   DISCORD_GATEWAY =
@@ -44,6 +45,7 @@ export class WsMessage {
 
   private reconnect() {
     //reconnect
+    this.zlibChunks = [];
     this.ws = new WebSocket(this.DISCORD_GATEWAY);
     this.ws.on("open", this.open.bind(this));
   }
@@ -68,8 +70,7 @@ export class WsMessage {
     this.reconnectTime.push(false);
     this.auth();
     this.ws.on("message", this.incomingMessage.bind(this));
-    this.ws.onclose = (event: WebSocket.CloseEvent) => {
-      this.log("close", event);
+    this.ws.onclose = () => {
       this.reconnectTime[num] = true;
       this.reconnect();
     };
@@ -144,10 +145,18 @@ export class WsMessage {
     if (nonce && msg.t === "MESSAGE_CREATE") {
       this.log("waiting start image or info or error");
       this.updateMjEventIdByNonce(id, nonce);
-      if (embeds && embeds.length > 0 && embeds[0].title.includes("Invalid")) {
-        //error
-        const error = new Error(embeds[0].description);
-        this.EventError(id, error);
+      if (embeds && embeds.length > 0) {
+        if (embeds[0].title.includes("continue")) {
+          if (embeds[0].description.includes("verify you're human")) {
+            //verify human
+            this.verifyHuman(message);
+          }
+        }
+        if (embeds[0].title.includes("Invalid")) {
+          //error
+          const error = new Error(embeds[0].description);
+          this.EventError(id, error);
+        }
       }
     }
     //done image
@@ -159,7 +168,7 @@ export class WsMessage {
 
     //processing image
     {
-      this.log("processing image");
+      this.log("processing image", jsonString);
       const index = this.waitMjEvent.findIndex((e) => e.id === id);
       if (index < 0 || !this.waitMjEvent[index]) {
         return;
@@ -177,13 +186,80 @@ export class WsMessage {
       }
       const MJmsg: MJMessage = {
         uri: attachments[0].url,
-        content,
+        content: this.content2prompt(content),
         progress: this.content2progress(content),
       };
       const eventMsg: WsEventMsg = {
         message: MJmsg,
       };
       this.emitImage(<ImageEventType>event.type, eventMsg);
+    }
+  }
+  private async verifyHuman(message: any) {
+    const { HuggingFaceToken } = this.config;
+    if (HuggingFaceToken === "" || !HuggingFaceToken) {
+      this.log("HuggingFaceToken is empty");
+      return;
+    }
+    const { embeds, components } = message;
+    const uri = embeds[0].image.url;
+    const categories = components[0].components;
+    const classify = categories.map((c: any) => c.label);
+    const verifyClient = new VerifyHuman(HuggingFaceToken);
+    const category = await verifyClient.verify(uri, classify);
+    if (category) {
+      const custom_id = categories.find(
+        (c: any) => c.label === category
+      ).custom_id;
+      const httpStatus = await this.verifyHumanApi(custom_id, message.id);
+      this.log("verifyHumanApi", httpStatus, custom_id, message.id);
+      // this.log("verify success", category);
+    }
+  }
+  private async verifyHumanApi(
+    custom_id: string,
+    message_id: string,
+    nonce?: string
+  ) {
+    const payload = {
+      type: 3,
+      nonce,
+      guild_id: this.config.ServerId,
+      channel_id: this.config.ChannelId,
+      message_flags: 64,
+      message_id,
+      application_id: "936929561302675456",
+      session_id: this.config.SessionId,
+      data: {
+        component_type: 2,
+        custom_id,
+      },
+    };
+    return this.interactions(payload);
+  }
+  protected async interactions(
+    payload: any,
+    callback?: (result: number) => void
+  ) {
+    try {
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: this.config.SalaiToken,
+      };
+      const response = await fetch("https://discord.com/api/v9/interactions", {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: headers,
+      });
+      callback && callback(response.status);
+      //discord api rate limit
+      if (response.status >= 400) {
+        this.log("error config", { config: this.config });
+      }
+      return response.status;
+    } catch (error) {
+      console.log(error);
+      callback && callback(500);
     }
   }
   private EventError(id: string, error: Error) {
@@ -206,7 +282,7 @@ export class WsMessage {
       hash: this.uriToHash(attachments[0].url),
       progress: "done",
       uri: attachments[0].url,
-      content,
+      content: this.content2progress(content),
     };
     this.filterMessages(MJmsg);
     return;
@@ -222,7 +298,7 @@ export class WsMessage {
     return progress;
   }
 
-  matchContent(content: string | undefined) {
+  content2prompt(content: string | undefined) {
     if (!content) return "";
     const pattern = /\*\*(.*?)\*\*/; // Match **middle content
     const matches = content.match(pattern);
@@ -237,7 +313,8 @@ export class WsMessage {
   private filterMessages(MJmsg: MJMessage) {
     // this.log("filterMessages", MJmsg, this.waitMjEvent);
     const index = this.waitMjEvent.findIndex(
-      (e) => this.matchContent(e.prompt) === this.matchContent(MJmsg.content)
+      (e) =>
+        this.content2prompt(e.prompt) === this.content2prompt(MJmsg.content)
     );
     if (index < 0) {
       this.log("FilterMessages not found", MJmsg, this.waitMjEvent);
