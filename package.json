@@ -45,6 +45,7 @@
   "dependencies": {
     "@huggingface/inference": "^2.5.0",
     "p-queue": "^6.6.2",
+    "snowyflake": "^2.0.0",
     "throat": "^6.0.2",
     "tslib": "^2.5.0",
     "ws": "^8.13.0"

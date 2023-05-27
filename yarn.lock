@@ -311,6 +311,11 @@ prettier@^2.8.8:
   resolved "https://registry.npmjs.org/prettier/-/prettier-2.8.8.tgz"
   integrity sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==
 
+snowyflake@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/snowyflake/-/snowyflake-2.0.0.tgz#9514fb3540b290b71fec8efb6a737d32c4dc8105"
+  integrity sha512-BxeqV0KJxJASu6EBJGUkX194Zhh37AEa0ow/JRK39icWbLTG9Wl/7LAL6a/ZMSjNm4O9pZk6QoLcWP7f/YKmtA==
+
 source-map-support@^0.5.21:
   version "0.5.21"
   resolved "https://registry.npmjs.org/source-map-support/-/source-map-support-0.5.21.tgz"
