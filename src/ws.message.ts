@@ -282,7 +282,7 @@ export class WsMessage {
       hash: this.uriToHash(attachments[0].url),
       progress: "done",
       uri: attachments[0].url,
-      content,
+      content: this.content2progress(content),
     };
     this.filterMessages(MJmsg);
     return;
