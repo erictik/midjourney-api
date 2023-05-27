@@ -43,6 +43,7 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
+    "@huggingface/inference": "^2.5.0",
     "p-queue": "^6.6.2",
     "throat": "^6.0.2",
     "tslib": "^2.5.0",
