@@ -13,12 +13,12 @@ async function main() {
     ChannelId: <string>process.env.CHANNEL_ID,
     SalaiToken: <string>process.env.SALAI_TOKEN,
     Debug: true,
-    SessionId: process.env.SALAI_TOKEN || "8bb7f5b79c7a49f7d0824ab4b8773a81",
+    Ws: true,
   });
 
   await client.init();
   const msg = await client.Imagine(
-    "A little white elephant --ar1:1",
+    "https://edge-runtime.vercel.app/features/available-apis",
     (uri: string, progress: string) => {
       console.log("loading", uri, "progress", progress);
     }

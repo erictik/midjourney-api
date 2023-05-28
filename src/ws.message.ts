@@ -36,7 +36,7 @@ export class WsMessage {
       ...DefaultMessageConfig,
       ...defaults,
     };
-    this.ws = new WebSocket(this.DISCORD_GATEWAY);
+    this.ws = new WebSocket(this.DISCORD_GATEWAY, {});
     this.ws.on("open", this.open.bind(this));
 
     this.inflate = createInflate({ flush: ZlibConstants.Z_SYNC_FLUSH });
@@ -146,6 +146,13 @@ export class WsMessage {
       this.log("waiting start image or info or error");
       this.updateMjEventIdByNonce(id, nonce);
       if (embeds && embeds.length > 0) {
+        if (embeds[0].color === 16711680) {
+          //error
+          const error = new Error(embeds[0].description);
+          this.EventError(id, error);
+          return;
+        }
+
         if (embeds[0].title.includes("continue")) {
           if (embeds[0].description.includes("verify you're human")) {
             //verify human
@@ -156,6 +163,7 @@ export class WsMessage {
           //error
           const error = new Error(embeds[0].description);
           this.EventError(id, error);
+          return;
         }
       }
     }
