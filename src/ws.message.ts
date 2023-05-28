@@ -151,8 +151,10 @@ export class WsMessage {
           const error = new Error(embeds[0].description);
           this.EventError(id, error);
           return;
+        } else if (embeds[0].color === 16776960) {
+          //warning
+          console.warn(embeds[0].description);
         }
-
         if (embeds[0].title.includes("continue")) {
           if (embeds[0].description.includes("verify you're human")) {
             //verify human
