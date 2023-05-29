@@ -9,7 +9,7 @@ body:
     attributes:
       label: the code that reproduces this issue or a replay of the bug
       description: |
-        public repo  link or  copy code
+        public repo link or copy code
     validations:
       required: true
   - type: textarea
