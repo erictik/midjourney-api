@@ -8,6 +8,8 @@ export interface MessageConfig {
   SessionId: string;
   Ws?: boolean;
   HuggingFaceToken?: string;
+  discord_baseurl?:string;
+  ws_baseurl?:string;
 }
 export interface MessageConfigParam {
   ChannelId: string;
@@ -19,6 +21,8 @@ export interface MessageConfigParam {
   HuggingFaceToken?: string;
   ServerId?: string;
   SessionId?: string;
+  discord_baseurl?:string;
+  ws_baseurl?:string;
 }
 export interface MidjourneyConfig extends MessageConfig {
   ServerId: string;

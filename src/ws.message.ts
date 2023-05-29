@@ -1,5 +1,4 @@
 import WebSocket from "ws";
-import { createInflate, Inflate, constants as ZlibConstants } from "zlib";
 import {
   MessageConfig,
   MessageConfigParam,
@@ -13,12 +12,11 @@ import { VerifyHuman } from "./verify.human";
 
 export class WsMessage {
   DISCORD_GATEWAY =
-    "wss://gateway.discord.gg/?v=9&encoding=json&compress=zlib-stream";
+    "wss://gateway.discord.gg/?v=9&encoding=json&compress=gzip-stream";
   ws: WebSocket;
   MJBotId = "936929561302675456";
   private zlibChunks: Buffer[] = [];
   public config: MessageConfig;
-  private inflate: Inflate;
   private event: Array<{ event: string; callback: (message: any) => void }> =
     [];
   private waitMjEvents: Map<string, WaitMjEvent> = new Map();
@@ -35,11 +33,12 @@ export class WsMessage {
       ...DefaultMessageConfig,
       ...defaults,
     };
+    if(this.config.ws_baseurl){
+      this.DISCORD_GATEWAY.replace("wss://gateway.discord.gg",this.config.ws_baseurl)
+    }
     this.ws = new WebSocket(this.DISCORD_GATEWAY, {});
     this.ws.on("open", this.open.bind(this));
 
-    this.inflate = createInflate({ flush: ZlibConstants.Z_SYNC_FLUSH });
-    this.inflate.on("data", (data) => this.zlibChunks.push(data));
   }
 
   private reconnect() {
@@ -98,13 +97,8 @@ export class WsMessage {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
   private incomingMessage(data: Buffer) {
-    this.inflate.write(data);
-    if (data.length >= 4 && data.readUInt32BE(data.length - 4) === 0x0ffff) {
-      this.inflate.flush(
-        ZlibConstants.Z_SYNC_FLUSH,
-        this.handleFlushComplete.bind(this)
-      );
-    }
+    this.zlibChunks.push(data)
+    this.handleFlushComplete.bind(this)
   }
   private handleFlushComplete() {
     const data =
@@ -267,7 +261,7 @@ export class WsMessage {
         "Content-Type": "application/json",
         Authorization: this.config.SalaiToken,
       };
-      const response = await fetch("https://discord.com/api/v9/interactions", {
+      const response = await fetch(this.config.discord_baseurl?this.config.discord_baseurl:"https://discord.com"+"/api/v9/interactions", {
         method: "POST",
         body: JSON.stringify(payload),
         headers: headers,
