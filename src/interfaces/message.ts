@@ -9,7 +9,6 @@ export interface MJMessage {
 export type LoadingHandler = (uri: string, progress: string) => void;
 
 export interface WaitMjEvent {
-  type: "imagine" | "upscale" | "variation" | "info";
   nonce: string;
   prompt?: string;
   id?: string;
@@ -19,4 +18,3 @@ export interface WsEventMsg {
   error?: Error;
   message?: MJMessage;
 }
-export type ImageEventType = "imagine" | "upscale" | "variation";

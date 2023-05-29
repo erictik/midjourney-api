@@ -8,7 +8,6 @@ import {
   MJMessage,
   LoadingHandler,
   WsEventMsg,
-  ImageEventType,
 } from "./interfaces";
 import { VerifyHuman } from "./verify.human";
 
@@ -22,7 +21,7 @@ export class WsMessage {
   private inflate: Inflate;
   private event: Array<{ event: string; callback: (message: any) => void }> =
     [];
-  private waitMjEvent: Array<WaitMjEvent> = [];
+  private waitMjEvents: Map<string, WaitMjEvent> = new Map();
   private reconnectTime: boolean[] = [];
   private heartbeatInterval = 0;
 
@@ -116,33 +115,11 @@ export class WsMessage {
     this.zlibChunks = [];
     this.parseMessage(data);
   }
-  // parse message from ws
-  private parseMessage(data: Buffer) {
-    var jsonString = data.toString();
-    const msg = JSON.parse(jsonString);
-    if (msg.t === null || msg.t === "READY_SUPPLEMENTAL") return;
-    if (msg.t === "READY") {
-      this.emit("ready", null);
-      return;
-    }
-    if (!(msg.t === "MESSAGE_CREATE" || msg.t === "MESSAGE_UPDATE")) return;
-    const message = msg.d;
-    const {
-      channel_id,
-      content,
-      application_id,
-      embeds,
-      id,
-      nonce,
-      author,
-      attachments,
-    } = message;
-    if (!(author && author.id === this.MJBotId)) return;
-    if (channel_id !== this.config.ChannelId) return;
-    this.log("has message", content, nonce, id);
 
-    //waiting start image or info or error
-    if (nonce && msg.t === "MESSAGE_CREATE") {
+  private async messageCreate(message: any) {
+    // this.log("messageCreate", message);
+    const { application_id, embeds, id, nonce } = message;
+    if (nonce) {
       this.log("waiting start image or info or error");
       this.updateMjEventIdByNonce(id, nonce);
       if (embeds && embeds.length > 0) {
@@ -158,7 +135,8 @@ export class WsMessage {
         if (embeds[0].title.includes("continue")) {
           if (embeds[0].description.includes("verify you're human")) {
             //verify human
-            this.verifyHuman(message);
+            await this.verifyHuman(message);
+            return;
           }
         }
         if (embeds[0].title.includes("Invalid")) {
@@ -170,39 +148,72 @@ export class WsMessage {
       }
     }
     //done image
-    if (msg.t === "MESSAGE_CREATE" && !nonce && !application_id) {
+    if (!nonce && !application_id) {
       this.log("done image");
       this.done(message);
       return;
     }
+    this.processingImage(message);
+  }
+  private messageUpdate(message: any) {
+    this.processingImage(message);
+  }
+  private processingImage(message: any) {
+    const { content, id, nonce, attachments } = message;
+    const event = this.getEventById(id);
+    if (!event) {
+      return;
+    }
+    event.prompt = content;
+    //not image
+    if (!attachments || attachments.length === 0) {
+      // this.log("no image waiting", { id, nonce, content, event });
+      return;
+    }
+    const MJmsg: MJMessage = {
+      uri: attachments[0].url,
+      content: content,
+      progress: this.content2progress(content),
+    };
+    const eventMsg: WsEventMsg = {
+      message: MJmsg,
+    };
+    this.emitImage(event.nonce, eventMsg);
+  }
 
-    //processing image
-    {
-      this.log("processing image", jsonString);
-      const index = this.waitMjEvent.findIndex((e) => e.id === id);
-      if (index < 0 || !this.waitMjEvent[index]) {
-        return;
-      }
-      const event = this.waitMjEvent[index];
-      this.waitMjEvent[index].prompt = content;
-      if (!attachments || attachments.length === 0) {
-        this.log("wait", {
-          id,
-          nonce,
-          content,
-          event,
-        });
-        return;
-      }
-      const MJmsg: MJMessage = {
-        uri: attachments[0].url,
-        content: content,
-        progress: this.content2progress(content),
-      };
-      const eventMsg: WsEventMsg = {
-        message: MJmsg,
-      };
-      this.emitImage(<ImageEventType>event.type, eventMsg);
+  // parse message from ws
+  private parseMessage(data: Buffer) {
+    var jsonString = data.toString();
+    const msg = JSON.parse(jsonString);
+    if (msg.t === null || msg.t === "READY_SUPPLEMENTAL") return;
+    if (msg.t === "READY") {
+      this.emit("ready", null);
+      return;
+    }
+    if (!(msg.t === "MESSAGE_CREATE" || msg.t === "MESSAGE_UPDATE")) return;
+
+    const message = msg.d;
+    const {
+      channel_id,
+      content,
+      application_id,
+      embeds,
+      id,
+      nonce,
+      author,
+      attachments,
+    } = message;
+    if (!(author && author.id === this.MJBotId)) return;
+    if (channel_id !== this.config.ChannelId) return;
+    this.log("has message", content, nonce, id);
+
+    if (msg.t === "MESSAGE_CREATE") {
+      this.messageCreate(message);
+      return;
+    }
+    if (msg.t === "MESSAGE_UPDATE") {
+      this.messageUpdate(message);
+      return;
     }
   }
   private async verifyHuman(message: any) {
@@ -273,16 +284,14 @@ export class WsMessage {
     }
   }
   private EventError(id: string, error: Error) {
-    this.log("EventError", id, error);
-    const index = this.waitMjEvent.findIndex((e) => e.id === id);
-    if (index < 0 || !this.waitMjEvent[index]) {
+    const event = this.getEventById(id);
+    if (!event) {
       return;
     }
-    const event = this.waitMjEvent[index];
     const eventMsg: WsEventMsg = {
       error,
     };
-    this.emit(event.type, eventMsg);
+    this.emit(event.nonce, eventMsg);
   }
 
   private done(message: any) {
@@ -321,31 +330,38 @@ export class WsMessage {
   }
 
   private filterMessages(MJmsg: MJMessage) {
-    // this.log("filterMessages", MJmsg, this.waitMjEvent);
-    const index = this.waitMjEvent.findIndex(
-      (e) =>
-        this.content2prompt(e.prompt) === this.content2prompt(MJmsg.content)
-    );
-    if (index < 0) {
-      this.log("FilterMessages not found", MJmsg, this.waitMjEvent);
-      return;
-    }
-    const event = this.waitMjEvent[index];
+    const event = this.getEventByContent(MJmsg.content);
     if (!event) {
-      this.log("FilterMessages not found", MJmsg, this.waitMjEvent);
+      this.log("FilterMessages not found", MJmsg, this.waitMjEvents);
       return;
     }
     const eventMsg: WsEventMsg = {
       message: MJmsg,
     };
-    this.emitImage(<ImageEventType>event.type, eventMsg);
+    this.emitImage(event.nonce, eventMsg);
+  }
+  private getEventByContent(content: string) {
+    const prompt = this.content2prompt(content);
+    for (const [key, value] of this.waitMjEvents.entries()) {
+      if (prompt === this.content2prompt(value.prompt)) {
+        return value;
+      }
+    }
   }
 
+  private getEventById(id: string) {
+    for (const [key, value] of this.waitMjEvents.entries()) {
+      if (value.id === id) {
+        return value;
+      }
+    }
+  }
   private updateMjEventIdByNonce(id: string, nonce: string) {
-    const index = this.waitMjEvent.findIndex((e) => e.nonce === nonce);
-    if (index < 0) return;
-    this.waitMjEvent[index].id = id;
-    this.log("updateMjEventIdByNonce success", this.waitMjEvent[index]);
+    if (nonce === "" || id === "") return;
+    let event = this.waitMjEvents.get(nonce);
+    if (!event) return;
+    event.id = id;
+    this.log("updateMjEventIdByNonce success", this.waitMjEvents.get(nonce));
   }
   uriToHash(uri: string) {
     return uri.split("_").pop()?.split(".")[0] ?? "";
@@ -390,43 +406,32 @@ export class WsMessage {
     this.remove("info", callback);
   }
   private removeWaitMjEvent(nonce: string) {
-    this.waitMjEvent = this.waitMjEvent.filter((e) => e.nonce !== nonce);
+    this.waitMjEvents.delete(nonce);
   }
 
-  private emitImage(type: ImageEventType, message: WsEventMsg) {
+  private emitImage(type: string, message: WsEventMsg) {
     this.emit(type, message);
   }
-  onceImage(
-    type: ImageEventType,
-    nonce: string,
-    callback: (data: WsEventMsg) => void
-  ) {
+  onceImage(nonce: string, callback: (data: WsEventMsg) => void) {
     const once = (data: WsEventMsg) => {
       const { message, error } = data;
       if (message) {
-        message.content = this.content2prompt(message.content);
+        // message.content = this.content2prompt(message.content);
       }
       if (error || (message && message.progress === "done")) {
-        this.log("onceImage", type, "done", data, error);
-        this.remove(type, once);
+        // this.log("onceImage", type, "done", data, error);
+        this.remove(nonce, once);
         this.removeWaitMjEvent(nonce);
       }
       callback(data);
     };
-    this.waitMjEvent.push({ type, nonce });
-    this.event.push({ event: type, callback: once });
-  }
-  onceImagine(nonce: string, callback: (data: WsEventMsg) => void) {
-    this.onceImage("imagine", nonce, callback);
+    this.waitMjEvents.set(nonce, { nonce });
+    this.event.push({ event: nonce, callback: once });
   }
 
-  async waitMessage(
-    type: ImageEventType,
-    nonce: string,
-    loading?: LoadingHandler
-  ) {
+  async waitMessage(nonce: string, loading?: LoadingHandler) {
     return new Promise<MJMessage | null>((resolve, reject) => {
-      this.onceImage(type, nonce, ({ message, error }) => {
+      this.onceImage(nonce, ({ message, error }) => {
         if (error) {
           reject(error);
           return;
