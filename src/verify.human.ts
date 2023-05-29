@@ -2,19 +2,26 @@ import { HfInference } from "@huggingface/inference";
 export class VerifyHuman {
   private inference: HfInference;
 
-  constructor(accessToken: string) {
-    this.inference = new HfInference(accessToken);
+  constructor(HuggingFaceToken: string) {
+    if (HuggingFaceToken === "") {
+      throw new Error("HuggingFaceToken is required");
+    }
+    this.inference = new HfInference(HuggingFaceToken);
   }
 
   async verify(imageUri: string, categories: string[]) {
-    const xxx = await this.inference.imageClassification({
+    console.log("verify----start", imageUri, categories);
+    const imageCates = await this.inference.imageClassification({
       data: await (await fetch(imageUri)).blob(),
       model: "google/vit-base-patch16-224",
     });
-    const { label, score } = xxx[0];
-    for (const category of categories) {
-      if (label.includes(category) && score > 0.6) {
-        return category;
+    console.log("verify----response", { imageCates });
+    for (const imageCate of imageCates) {
+      const { label } = imageCate;
+      for (const category of categories) {
+        if (label.includes(category)) {
+          return category;
+        }
       }
     }
   }
