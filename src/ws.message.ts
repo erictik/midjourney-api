@@ -1,11 +1,11 @@
-import WebSocket from "ws";
+import WebSocket from "isomorphic-ws";
 import {
+  DefaultMessageConfig,
+  LoadingHandler,
   MessageConfig,
   MessageConfigParam,
-  DefaultMessageConfig,
-  WaitMjEvent,
   MJMessage,
-  LoadingHandler,
+  WaitMjEvent,
   WsEventMsg,
 } from "./interfaces";
 import { VerifyHuman } from "./verify.human";
@@ -33,12 +33,14 @@ export class WsMessage {
       ...DefaultMessageConfig,
       ...defaults,
     };
-    if(this.config.ws_baseurl){
-      this.DISCORD_GATEWAY.replace("wss://gateway.discord.gg",this.config.ws_baseurl)
+    if (this.config.ws_baseurl) {
+      this.DISCORD_GATEWAY = this.DISCORD_GATEWAY.replace(
+        "wss://gateway.discord.gg",
+        this.config.ws_baseurl,
+      );
     }
     this.ws = new WebSocket(this.DISCORD_GATEWAY, {});
     this.ws.on("open", this.open.bind(this));
-
   }
 
   private reconnect() {
@@ -56,11 +58,12 @@ export class WsMessage {
       JSON.stringify({
         op: 1,
         d: this.heartbeatInterval,
-      })
+      }),
     );
     await this.timeout(1000 * 40);
     this.heartbeat(num);
   }
+
   // After opening ws
   private async open() {
     const num = this.reconnectTime.length;
@@ -72,9 +75,11 @@ export class WsMessage {
       this.reconnectTime[num] = true;
       this.reconnect();
     };
-    await this.timeout(1000 * 10);
-    this.heartbeat(num);
+    setTimeout(() => {
+      this.heartbeat(num);
+    }, 1000 * 10);
   }
+
   // auth
   private auth() {
     this.ws.send(
@@ -90,23 +95,15 @@ export class WsMessage {
           },
           compress: false,
         },
-      })
+      }),
     );
   }
+
   async timeout(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
-  private incomingMessage(data: Buffer) {
-    this.zlibChunks.push(data)
-    this.handleFlushComplete.bind(this)
-  }
-  private handleFlushComplete() {
-    const data =
-      this.zlibChunks.length > 1
-        ? Buffer.concat(this.zlibChunks)
-        : this.zlibChunks[0];
 
-    this.zlibChunks = [];
+  private incomingMessage(data: Buffer) {
     this.parseMessage(data);
   }
 
@@ -149,9 +146,11 @@ export class WsMessage {
     }
     this.processingImage(message);
   }
+
   private messageUpdate(message: any) {
     this.processingImage(message);
   }
+
   private processingImage(message: any) {
     const { content, id, nonce, attachments } = message;
     const event = this.getEventById(id);
@@ -185,7 +184,6 @@ export class WsMessage {
       return;
     }
     if (!(msg.t === "MESSAGE_CREATE" || msg.t === "MESSAGE_UPDATE")) return;
-
     const message = msg.d;
     const {
       channel_id,
@@ -198,7 +196,7 @@ export class WsMessage {
       attachments,
     } = message;
     if (!(author && author.id === this.MJBotId)) return;
-    if (channel_id !== this.config.ChannelId) return;
+
     this.log("has message", content, nonce, id);
 
     if (msg.t === "MESSAGE_CREATE") {
@@ -210,6 +208,7 @@ export class WsMessage {
       return;
     }
   }
+
   private async verifyHuman(message: any) {
     const { HuggingFaceToken } = this.config;
     if (HuggingFaceToken === "" || !HuggingFaceToken) {
@@ -224,17 +223,18 @@ export class WsMessage {
     const category = await verifyClient.verify(uri, classify);
     if (category) {
       const custom_id = categories.find(
-        (c: any) => c.label === category
+        (c: any) => c.label === category,
       ).custom_id;
       const httpStatus = await this.verifyHumanApi(custom_id, message.id);
       this.log("verifyHumanApi", httpStatus, custom_id, message.id);
       // this.log("verify success", category);
     }
   }
+
   private async verifyHumanApi(
     custom_id: string,
     message_id: string,
-    nonce?: string
+    nonce?: string,
   ) {
     const payload = {
       type: 3,
@@ -252,20 +252,26 @@ export class WsMessage {
     };
     return this.interactions(payload);
   }
+
   protected async interactions(
     payload: any,
-    callback?: (result: number) => void
+    callback?: (result: number) => void,
   ) {
     try {
       const headers = {
         "Content-Type": "application/json",
         Authorization: this.config.SalaiToken,
       };
-      const response = await fetch(this.config.discord_baseurl?this.config.discord_baseurl:"https://discord.com"+"/api/v9/interactions", {
-        method: "POST",
-        body: JSON.stringify(payload),
-        headers: headers,
-      });
+      const response = await fetch(
+        this.config.discord_baseurl
+          ? this.config.discord_baseurl
+          : "https://discord.com" + "/api/v9/interactions",
+        {
+          method: "POST",
+          body: JSON.stringify(payload),
+          headers: headers,
+        },
+      );
       callback && callback(response.status);
       //discord api rate limit
       if (response.status >= 400) {
@@ -277,6 +283,7 @@ export class WsMessage {
       callback && callback(500);
     }
   }
+
   private EventError(id: string, error: Error) {
     const event = this.getEventById(id);
     if (!event) {
@@ -334,6 +341,7 @@ export class WsMessage {
     };
     this.emitImage(event.nonce, eventMsg);
   }
+
   private getEventByContent(content: string) {
     const prompt = this.content2prompt(content);
     for (const [key, value] of this.waitMjEvents.entries()) {
@@ -350,6 +358,7 @@ export class WsMessage {
       }
     }
   }
+
   private updateMjEventIdByNonce(id: string, nonce: string) {
     if (nonce === "" || id === "") return;
     let event = this.waitMjEvents.get(nonce);
@@ -357,6 +366,7 @@ export class WsMessage {
     event.id = id;
     this.log("updateMjEventIdByNonce success", this.waitMjEvents.get(nonce));
   }
+
   uriToHash(uri: string) {
     return uri.split("_").pop()?.split(".")[0] ?? "";
   }
@@ -374,6 +384,7 @@ export class WsMessage {
   on(event: string, callback: (message: any) => void) {
     this.event.push({ event, callback });
   }
+
   once(event: string, callback: (message: any) => void) {
     const once = (message: any) => {
       this.remove(event, once);
@@ -381,14 +392,17 @@ export class WsMessage {
     };
     this.event.push({ event, callback: once });
   }
+
   remove(event: string, callback: (message: any) => void) {
     this.event = this.event.filter(
-      (e) => e.event !== event && e.callback !== callback
+      (e) => e.event !== event && e.callback !== callback,
     );
   }
+
   removeEvent(event: string) {
     this.event = this.event.filter((e) => e.event !== event);
   }
+
   onceInfo(callback: (message: any) => void) {
     const once = (message: any) => {
       this.remove("info", once);
@@ -396,9 +410,11 @@ export class WsMessage {
     };
     this.event.push({ event: "info", callback: once });
   }
+
   removeInfo(callback: (message: any) => void) {
     this.remove("info", callback);
   }
+
   private removeWaitMjEvent(nonce: string) {
     this.waitMjEvents.delete(nonce);
   }
@@ -406,6 +422,7 @@ export class WsMessage {
   private emitImage(type: string, message: WsEventMsg) {
     this.emit(type, message);
   }
+
   onceImage(nonce: string, callback: (data: WsEventMsg) => void) {
     const once = (data: WsEventMsg) => {
       const { message, error } = data;
