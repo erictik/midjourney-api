@@ -3,8 +3,33 @@ name: Bug report
 about: Create a report to help us improve
 title: ''
 labels: bug
-assignees: ''
-
+body:
+- type: textarea
+  id: code
+  attributes:
+    label: the code that reproduces this issue or a replay of the bug
+    description: |
+       public repo  link or  copy code
+  validations:
+    required: true
+- type: textarea
+  id: Describe
+  attributes:
+    label: Describe the bug
+    description: "How do you trigger this bug? Please walk us through it step by step."
+    value: |
+      1.
+      2.
+      3.
+      ...
+  validations:
+    required: true
+- type: textarea
+  id: log
+  attributes:
+    label: error log
+  validations:
+    required: true
 ---
 
 **Describe the bug**
