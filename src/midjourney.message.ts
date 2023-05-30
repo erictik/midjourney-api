@@ -151,7 +151,7 @@ export class MidjourneyMessage {
   async RetrieveMessages(limit = this.config.Limit) {
     const headers = { authorization: this.config.SalaiToken };
     const response = await fetch(
-        (this.config.discord_baseurl?this.config.discord_baseurl:"https://discord.com")+`/api/v10/channels/${this.config.ChannelId}/messages?limit=${limit}`,
+        this.config.DiscordBaseUrl+`/api/v10/channels/${this.config.ChannelId}/messages?limit=${limit}`,
       {
         headers: headers,
       }

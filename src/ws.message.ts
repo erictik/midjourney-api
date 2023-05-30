@@ -33,11 +33,8 @@ export class WsMessage {
       ...DefaultMessageConfig,
       ...defaults,
     };
-    if (this.config.ws_baseurl) {
-      this.DISCORD_GATEWAY = this.DISCORD_GATEWAY.replace(
-        "wss://gateway.discord.gg",
-        this.config.ws_baseurl,
-      );
+    if(this.config.WsBaseUrl){
+      this.DISCORD_GATEWAY=this.DISCORD_GATEWAY.replace('wss://gateway.discord.gg',this.config.WsBaseUrl)
     }
     this.ws = new WebSocket(this.DISCORD_GATEWAY, {});
     this.ws.on("open", this.open.bind(this));
@@ -196,6 +193,7 @@ export class WsMessage {
       attachments,
     } = message;
     if (!(author && author.id === this.MJBotId)) return;
+    if (channel_id !== this.config.ChannelId) return;
 
     this.log("has message", content, nonce, id);
 
@@ -263,9 +261,7 @@ export class WsMessage {
         Authorization: this.config.SalaiToken,
       };
       const response = await fetch(
-        this.config.discord_baseurl
-          ? this.config.discord_baseurl
-          : "https://discord.com" + "/api/v9/interactions",
+        this.config.DiscordBaseUrl + "/api/v9/interactions",
         {
           method: "POST",
           body: JSON.stringify(payload),
