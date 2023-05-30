@@ -11,8 +11,6 @@ import {
 import { VerifyHuman } from "./verify.human";
 
 export class WsMessage {
-  DISCORD_GATEWAY =
-    "wss://gateway.discord.gg/?v=9&encoding=json&compress=gzip-stream";
   ws: WebSocket;
   MJBotId = "936929561302675456";
   private zlibChunks: Buffer[] = [];
@@ -22,6 +20,7 @@ export class WsMessage {
   private waitMjEvents: Map<string, WaitMjEvent> = new Map();
   private reconnectTime: boolean[] = [];
   private heartbeatInterval = 0;
+  private DISCORD_GATEWAY: string;
 
   constructor(defaults: MessageConfigParam) {
     const { ChannelId, SalaiToken } = defaults;
@@ -33,9 +32,7 @@ export class WsMessage {
       ...DefaultMessageConfig,
       ...defaults,
     };
-    if(this.config.WsBaseUrl){
-      this.DISCORD_GATEWAY=this.DISCORD_GATEWAY.replace('wss://gateway.discord.gg',this.config.WsBaseUrl)
-    }
+    this.DISCORD_GATEWAY=`${this.config.WsBaseUrl}/?v=9&encoding=json&compress=gzip-stream`
     this.ws = new WebSocket(this.DISCORD_GATEWAY, {});
     this.ws.on("open", this.open.bind(this));
   }
@@ -251,9 +248,7 @@ export class WsMessage {
         "Content-Type": "application/json",
         Authorization: this.config.SalaiToken,
       };
-      const response = await fetch(
-        this.config.DiscordBaseUrl + "/api/v9/interactions",
-        {
+      const response = await fetch(`${this.config.DiscordBaseUrl}/api/v9/interactions`,{
           method: "POST",
           body: JSON.stringify(payload),
           headers: headers,
