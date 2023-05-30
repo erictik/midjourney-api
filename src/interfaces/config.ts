@@ -8,6 +8,8 @@ export interface MessageConfig {
   SessionId: string;
   Ws?: boolean;
   HuggingFaceToken?: string;
+  DiscordBaseUrl?: string;
+  WsBaseUrl?: string;
 }
 export interface MessageConfigParam {
   ChannelId: string;
@@ -19,6 +21,8 @@ export interface MessageConfigParam {
   HuggingFaceToken?: string;
   ServerId?: string;
   SessionId?: string;
+  DiscordBaseUrl?: string;
+  WsBaseUrl?: string;
 }
 export interface MidjourneyConfig extends MessageConfig {
   ServerId: string;
@@ -37,6 +41,8 @@ export const DefaultMessageConfig: MessageConfig = {
   Debug: false,
   Limit: 50,
   MaxWait: 100,
+  DiscordBaseUrl: "https://discord.com",
+  WsBaseUrl: "wss://gateway.discord.gg"
 };
 export const DefaultMidjourneyConfig: MidjourneyConfig = {
   ...DefaultMessageConfig,

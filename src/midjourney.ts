@@ -76,7 +76,7 @@ export class Midjourney extends MidjourneyMessage {
         "Content-Type": "application/json",
         Authorization: this.config.SalaiToken,
       };
-      const response = await fetch("https://discord.com/api/v9/interactions", {
+      const response = await fetch(`${this.config.DiscordBaseUrl}/api/v9/interactions`, {
         method: "POST",
         body: JSON.stringify(payload),
         headers: headers,

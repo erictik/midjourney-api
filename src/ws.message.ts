@@ -1,5 +1,4 @@
-import WebSocket from "ws";
-import { createInflate, Inflate, constants as ZlibConstants } from "zlib";
+import WebSocket from "isomorphic-ws";
 import {
   MessageConfig,
   MessageConfigParam,
@@ -12,18 +11,16 @@ import {
 import { VerifyHuman } from "./verify.human";
 
 export class WsMessage {
-  DISCORD_GATEWAY =
-    "wss://gateway.discord.gg/?v=9&encoding=json&compress=zlib-stream";
   ws: WebSocket;
   MJBotId = "936929561302675456";
   private zlibChunks: Buffer[] = [];
   public config: MessageConfig;
-  private inflate: Inflate;
   private event: Array<{ event: string; callback: (message: any) => void }> =
     [];
   private waitMjEvents: Map<string, WaitMjEvent> = new Map();
   private reconnectTime: boolean[] = [];
   private heartbeatInterval = 0;
+  private DISCORD_GATEWAY: string;
 
   constructor(defaults: MessageConfigParam) {
     const { ChannelId, SalaiToken } = defaults;
@@ -35,11 +32,9 @@ export class WsMessage {
       ...DefaultMessageConfig,
       ...defaults,
     };
+    this.DISCORD_GATEWAY=`${this.config.WsBaseUrl}/?v=9&encoding=json&compress=gzip-stream`
     this.ws = new WebSocket(this.DISCORD_GATEWAY, {});
     this.ws.on("open", this.open.bind(this));
-
-    this.inflate = createInflate({ flush: ZlibConstants.Z_SYNC_FLUSH });
-    this.inflate.on("data", (data) => this.zlibChunks.push(data));
   }
 
   private reconnect() {
@@ -73,8 +68,9 @@ export class WsMessage {
       this.reconnectTime[num] = true;
       this.reconnect();
     };
-    await this.timeout(1000 * 10);
-    this.heartbeat(num);
+    setTimeout(() => {
+      this.heartbeat(num);
+    }, 1000 * 10);
   }
   // auth
   private auth() {
@@ -98,21 +94,6 @@ export class WsMessage {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
   private incomingMessage(data: Buffer) {
-    this.inflate.write(data);
-    if (data.length >= 4 && data.readUInt32BE(data.length - 4) === 0x0ffff) {
-      this.inflate.flush(
-        ZlibConstants.Z_SYNC_FLUSH,
-        this.handleFlushComplete.bind(this)
-      );
-    }
-  }
-  private handleFlushComplete() {
-    const data =
-      this.zlibChunks.length > 1
-        ? Buffer.concat(this.zlibChunks)
-        : this.zlibChunks[0];
-
-    this.zlibChunks = [];
     this.parseMessage(data);
   }
 
@@ -267,11 +248,12 @@ export class WsMessage {
         "Content-Type": "application/json",
         Authorization: this.config.SalaiToken,
       };
-      const response = await fetch("https://discord.com/api/v9/interactions", {
-        method: "POST",
-        body: JSON.stringify(payload),
-        headers: headers,
-      });
+      const response = await fetch(`${this.config.DiscordBaseUrl}/api/v9/interactions`,{
+          method: "POST",
+          body: JSON.stringify(payload),
+          headers: headers,
+        },
+      );
       callback && callback(response.status);
       //discord api rate limit
       if (response.status >= 400) {
