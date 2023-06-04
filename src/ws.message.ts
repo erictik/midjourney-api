@@ -63,10 +63,10 @@ export class WsMessage {
     this.ws.addEventListener("message", (event) => {
       this.parseMessage(event.data as string);
     });
-    this.ws.onclose = () => {
+    this.ws.addEventListener("error", (event) => {
       this.reconnectTime[num] = true;
       this.reconnect();
-    };
+    });
     setTimeout(() => {
       this.heartbeat(num);
     }, 1000 * 10);
