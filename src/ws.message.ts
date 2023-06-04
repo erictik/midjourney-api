@@ -9,7 +9,12 @@ import {
 } from "./interfaces";
 import { VerifyHuman } from "./verify.human";
 import { WebsocketBuilder, Websocket } from "websocket-ts";
-import WebSocket from "isomorphic-ws";
+if (typeof global !== "undefined") {
+  // @ts-ignore
+  console.log("global.WebSocket======start");
+  const WebSocket = require("isomorphic-ws");
+  (global as any).WebSocket = WebSocket;
+}
 
 export class WsMessage {
   ws: Websocket;
@@ -33,10 +38,6 @@ export class WsMessage {
       ...defaults,
     };
     this.DISCORD_GATEWAY = `${this.config.WsBaseUrl}/?v=9&encoding=json&compress=gzip-stream`;
-    if (typeof global !== "undefined") {
-      // @ts-ignore
-      (global as any).WebSocket = WebSocket;
-    }
     this.ws = new WebsocketBuilder(this.DISCORD_GATEWAY)
       .onOpen((i, e) => {
         console.log("opened");
