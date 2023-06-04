@@ -1,3 +1,4 @@
+import { request } from "http";
 import {
   MessageConfig,
   MessageConfigParam,
@@ -8,16 +9,10 @@ import {
   WsEventMsg,
 } from "./interfaces";
 import { VerifyHuman } from "./verify.human";
-import { WebsocketBuilder, Websocket } from "websocket-ts";
-if (typeof global !== "undefined") {
-  // @ts-ignore
-  console.log("global.WebSocket======start");
-  const WebSocket = require("isomorphic-ws");
-  (global as any).WebSocket = WebSocket;
-}
+import WebSocket from "isomorphic-ws";
 
 export class WsMessage {
-  ws: Websocket;
+  ws: WebSocket;
   MJBotId = "936929561302675456";
   public config: MessageConfig;
   private event: Array<{ event: string; callback: (message: any) => void }> =
@@ -38,25 +33,8 @@ export class WsMessage {
       ...defaults,
     };
     this.DISCORD_GATEWAY = `${this.config.WsBaseUrl}/?v=9&encoding=json&compress=gzip-stream`;
-    this.ws = new WebsocketBuilder(this.DISCORD_GATEWAY)
-      .onOpen((i, e) => {
-        console.log("opened");
-        this.open();
-      })
-      .onClose((i, ev) => {
-        console.log("closed");
-      })
-      .onError((i, ev) => {
-        console.log("error");
-      })
-      .onMessage((i, e) => {
-        this.parseMessage(e.data);
-      })
-      .onRetry((i, ev) => {
-        console.log("retry");
-        this.auth();
-      })
-      .build();
+    this.ws = new WebSocket(this.DISCORD_GATEWAY);
+    this.ws.addEventListener("open", this.open.bind(this));
   }
 
   private async heartbeat(num: number) {
@@ -71,17 +49,22 @@ export class WsMessage {
     await this.timeout(1000 * 40);
     this.heartbeat(num);
   }
+  private reconnect() {
+    //reconnect
+    this.ws = new WebSocket(this.DISCORD_GATEWAY);
+    this.ws.addEventListener("open", this.open.bind(this));
+  }
   // After opening ws
   private async open() {
     const num = this.reconnectTime.length;
-    // this.log("open", num);
-    // this.reconnectTime.push(false);
+    this.log("open", num);
+    this.reconnectTime.push(false);
     this.auth();
-    // this.ws.on("message", this.incomingMessage.bind(this));
-    // this.ws.onclose = () => {
-    //   this.reconnectTime[num] = true;
-    //   this.reconnect();
-    // };
+    this.ws.addListener("message", this.parseMessage.bind(this));
+    this.ws.onclose = () => {
+      this.reconnectTime[num] = true;
+      this.reconnect();
+    };
     setTimeout(() => {
       this.heartbeat(num);
     }, 1000 * 10);
