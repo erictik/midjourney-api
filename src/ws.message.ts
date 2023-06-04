@@ -1,3 +1,4 @@
+import { request } from "http";
 import {
   MessageConfig,
   MessageConfigParam,
@@ -9,10 +10,8 @@ import {
 } from "./interfaces";
 import { VerifyHuman } from "./verify.human";
 import { WebsocketBuilder, Websocket } from "websocket-ts";
+import WebSocket from "isomorphic-ws";
 if (typeof global !== "undefined") {
-  // @ts-ignore
-  console.log("global.WebSocket======start");
-  const WebSocket = require("isomorphic-ws");
   (global as any).WebSocket = WebSocket;
 }
 
