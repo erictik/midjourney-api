@@ -52,7 +52,7 @@ export class WsMessage {
   private reconnect() {
     //reconnect
     this.ws = new WebSocket(this.DISCORD_GATEWAY);
-    this.ws.on("open", this.open.bind(this));
+    this.ws.addEventListener("open", this.open.bind(this));
   }
   // After opening ws
   private async open() {
@@ -60,7 +60,9 @@ export class WsMessage {
     this.log("open", num);
     this.reconnectTime.push(false);
     this.auth();
-    this.ws.on("message", this.parseMessage.bind(this));
+    this.ws.addEventListener("message", (event) => {
+      this.parseMessage(event.data as string);
+    });
     this.ws.onclose = () => {
       this.reconnectTime[num] = true;
       this.reconnect();
