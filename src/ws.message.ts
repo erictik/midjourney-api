@@ -1,4 +1,3 @@
-import WebSocket from "isomorphic-ws";
 import {
   MessageConfig,
   MessageConfigParam,
@@ -9,11 +8,12 @@ import {
   WsEventMsg,
 } from "./interfaces";
 import { VerifyHuman } from "./verify.human";
+import { WebsocketBuilder, Websocket } from "websocket-ts";
+import WebSocket from "ws";
 
 export class WsMessage {
-  ws: WebSocket;
+  ws: Websocket;
   MJBotId = "936929561302675456";
-  private zlibChunks: Buffer[] = [];
   public config: MessageConfig;
   private event: Array<{ event: string; callback: (message: any) => void }> =
     [];
@@ -32,21 +32,34 @@ export class WsMessage {
       ...DefaultMessageConfig,
       ...defaults,
     };
-    this.DISCORD_GATEWAY=`${this.config.WsBaseUrl}/?v=9&encoding=json&compress=gzip-stream`
-    this.ws = new WebSocket(this.DISCORD_GATEWAY, {});
-    this.ws.on("open", this.open.bind(this));
-  }
-
-  private reconnect() {
-    //reconnect
-    this.zlibChunks = [];
-    this.ws = new WebSocket(this.DISCORD_GATEWAY);
-    this.ws.on("open", this.open.bind(this));
+    this.DISCORD_GATEWAY = `${this.config.WsBaseUrl}/?v=9&encoding=json&compress=gzip-stream`;
+    if (typeof global !== "undefined") {
+      // @ts-ignore
+      (global as any).WebSocket = WebSocket;
+    }
+    this.ws = new WebsocketBuilder(this.DISCORD_GATEWAY)
+      .onOpen((i, e) => {
+        console.log("opened");
+        this.open();
+      })
+      .onClose((i, ev) => {
+        console.log("closed");
+      })
+      .onError((i, ev) => {
+        console.log("error");
+      })
+      .onMessage((i, e) => {
+        this.parseMessage(e.data);
+      })
+      .onRetry((i, ev) => {
+        console.log("retry");
+        this.auth();
+      })
+      .build();
   }
 
   private async heartbeat(num: number) {
     if (this.reconnectTime[num]) return;
-    if (this.ws.readyState !== WebSocket.OPEN) return;
     this.heartbeatInterval++;
     this.ws.send(
       JSON.stringify({
@@ -60,14 +73,14 @@ export class WsMessage {
   // After opening ws
   private async open() {
     const num = this.reconnectTime.length;
-    this.log("open", num);
-    this.reconnectTime.push(false);
+    // this.log("open", num);
+    // this.reconnectTime.push(false);
     this.auth();
-    this.ws.on("message", this.incomingMessage.bind(this));
-    this.ws.onclose = () => {
-      this.reconnectTime[num] = true;
-      this.reconnect();
-    };
+    // this.ws.on("message", this.incomingMessage.bind(this));
+    // this.ws.onclose = () => {
+    //   this.reconnectTime[num] = true;
+    //   this.reconnect();
+    // };
     setTimeout(() => {
       this.heartbeat(num);
     }, 1000 * 10);
@@ -93,10 +106,6 @@ export class WsMessage {
   async timeout(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
-  private incomingMessage(data: Buffer) {
-    this.parseMessage(data);
-  }
-
   private async messageCreate(message: any) {
     // this.log("messageCreate", message);
     const { application_id, embeds, id, nonce } = message;
@@ -163,9 +172,9 @@ export class WsMessage {
   }
 
   // parse message from ws
-  private parseMessage(data: Buffer) {
-    var jsonString = data.toString();
-    const msg = JSON.parse(jsonString);
+  private parseMessage(data: string) {
+    const msg = JSON.parse(data);
+    // this.log("parseMessage333", msg.t, msg.d);
     if (msg.t === null || msg.t === "READY_SUPPLEMENTAL") return;
     if (msg.t === "READY") {
       this.emit("ready", null);
@@ -174,16 +183,7 @@ export class WsMessage {
     if (!(msg.t === "MESSAGE_CREATE" || msg.t === "MESSAGE_UPDATE")) return;
 
     const message = msg.d;
-    const {
-      channel_id,
-      content,
-      application_id,
-      embeds,
-      id,
-      nonce,
-      author,
-      attachments,
-    } = message;
+    const { channel_id, content, id, nonce, author } = message;
     if (!(author && author.id === this.MJBotId)) return;
     if (channel_id !== this.config.ChannelId) return;
     this.log("has message", content, nonce, id);
@@ -248,11 +248,13 @@ export class WsMessage {
         "Content-Type": "application/json",
         Authorization: this.config.SalaiToken,
       };
-      const response = await fetch(`${this.config.DiscordBaseUrl}/api/v9/interactions`,{
+      const response = await fetch(
+        `${this.config.DiscordBaseUrl}/api/v9/interactions`,
+        {
           method: "POST",
           body: JSON.stringify(payload),
           headers: headers,
-        },
+        }
       );
       callback && callback(response.status);
       //discord api rate limit

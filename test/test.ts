@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { Midjourney } from "../src";
+import { Midjourney, WsMessage } from "../src";
 import { nextNonce } from "../src/utls";
 /**
  *
@@ -12,5 +12,11 @@ import { nextNonce } from "../src/utls";
 function test2() {
   console.log(nextNonce());
   console.log(nextNonce());
+
+  new WsMessage({
+    ChannelId: <string>process.env.CHANNEL_ID,
+    SalaiToken: <string>process.env.SALAI_TOKEN,
+    Debug: true,
+  });
 }
 test2();
