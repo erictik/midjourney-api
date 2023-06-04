@@ -9,7 +9,7 @@ import {
 } from "./interfaces";
 import { VerifyHuman } from "./verify.human";
 import { WebsocketBuilder, Websocket } from "websocket-ts";
-import WebSocket from "ws";
+import WebSocket from "isomorphic-ws";
 
 export class WsMessage {
   ws: Websocket;
