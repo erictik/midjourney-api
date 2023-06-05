@@ -67,8 +67,8 @@ npm install
    [How to get your Discord SALAI_TOKEN:](https://www.androidauthority.com/get-discord-token-3149920/)
 
 ```bash
-export SERVER_ID="108250087147832934"
-export CHANNEL_ID="109489299228171884"
+export SERVER_ID="1082500871478329374"
+export CHANNEL_ID="1094892992281718894"
 export SALAI_TOKEN="your-salai-token"
 ```
 
