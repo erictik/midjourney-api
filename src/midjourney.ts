@@ -24,6 +24,9 @@ export class Midjourney extends MidjourneyMessage {
     };
   }
   async init() {
+    if (!this.config.Ws) {
+      return this;
+    }
     if (this.wsClient) return this;
     return new Promise<Midjourney>((resolve) => {
       this.wsClient = new WsMessage(this.config);
@@ -76,11 +79,14 @@ export class Midjourney extends MidjourneyMessage {
         "Content-Type": "application/json",
         Authorization: this.config.SalaiToken,
       };
-      const response = await fetch(`${this.config.DiscordBaseUrl}/api/v9/interactions`, {
-        method: "POST",
-        body: JSON.stringify(payload),
-        headers: headers,
-      });
+      const response = await fetch(
+        `${this.config.DiscordBaseUrl}/api/v9/interactions`,
+        {
+          method: "POST",
+          body: JSON.stringify(payload),
+          headers: headers,
+        }
+      );
       callback && callback(response.status);
       //discord api rate limit
       await sleep(950);
