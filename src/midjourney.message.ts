@@ -1,25 +1,24 @@
 import {
-  DefaultMessageConfig,
+  DefaultMJConfig,
   LoadingHandler,
   MJMessage,
-  MessageConfig,
-  MessageConfigParam,
-  MidjourneyConfig,
+  MJConfig,
+  MJConfigParam,
 } from "./interfaces";
 import { CreateQueue } from "./queue";
 import { sleep } from "./utls";
 
 export class MidjourneyMessage {
   private magApiQueue = CreateQueue(1);
-  public config: MessageConfig;
-  constructor(defaults: MessageConfigParam) {
-    const { ChannelId, SalaiToken } = defaults;
-    if (!ChannelId || !SalaiToken) {
-      throw new Error("ChannelId and SalaiToken are required");
+  public config: MJConfig;
+  constructor(defaults: MJConfigParam) {
+    const { SalaiToken } = defaults;
+    if (!SalaiToken) {
+      throw new Error("SalaiToken are required");
     }
 
     this.config = {
-      ...DefaultMessageConfig,
+      ...DefaultMJConfig,
       ...defaults,
     };
   }
@@ -151,7 +150,7 @@ export class MidjourneyMessage {
   async RetrieveMessages(limit = this.config.Limit) {
     const headers = { authorization: this.config.SalaiToken };
     const response = await fetch(
-        `${this.config.DiscordBaseUrl}/api/v10/channels/${this.config.ChannelId}/messages?limit=${limit}`,
+      `${this.config.DiscordBaseUrl}/api/v10/channels/${this.config.ChannelId}/messages?limit=${limit}`,
       {
         headers: headers,
       }
