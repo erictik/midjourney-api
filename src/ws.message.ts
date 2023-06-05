@@ -1,12 +1,11 @@
 import {
   MJConfig,
-  MJConfigParam,
-  DefaultMJConfig,
   WaitMjEvent,
   MJMessage,
   LoadingHandler,
   WsEventMsg,
 } from "./interfaces";
+
 import { MidjourneyApi } from "./midjourne.api";
 import { VerifyHuman } from "./verify.human";
 import WebSocket from "isomorphic-ws";
@@ -116,13 +115,25 @@ export class WsMessage {
       this.done(message);
       return;
     }
-    this.processingImage(message);
+    this.messageUpdate(message);
   }
   private messageUpdate(message: any) {
+    const { content, embeds, id } = message;
+    if (content === "") {
+      if (embeds && embeds.length > 0 && embeds[0].color === 0) {
+        this.log(embeds[0].title, embeds[0].description);
+        //maybe info
+        if (embeds[0].title.includes("info")) {
+          this.emit("info", embeds[0].description);
+          return;
+        }
+      }
+      return;
+    }
     this.processingImage(message);
   }
   private processingImage(message: any) {
-    const { content, id, nonce, attachments } = message;
+    const { content, id, attachments } = message;
     const event = this.getEventById(id);
     if (!event) {
       return;
@@ -130,7 +141,6 @@ export class WsMessage {
     event.prompt = content;
     //not image
     if (!attachments || attachments.length === 0) {
-      // this.log("no image waiting", { id, nonce, content, event });
       return;
     }
     const MJmsg: MJMessage = {
@@ -157,7 +167,7 @@ export class WsMessage {
     const { channel_id, content, id, nonce, author } = message;
     if (!(author && author.id === this.MJBotId)) return;
     if (channel_id !== this.config.ChannelId) return;
-    this.log("has message", content, nonce, id);
+    this.log("has message", msg.t, content, nonce, id);
 
     if (msg.t === "MESSAGE_CREATE") {
       this.messageCreate(message);
@@ -231,7 +241,7 @@ export class WsMessage {
       return matches[1]; // Get the matched content
     } else {
       this.log("No match found.", content);
-      return "";
+      return content;
     }
   }
 
@@ -328,7 +338,7 @@ export class WsMessage {
     this.waitMjEvents.set(nonce, { nonce });
     this.event.push({ event: nonce, callback: once });
   }
-  async waitMessage(nonce: string, loading?: LoadingHandler) {
+  async waitImageMessage(nonce: string, loading?: LoadingHandler) {
     return new Promise<MJMessage | null>((resolve, reject) => {
       this.onceImage(nonce, ({ message, error }) => {
         if (error) {
@@ -342,5 +352,65 @@ export class WsMessage {
         message && loading && loading(message.uri, message.progress || "");
       });
     });
+  }
+
+  async waitInfo() {
+    return new Promise<any | null>((resolve, reject) => {
+      this.onceInfo((message) => {
+        resolve(this.msg2Image(message));
+      });
+    });
+  }
+  msg2Image(msg: string) {
+    const jsonResult = {
+      subscription: "",
+      jobMode: "",
+      visibilityMode: "",
+      fastTimeRemaining: "",
+      lifetimeUsage: "",
+      relaxedUsage: "",
+      queuedJobsFast: "",
+      queuedJobsRelax: "",
+      runningJobs: "",
+    };
+    msg.split("\n").forEach(function (line) {
+      const colonIndex = line.indexOf(":");
+      if (colonIndex > -1) {
+        const key = line.substring(0, colonIndex).trim().replaceAll("**", "");
+        const value = line.substring(colonIndex + 1).trim();
+        switch (key) {
+          case "Subscription":
+            jsonResult.subscription = value;
+            break;
+          case "Job Mode":
+            jsonResult.jobMode = value;
+            break;
+          case "Visibility Mode":
+            jsonResult.visibilityMode = value;
+            break;
+          case "Fast Time Remaining":
+            jsonResult.fastTimeRemaining = value;
+            break;
+          case "Lifetime Usage":
+            jsonResult.lifetimeUsage = value;
+            break;
+          case "Relaxed Usage":
+            jsonResult.relaxedUsage = value;
+            break;
+          case "Queued Jobs (fast)":
+            jsonResult.queuedJobsFast = value;
+            break;
+          case "Queued Jobs (relax)":
+            jsonResult.queuedJobsRelax = value;
+            break;
+          case "Running Jobs":
+            jsonResult.runningJobs = value;
+            break;
+          default:
+          // Do nothing
+        }
+      }
+    });
+    return jsonResult;
   }
 }

@@ -49,12 +49,23 @@ export class Midjourney extends MidjourneyMessage {
       throw new Error(`ImagineApi failed with status ${httpStatus}`);
     }
     if (this.wsClient) {
-      return await this.wsClient.waitMessage(nonce, loading);
+      return await this.wsClient.waitImageMessage(nonce, loading);
     } else {
       this.log(`await generate image`);
       const msg = await this.WaitMessage(prompt, loading);
       this.log(`image generated`, prompt, msg?.uri);
       return msg;
+    }
+  }
+
+  async Info() {
+    const nonce = nextNonce();
+    const httpStatus = await this.MJApi.InfoApi(nonce);
+    if (httpStatus !== 204) {
+      throw new Error(`ImagineApi failed with status ${httpStatus}`);
+    }
+    if (this.wsClient) {
+      return this.wsClient.waitInfo();
     }
   }
 
@@ -80,7 +91,7 @@ export class Midjourney extends MidjourneyMessage {
       throw new Error(`VariationApi failed with status ${httpStatus}`);
     }
     if (this.wsClient) {
-      return await this.wsClient.waitMessage(nonce, loading);
+      return await this.wsClient.waitImageMessage(nonce, loading);
     } else {
       return await this.WaitOptionMessage(content, `Variations`, loading);
     }
@@ -109,7 +120,7 @@ export class Midjourney extends MidjourneyMessage {
     }
     this.log(`await generate image`);
     if (this.wsClient) {
-      return await this.wsClient.waitMessage(nonce, loading);
+      return await this.wsClient.waitImageMessage(nonce, loading);
     }
     return await this.WaitUpscaledMessage(content, index, loading);
   }
