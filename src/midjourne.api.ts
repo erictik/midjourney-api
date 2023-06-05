@@ -154,4 +154,101 @@ export class MidjourneyApi {
     };
     return this.safeIteractions(payload);
   }
+  async InfoApi(nonce?: string) {
+    const guild_id = this.config.ServerId;
+    const payload = {
+      type: 2,
+      application_id: "936929561302675456",
+      guild_id,
+      channel_id: this.config.ChannelId,
+      session_id: "b8365bc80a004e656afbd4e48113509f",
+      data: {
+        version: "987795925764280356",
+        id: "972289487818334209",
+        name: "info",
+        type: 1,
+        options: [],
+        application_command: {
+          id: "972289487818334209",
+          application_id: "936929561302675456",
+          version: "987795925764280356",
+          default_member_permissions: null,
+          type: 1,
+          nsfw: false,
+          name: "info",
+          description: "View information about your profile.",
+          dm_permission: true,
+          contexts: null,
+        },
+        attachments: [],
+      },
+      nonce,
+    };
+    return this.safeIteractions(payload);
+  }
+  async FastApi(nonce?: string) {
+    const guild_id = this.config.ServerId;
+    const payload = {
+      type: 2,
+      application_id: "936929561302675456",
+      guild_id,
+      channel_id: this.config.ChannelId,
+      session_id: "b8365bc80a004e656afbd4e48113509f",
+      data: {
+        version: "987795926183731231",
+        id: "972289487818334212",
+        name: "fast",
+        type: 1,
+        options: [],
+        application_command: {
+          id: "972289487818334212",
+          application_id: "936929561302675456",
+          version: "987795926183731231",
+          default_member_permissions: null,
+          type: 1,
+          nsfw: false,
+          name: "fast",
+          description: "Switch to fast mode",
+          dm_permission: true,
+          contexts: null,
+        },
+        attachments: [],
+      },
+      nonce,
+    };
+    return this.safeIteractions(payload);
+  }
+  async RelaxApi(nonce?: string) {
+    const guild_id = this.config.ServerId;
+    const channel_id = this.config.ChannelId;
+    const payload = {
+      type: 2,
+      application_id: "936929561302675456",
+      guild_id,
+      channel_id,
+      session_id: "b8365bc80a004e656afbd4e48113509f",
+      data: {
+        version: "987795926183731232",
+        id: "972289487818334213",
+        name: "relax",
+        type: 1,
+        options: [],
+        application_command: {
+          id: "972289487818334213",
+          application_id: "936929561302675456",
+          version: "987795926183731232",
+          default_member_permissions: null,
+          type: 1,
+          nsfw: false,
+          name: "relax",
+          description: "Switch to relax mode",
+          dm_permission: true,
+          contexts: null,
+        },
+        attachments: [],
+      },
+      nonce,
+    };
+    return this.safeIteractions(payload);
+  }
 }
