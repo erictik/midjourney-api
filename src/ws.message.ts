@@ -1,39 +1,26 @@
-import { request } from "http";
 import {
-  MessageConfig,
-  MessageConfigParam,
-  DefaultMessageConfig,
+  MJConfig,
+  MJConfigParam,
+  DefaultMJConfig,
   WaitMjEvent,
   MJMessage,
   LoadingHandler,
   WsEventMsg,
 } from "./interfaces";
+import { MidjourneyApi } from "./midjourne.api";
 import { VerifyHuman } from "./verify.human";
 import WebSocket from "isomorphic-ws";
-
 export class WsMessage {
   ws: WebSocket;
   MJBotId = "936929561302675456";
-  public config: MessageConfig;
   private event: Array<{ event: string; callback: (message: any) => void }> =
     [];
   private waitMjEvents: Map<string, WaitMjEvent> = new Map();
   private reconnectTime: boolean[] = [];
   private heartbeatInterval = 0;
-  private DISCORD_GATEWAY: string;
 
-  constructor(defaults: MessageConfigParam) {
-    const { ChannelId, SalaiToken } = defaults;
-    if (!ChannelId || !SalaiToken) {
-      throw new Error("ChannelId and SalaiToken are required");
-    }
-
-    this.config = {
-      ...DefaultMessageConfig,
-      ...defaults,
-    };
-    this.DISCORD_GATEWAY = `${this.config.WsBaseUrl}/?v=9&encoding=json&compress=gzip-stream`;
-    this.ws = new WebSocket(this.DISCORD_GATEWAY);
+  constructor(public config: MJConfig, public MJApi: MidjourneyApi) {
+    this.ws = new WebSocket(this.config.WsBaseUrl);
     this.ws.addEventListener("open", this.open.bind(this));
   }
 
@@ -49,15 +36,15 @@ export class WsMessage {
     await this.timeout(1000 * 40);
     this.heartbeat(num);
   }
+  //try reconnect
   private reconnect() {
-    //reconnect
-    this.ws = new WebSocket(this.DISCORD_GATEWAY);
+    this.ws = new WebSocket(this.config.WsBaseUrl);
     this.ws.addEventListener("open", this.open.bind(this));
   }
   // After opening ws
   private async open() {
     const num = this.reconnectTime.length;
-    this.log("open", num);
+    this.log("open.time", num);
     this.reconnectTime.push(false);
     this.auth();
     this.ws.addEventListener("message", (event) => {
@@ -160,14 +147,12 @@ export class WsMessage {
   // parse message from ws
   private parseMessage(data: string) {
     const msg = JSON.parse(data);
-    // this.log("parseMessage333", msg.t, msg.d);
     if (msg.t === null || msg.t === "READY_SUPPLEMENTAL") return;
     if (msg.t === "READY") {
       this.emit("ready", null);
       return;
     }
     if (!(msg.t === "MESSAGE_CREATE" || msg.t === "MESSAGE_UPDATE")) return;
-
     const message = msg.d;
     const { channel_id, content, id, nonce, author } = message;
     if (!(author && author.id === this.MJBotId)) return;
@@ -199,58 +184,9 @@ export class WsMessage {
       const custom_id = categories.find(
         (c: any) => c.label === category
       ).custom_id;
-      const httpStatus = await this.verifyHumanApi(custom_id, message.id);
+      const httpStatus = await this.MJApi.ClickBtnApi(custom_id, message.id);
       this.log("verifyHumanApi", httpStatus, custom_id, message.id);
       // this.log("verify success", category);
-    }
-  }
-  private async verifyHumanApi(
-    custom_id: string,
-    message_id: string,
-    nonce?: string
-  ) {
-    const payload = {
-      type: 3,
-      nonce,
-      guild_id: this.config.ServerId,
-      channel_id: this.config.ChannelId,
-      message_flags: 64,
-      message_id,
-      application_id: "936929561302675456",
-      session_id: this.config.SessionId,
-      data: {
-        component_type: 2,
-        custom_id,
-      },
-    };
-    return this.interactions(payload);
-  }
-  protected async interactions(
-    payload: any,
-    callback?: (result: number) => void
-  ) {
-    try {
-      const headers = {
-        "Content-Type": "application/json",
-        Authorization: this.config.SalaiToken,
-      };
-      const response = await fetch(
-        `${this.config.DiscordBaseUrl}/api/v9/interactions`,
-        {
-          method: "POST",
-          body: JSON.stringify(payload),
-          headers: headers,
-        }
-      );
-      callback && callback(response.status);
-      //discord api rate limit
-      if (response.status >= 400) {
-        this.log("error config", { config: this.config });
-      }
-      return response.status;
-    } catch (error) {
-      console.log(error);
-      callback && callback(500);
     }
   }
   private EventError(id: string, error: Error) {
@@ -346,7 +282,9 @@ export class WsMessage {
       .filter((e) => e.event === event)
       .forEach((e) => e.callback(message));
   }
-
+  private emitImage(type: string, message: WsEventMsg) {
+    this.emit(type, message);
+  }
   on(event: string, callback: (message: any) => void) {
     this.event.push({ event, callback });
   }
@@ -378,18 +316,10 @@ export class WsMessage {
   private removeWaitMjEvent(nonce: string) {
     this.waitMjEvents.delete(nonce);
   }
-
-  private emitImage(type: string, message: WsEventMsg) {
-    this.emit(type, message);
-  }
   onceImage(nonce: string, callback: (data: WsEventMsg) => void) {
     const once = (data: WsEventMsg) => {
       const { message, error } = data;
-      if (message) {
-        // message.content = this.content2prompt(message.content);
-      }
       if (error || (message && message.progress === "done")) {
-        // this.log("onceImage", type, "done", data, error);
         this.remove(nonce, once);
         this.removeWaitMjEvent(nonce);
       }
@@ -398,7 +328,6 @@ export class WsMessage {
     this.waitMjEvents.set(nonce, { nonce });
     this.event.push({ event: nonce, callback: once });
   }
-
   async waitMessage(nonce: string, loading?: LoadingHandler) {
     return new Promise<MJMessage | null>((resolve, reject) => {
       this.onceImage(nonce, ({ message, error }) => {
