@@ -1,3 +1,4 @@
+import axios from "axios";
 import {
   DefaultMidjourneyConfig,
   LoadingHandler,
@@ -76,11 +77,15 @@ export class Midjourney extends MidjourneyMessage {
         "Content-Type": "application/json",
         Authorization: this.config.SalaiToken,
       };
-      const response = await fetch(`${this.config.DiscordBaseUrl}/api/v9/interactions`, {
-        method: "POST",
-        body: JSON.stringify(payload),
-        headers: headers,
-      });
+
+      const response = await axios.post(
+        `${this.config.DiscordBaseUrl}/api/v9/interactions`,
+        payload,
+        {
+          headers: headers,
+        }
+      );
+
       callback && callback(response.status);
       //discord api rate limit
       await sleep(950);
@@ -93,6 +98,7 @@ export class Midjourney extends MidjourneyMessage {
       callback && callback(500);
     }
   }
+
 
   async ImagineApi(prompt: string, nonce: string = nextNonce()) {
     const payload = {

@@ -1,3 +1,4 @@
+import axios from "axios";
 import {
   DefaultMessageConfig,
   LoadingHandler,
@@ -150,17 +151,21 @@ export class MidjourneyMessage {
   }
   async RetrieveMessages(limit = this.config.Limit) {
     const headers = { authorization: this.config.SalaiToken };
-    const response = await fetch(
-        `${this.config.DiscordBaseUrl}/api/v10/channels/${this.config.ChannelId}/messages?limit=${limit}`,
+    const response = await axios.get(
+      `${this.config.DiscordBaseUrl}/api/v10/channels/${this.config.ChannelId}/messages`,
       {
-        headers: headers,
+        params: {
+          limit: limit
+        },
+        headers: headers
       }
     );
-    if (!response.ok) {
+
+    if (response.status !== 200) {
       this.log("error config", { config: this.config });
       this.log(`HTTP error! status: ${response.status}`);
     }
-    const data = await response.json();
-    return data;
+
+    return response.data;
   }
 }

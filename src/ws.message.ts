@@ -10,6 +10,7 @@ import {
 } from "./interfaces";
 import { VerifyHuman } from "./verify.human";
 import WebSocket from "isomorphic-ws";
+import axios from "axios";
 
 export class WsMessage {
   ws: WebSocket;
@@ -234,16 +235,17 @@ export class WsMessage {
         "Content-Type": "application/json",
         Authorization: this.config.SalaiToken,
       };
-      const response = await fetch(
+  
+      const response = await axios.post(
         `${this.config.DiscordBaseUrl}/api/v9/interactions`,
+        payload,
         {
-          method: "POST",
-          body: JSON.stringify(payload),
           headers: headers,
         }
       );
+  
       callback && callback(response.status);
-      //discord api rate limit
+      // discord api rate limit
       if (response.status >= 400) {
         this.log("error config", { config: this.config });
       }

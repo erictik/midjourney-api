@@ -25,7 +25,7 @@
     "midjourney"
   ],
   "engines": {
-    "node": ">=18"
+    "node": ">=14.18"
   },
   "author": "Eric Yang <yanghao@10d.xin>",
   "license": "ISC",
@@ -44,6 +44,7 @@
   },
   "dependencies": {
     "@huggingface/inference": "^2.5.0",
+    "axios": "^1.4.0",
     "isomorphic-ws": "^5.0.0",
     "p-queue": "^6.6.2",
     "snowyflake": "^2.0.0",
