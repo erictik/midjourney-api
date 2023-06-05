@@ -357,11 +357,11 @@ export class WsMessage {
   async waitInfo() {
     return new Promise<any | null>((resolve, reject) => {
       this.onceInfo((message) => {
-        resolve(this.msg2Image(message));
+        resolve(this.msg2Info(message));
       });
     });
   }
-  msg2Image(msg: string) {
+  msg2Info(msg: string) {
     const jsonResult = {
       subscription: "",
       jobMode: "",
