@@ -2,9 +2,9 @@ import "dotenv/config";
 import { Midjourney } from "../src";
 /**
  *
- * a simple example of using the info api
+ * a simple example of using the imagine api with ws and proxy
  * ```
- * npx tsx example/imagine-info.ts
+ * npx tsx example/imagine-ws-proxy.ts
  * ```
  */
 async function main() {
@@ -12,11 +12,18 @@ async function main() {
     ServerId: <string>process.env.SERVER_ID,
     ChannelId: <string>process.env.CHANNEL_ID,
     SalaiToken: <string>process.env.SALAI_TOKEN,
+    ProxyUrl: <string>process.env.PROXY_URL,
+    HuggingFaceToken: <string>process.env.HUGGINGFACE_TOKEN,
     Debug: true,
     Ws: true,
   });
   await client.init();
-  const msg = await client.Info();
+  const msg = await client.Imagine(
+    "A little white dog",
+    (uri: string, progress: string) => {
+      console.log("loading", uri, "progress", progress);
+    }
+  );
   console.log({ msg });
 }
 main()

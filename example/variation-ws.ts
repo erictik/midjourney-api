@@ -22,16 +22,32 @@ async function main() {
     console.log("no message");
     return;
   }
-  const msg2 = await client.Variation(
-    msg.content,
-    2,
-    <string>msg.id,
-    <string>msg.hash,
-    (uri: string) => {
-      console.log("loading", uri);
-    }
-  );
-  console.log({ msg2 });
+  client
+    .Variation(
+      msg.content,
+      2,
+      <string>msg.id,
+      <string>msg.hash,
+      (uri: string) => {
+        console.log("loading2", uri);
+      }
+    )
+    .then((msg2) => {
+      console.log({ msg2 });
+    });
+  client
+    .Variation(
+      msg.content,
+      3,
+      <string>msg.id,
+      <string>msg.hash,
+      (uri: string) => {
+        console.log("loading3", uri);
+      }
+    )
+    .then((msg3) => {
+      console.log({ msg3 });
+    });
 }
 main().catch((err) => {
   console.error(err);
