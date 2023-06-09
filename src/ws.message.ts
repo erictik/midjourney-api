@@ -9,6 +9,8 @@ import {
 import { MidjourneyApi } from "./midjourne.api";
 import { VerifyHuman } from "./verify.human";
 import WebSocket from "isomorphic-ws";
+import { HttpsProxyAgent } from 'https-proxy-agent';
+
 export class WsMessage {
   ws: WebSocket;
   MJBotId = "936929561302675456";
@@ -19,7 +21,9 @@ export class WsMessage {
   private heartbeatInterval = 0;
 
   constructor(public config: MJConfig, public MJApi: MidjourneyApi) {
-    this.ws = new WebSocket(this.config.WsBaseUrl);
+    const proxy = this.config.ProxyUrl;
+    const agent = !this.config.ProxyUrl ? false : new HttpsProxyAgent(proxy);
+    this.ws = new WebSocket(this.config.WsBaseUrl, { agent });
     this.ws.addEventListener("open", this.open.bind(this));
   }
 
@@ -37,7 +41,9 @@ export class WsMessage {
   }
   //try reconnect
   private reconnect() {
-    this.ws = new WebSocket(this.config.WsBaseUrl);
+    const proxy = this.config.ProxyUrl;
+    const agent = !this.config.ProxyUrl ? false : new HttpsProxyAgent(proxy);
+    this.ws = new WebSocket(this.config.WsBaseUrl, { agent });
     this.ws.addEventListener("open", this.open.bind(this));
   }
   // After opening ws

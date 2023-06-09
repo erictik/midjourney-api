@@ -10,6 +10,7 @@ export interface MJConfig {
   HuggingFaceToken?: string;
   DiscordBaseUrl: string;
   WsBaseUrl: string;
+  ProxyUrl: string;
 }
 export interface MJConfigParam {
   SalaiToken: string;
@@ -23,6 +24,7 @@ export interface MJConfigParam {
   SessionId?: string;
   DiscordBaseUrl?: string;
   WsBaseUrl?: string;
+  ProxyUrl?: string;
 }
 
 export const DefaultMJConfig: MJConfig = {
@@ -34,4 +36,5 @@ export const DefaultMJConfig: MJConfig = {
   MaxWait: 100,
   DiscordBaseUrl: "https://discord.com",
   WsBaseUrl: "wss://gateway.discord.gg?v=9&encoding=json&compress=gzip-stream`",
+  ProxyUrl: ""
 };

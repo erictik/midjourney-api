@@ -1,6 +1,9 @@
 import { MJConfig } from "./interfaces";
 import { CreateQueue } from "./queue";
 import { nextNonce, sleep } from "./utls";
+import fetch from 'node-fetch';
+import { HttpsProxyAgent } from 'https-proxy-agent';
+
 export class MidjourneyApi {
   private ApiQueue = CreateQueue(1);
   constructor(public config: MJConfig) {}
@@ -24,12 +27,15 @@ export class MidjourneyApi {
         "Content-Type": "application/json",
         Authorization: this.config.SalaiToken,
       };
+      const proxy = this.config.ProxyUrl;
+      const agent = !this.config.ProxyUrl ? false : new HttpsProxyAgent(proxy);
       const response = await fetch(
         `${this.config.DiscordBaseUrl}/api/v9/interactions`,
         {
           method: "POST",
           body: JSON.stringify(payload),
           headers: headers,
+          agent: agent
         }
       );
       callback && callback(response.status);
