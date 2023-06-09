@@ -7,22 +7,25 @@ import {
 } from "./interfaces";
 import { CreateQueue } from "./queue";
 import { sleep } from "./utls";
-import fetch from 'node-fetch';
-import { HttpsProxyAgent } from 'https-proxy-agent';
+import fetch from "node-fetch";
+import { HttpsProxyAgent } from "https-proxy-agent";
 
 export class MidjourneyMessage {
   private magApiQueue = CreateQueue(1);
   public config: MJConfig;
+  agent?: HttpsProxyAgent<string>;
   constructor(defaults: MJConfigParam) {
     const { SalaiToken } = defaults;
     if (!SalaiToken) {
       throw new Error("SalaiToken are required");
     }
-
     this.config = {
       ...DefaultMJConfig,
       ...defaults,
     };
+    if (this.config.ProxyUrl && this.config.ProxyUrl !== "") {
+      this.agent = new HttpsProxyAgent(this.config.ProxyUrl);
+    }
   }
   protected log(...args: any[]) {
     this.config.Debug && console.log(...args, new Date().toISOString());
@@ -150,21 +153,23 @@ export class MidjourneyMessage {
     return this.magApiQueue.addTask(() => this.RetrieveMessages(limit));
   }
   async RetrieveMessages(limit = this.config.Limit) {
-    const headers = { authorization: this.config.SalaiToken };
-    const proxy = this.config.ProxyUrl;
-    const agent = !this.config.ProxyUrl ? false : new HttpsProxyAgent(proxy);
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: this.config.SalaiToken,
+    };
+    const agent = this.agent;
     const response = await fetch(
       `${this.config.DiscordBaseUrl}/api/v10/channels/${this.config.ChannelId}/messages?limit=${limit}`,
       {
-        headers: headers,
-        agent: agent
+        headers,
+        agent,
       }
     );
     if (!response.ok) {
       this.log("error config", { config: this.config });
       this.log(`HTTP error! status: ${response.status}`);
     }
-    const data = await response.json();
+    const data: any = await response.json();
     return data;
   }
 }
