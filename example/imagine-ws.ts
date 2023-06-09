@@ -12,6 +12,7 @@ async function main() {
     ServerId: <string>process.env.SERVER_ID,
     ChannelId: <string>process.env.CHANNEL_ID,
     SalaiToken: <string>process.env.SALAI_TOKEN,
+    ProxyUrl: <string>process.env.PROXY_URL,
     HuggingFaceToken: <string>process.env.HUGGINGFACE_TOKEN,
     Debug: true,
     Ws: true,

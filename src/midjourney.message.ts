@@ -7,6 +7,8 @@ import {
 } from "./interfaces";
 import { CreateQueue } from "./queue";
 import { sleep } from "./utls";
+import fetch from 'node-fetch';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 
 export class MidjourneyMessage {
   private magApiQueue = CreateQueue(1);
@@ -149,10 +151,13 @@ export class MidjourneyMessage {
   }
   async RetrieveMessages(limit = this.config.Limit) {
     const headers = { authorization: this.config.SalaiToken };
+    const proxy = this.config.ProxyUrl;
+    const agent = !this.config.ProxyUrl ? false : new HttpsProxyAgent(proxy);
     const response = await fetch(
       `${this.config.DiscordBaseUrl}/api/v10/channels/${this.config.ChannelId}/messages?limit=${limit}`,
       {
         headers: headers,
+        agent: agent
       }
     );
     if (!response.ok) {

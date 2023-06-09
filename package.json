@@ -44,7 +44,9 @@
   },
   "dependencies": {
     "@huggingface/inference": "^2.5.0",
+    "https-proxy-agent": "^7.0.0",
     "isomorphic-ws": "^5.0.0",
+    "node-fetch": "^3.3.1",
     "p-queue": "^6.6.2",
     "snowyflake": "^2.0.0",
     "throat": "^6.0.2",
