@@ -88,7 +88,7 @@ export class WsMessage {
   }
   private async messageCreate(message: any) {
     // this.log("messageCreate", message);
-    const { application_id, embeds, id, nonce } = message;
+    const { embeds, id, nonce, components } = message;
     if (nonce) {
       this.log("waiting start image or info or error");
       this.updateMjEventIdByNonce(id, nonce);
@@ -117,9 +117,9 @@ export class WsMessage {
         }
       }
     }
-    //done image
-    if (!nonce && !application_id) {
-      this.log("done image");
+    //finished image
+    if (!nonce && components.length > 0) {
+      this.log("finished image");
       this.done(message);
       return;
     }
