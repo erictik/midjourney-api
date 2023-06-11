@@ -18,7 +18,7 @@ async function main() {
   });
   await client.init();
   const msg = await client.Imagine(
-    "A little white dog",
+    "the queen of the underworld, race: vampire, appearance: delicate features with detailed portrayal, super exquisite facial features, silver long hair reaching ankles, silver pupils, fair skin with a hint of melancholy in the eyes, beautiful and noble, clothing: wearing a blood-red rose on the hair, skirt with layers of lace, sitting in a (pose), captured in ultra-high resolution, film-like realism, 8k for the best visual quality, super clear and finely drawn. --ar 9:16 --v 5",
     (uri: string, progress: string) => {
       console.log("loading", uri, "progress", progress);
     }
