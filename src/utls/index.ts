@@ -8,8 +8,8 @@ export const random = (min: number, max: number): number =>
 
 // const snowflake = new Snowflake(1);
 const snowflake = new Snowyflake({
-  workerId: BigInt(0),
-  processId: BigInt(0),
+  workerId: 0n,
+  processId: 0n,
   epoch: Epoch.Discord, // BigInt timestamp
 });
 
