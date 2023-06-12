@@ -38,8 +38,8 @@ export class Midjourney extends MidjourneyMessage {
   }
   async Imagine(prompt: string, loading?: LoadingHandler) {
     if (!prompt.includes("--seed")) {
-      const speed = random(1000, 9999);
-      prompt = `${prompt} --seed ${speed}`;
+      const seed = random(1000, 999999);
+      prompt = `${prompt} --seed ${seed}`;
     }
 
     const nonce = nextNonce();
