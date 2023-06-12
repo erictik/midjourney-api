@@ -10,7 +10,7 @@
 * [API Reference](getting-started/api-reference/README.md)
   * [Imagine](getting-started/api-reference/imagine.md)
 * [Example](getting-started/example/README.md)
-  * [Image](getting-started/example/image.md)
+  * [Imagine](getting-started/example/imagine.md)
 
 ## Use Cases
 

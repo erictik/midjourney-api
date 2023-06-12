@@ -1,7 +1,3 @@
 # 🤖 Discord Bot
 
-{% code title="" overflow="wrap" lineNumbers="true" fullWidth="true" %}
-```html
-// Some code
-```
-{% endcode %}
+[https://github.com/erictik/midjourney-discord/issues](https://github.com/erictik/midjourney-discord/issues)
