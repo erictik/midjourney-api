@@ -1,24 +1,27 @@
 # Table of contents
 
-* [👋 Welcome to A Product](README.md)
+* [👋 MidJourney Node Client](README.md)
 
-## Overview
+## 📓 Getting started
 
-* [💡 What we do](overview/what-we-do.md)
-* [✨ Our Features](overview/our-features.md)
-
-## Product Guides
-
-* [📪 Making a post](product-guides/making-a-post.md)
-* [📎 Understanding Projects](product-guides/understanding-projects.md)
-
-## Fundamentals
-
-* [🛠 Getting set up](fundamentals/getting-set-up/README.md)
-  * [📝 Setting permissions](fundamentals/getting-set-up/setting-permissions.md)
-  * [🧑 Inviting Members](fundamentals/getting-set-up/inviting-members.md)
+* [Quickstart](getting-started/quickstart.md)
+* [Install](getting-started/install.md)
+* [Config](getting-started/config.md)
+* [API Reference](getting-started/api-reference/README.md)
+  * [Imagine](getting-started/api-reference/imagine.md)
+* [Example](getting-started/example/README.md)
+  * [Image](getting-started/example/image.md)
 
 ## Use Cases
 
-* [🎨 For Designers](use-cases/for-designers.md)
-* [🖥 For Developers](use-cases/for-developers.md)
+* [🎨 Web UI](use-cases/web-ui.md)
+* [🤖 Discord Bot](use-cases/discord-bot.md)
+
+## FAQ
+
+* [How to get your Discord Token](https://www.androidauthority.com/get-discord-token-3149920/)
+* [Invite Midjourney Bot to Your Server](https://docs.midjourney.com/docs/invite-the-bot)
+
+***
+
+* [Join the Beta](https://discord.com/invite/GavuGHQbV4)

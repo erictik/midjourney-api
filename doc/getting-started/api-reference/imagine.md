@@ -1,4 +1,4 @@
-# 📪 Making a post
+# Imagine
 
 ## Step 1 - Start journalling
 
