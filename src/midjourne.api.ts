@@ -113,7 +113,7 @@ export class MidjourneyApi {
       message_flags: 0,
       message_id: messageId,
       application_id: "936929561302675456",
-      session_id: "1f3dbdf09efdf93d81a3a6420882c92c",
+      session_id: this.config.SessionId,
       data: {
         component_type: 2,
         custom_id: `MJ::JOB::variation::${index}::${messageHash}`,
@@ -136,7 +136,7 @@ export class MidjourneyApi {
       message_flags: 0,
       message_id: messageId,
       application_id: "936929561302675456",
-      session_id: "ec6524c8d2926e285a8232f7ed1ced98",
+      session_id: this.config.SessionId,
       data: {
         component_type: 2,
         custom_id: `MJ::JOB::upsample::${index}::${messageHash}`,
@@ -171,7 +171,7 @@ export class MidjourneyApi {
       application_id: "936929561302675456",
       guild_id,
       channel_id: this.config.ChannelId,
-      session_id: "b8365bc80a004e656afbd4e48113509f",
+      session_id: this.config.SessionId,
       data: {
         version: "987795925764280356",
         id: "972289487818334209",
@@ -203,7 +203,7 @@ export class MidjourneyApi {
       application_id: "936929561302675456",
       guild_id,
       channel_id: this.config.ChannelId,
-      session_id: "b8365bc80a004e656afbd4e48113509f",
+      session_id: this.config.SessionId,
       data: {
         version: "987795926183731231",
         id: "972289487818334212",
@@ -236,7 +236,7 @@ export class MidjourneyApi {
       application_id: "936929561302675456",
       guild_id,
       channel_id,
-      session_id: "b8365bc80a004e656afbd4e48113509f",
+      session_id: this.config.SessionId,
       data: {
         version: "987795926183731232",
         id: "972289487818334213",
