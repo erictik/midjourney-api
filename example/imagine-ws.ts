@@ -17,13 +17,40 @@ async function main() {
     Ws: true,
   });
   await client.init();
-  const msg = await client.Imagine(
-    "the queen of the underworld, race: vampire, appearance: delicate features with detailed portrayal, super exquisite facial features, silver long hair reaching ankles, silver pupils, fair skin with a hint of melancholy in the eyes, beautiful and noble, clothing: wearing a blood-red rose on the hair, skirt with layers of lace, sitting in a (pose), captured in ultra-high resolution, film-like realism, 8k for the best visual quality, super clear and finely drawn. --ar 9:16 --v 5",
+  const Imagine = await client.Imagine(
+    "A little white elephant",
     (uri: string, progress: string) => {
-      console.log("loading", uri, "progress", progress);
+      console.log("Imagine.loading", uri, "progress", progress);
     }
   );
-  console.log({ msg });
+  console.log({ Imagine });
+  if (!Imagine) {
+    return;
+  }
+  const Variation = await client.Variation(
+    Imagine.content,
+    2,
+    <string>Imagine.id,
+    <string>Imagine.hash,
+    (uri: string, progress: string) => {
+      console.log("Variation.loading", uri, "progress", progress);
+    }
+  );
+
+  console.log({ Variation });
+  if (!Variation) {
+    return;
+  }
+  const Upscale = await client.Upscale(
+    Variation.content,
+    2,
+    <string>Variation.id,
+    <string>Variation.hash,
+    (uri: string, progress: string) => {
+      console.log("Upscale.loading", uri, "progress", progress);
+    }
+  );
+  console.log({ Upscale });
 }
 main()
   .then(() => {
