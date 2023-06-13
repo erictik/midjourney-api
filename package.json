@@ -34,6 +34,7 @@
   },
   "homepage": "https://github.com/erictik/midjourney-api#readme",
   "devDependencies": {
+    "@types/mime": "^3.0.1",
     "@types/node": "^18.16.0",
     "@types/node-fetch": "^2.6.4",
     "@types/ws": "^8.5.4",
@@ -47,6 +48,7 @@
     "@huggingface/inference": "^2.5.0",
     "https-proxy-agent": "^7.0.0",
     "isomorphic-ws": "^5.0.0",
+    "mime": "^3.0.0",
     "node-fetch": "^2.6.11",
     "p-queue": "^6.6.2",
     "snowyflake": "^2.0.0",

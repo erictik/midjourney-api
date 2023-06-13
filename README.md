@@ -96,19 +96,11 @@ Then, run the example with the following command:
 npx tsx example/imagine-ws.ts
 ```
 
-```bash
-npx tsx example/upscale-ws.ts
-```
-
-```bash
-npx tsx example/variation-ws.ts
-```
-
-
 ## route-map
 - [x] websocket get message
 - [x] call back error
-- [ ] add `/info`  `/fast` and `/relax`
+- [x] add `/info` `/fast` and `/relax`
+- [ ] `/describe` 
 
 
 

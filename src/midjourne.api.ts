@@ -1,12 +1,16 @@
-import { MJConfig } from "./interfaces";
+import { DiscordImage, MJConfig, UploadParam, UploadSlot } from "./interfaces";
 import { CreateQueue } from "./queue";
 import { nextNonce, sleep } from "./utls";
 import fetch from "node-fetch";
 import { HttpsProxyAgent } from "https-proxy-agent";
+import * as fs from "fs";
+import path from "path";
+import * as mime from "mime";
 
 export class MidjourneyApi {
   private ApiQueue = CreateQueue(1);
   agent?: HttpsProxyAgent<string>;
+  upId = Date.now() % 10; // upload id
   constructor(public config: MJConfig) {
     if (this.config.ProxyUrl && this.config.ProxyUrl !== "") {
       this.agent = new HttpsProxyAgent(this.config.ProxyUrl);
@@ -256,6 +260,143 @@ export class MidjourneyApi {
           contexts: null,
         },
         attachments: [],
+      },
+      nonce,
+    };
+    return this.safeIteractions(payload);
+  }
+
+  async UploadImage(fileUrl: string) {
+    let fileData;
+    let mimeType;
+    let filename;
+    let file_size;
+
+    if (fileUrl.startsWith("http")) {
+      const response = await fetch(fileUrl);
+      fileData = await response.arrayBuffer();
+      mimeType = response.headers.get("content-type");
+      filename = path.basename(fileUrl) || "image.png";
+      file_size = fileData.byteLength;
+    } else {
+      fileData = await fs.promises.readFile(fileUrl);
+      mimeType = mime.getType(fileUrl);
+      filename = path.basename(fileUrl);
+      file_size = (await fs.promises.stat(fileUrl)).size;
+    }
+    if (!mimeType) {
+      throw new Error("Unknown mime type");
+    }
+    const { attachments } = await this.attachments({
+      filename,
+      file_size,
+      id: this.upId++,
+    });
+    const UploadSlot = attachments[0];
+    await this.uploadImage(UploadSlot, fileData, mimeType);
+    const response: DiscordImage = {
+      id: UploadSlot.id,
+      filename: path.basename(UploadSlot.upload_filename),
+      upload_filename: UploadSlot.upload_filename,
+    };
+    return response;
+  }
+
+  /**
+   * prepare an attachement to upload an image.
+   */
+  private async attachments(
+    ...files: UploadParam[]
+  ): Promise<{ attachments: UploadSlot[] }> {
+    const headers = {
+      Authorization: this.config.SalaiToken,
+      "content-type": "application/json",
+    };
+    const url = new URL(
+      `${this.config.DiscordBaseUrl}/api/v9/channels/${this.config.ChannelId}/attachments`
+    );
+    const body = { files };
+    const response = await fetch(url.toString(), {
+      headers,
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+    if (response.status === 200) {
+      return (await response.json()) as { attachments: UploadSlot[] };
+    }
+    throw new Error(
+      `Attachments return ${response.status} ${
+        response.statusText
+      } ${await response.text()}`
+    );
+  }
+
+  /**
+   * Upload an image to an upload slot provided by the attachments function.
+   * @param slot use uploadUrl to put the image
+   * @returns
+   */
+  private async uploadImage(
+    slot: UploadSlot,
+    data: ArrayBuffer,
+    contentType: string
+  ): Promise<void> {
+    const body = new Uint8Array(data);
+    const headers = { "content-type": contentType };
+    const response = await fetch(slot.upload_url, {
+      method: "PUT",
+      headers,
+      body,
+    });
+    if (!response.ok) {
+      throw new Error(
+        `uploadImage return ${response.status} ${
+          response.statusText
+        } ${await response.text()}`
+      );
+    }
+  }
+
+  async DescribeApi(data: DiscordImage, nonce?: string) {
+    const payload = {
+      type: 2,
+      application_id: "936929561302675456",
+      guild_id: this.config.ServerId,
+      channel_id: this.config.ChannelId,
+      session_id: this.config.SessionId,
+      data: {
+        version: "1092492867185950853",
+        id: "1092492867185950852",
+        name: "describe",
+        type: 1,
+        options: [{ type: 11, name: "image", value: data.id }],
+        application_command: {
+          id: "1092492867185950852",
+          application_id: "936929561302675456",
+          version: "1092492867185950853",
+          default_member_permissions: null,
+          type: 1,
+          nsfw: false,
+          name: "describe",
+          description: "Writes a prompt based on your image.",
+          dm_permission: true,
+          contexts: null,
+          options: [
+            {
+              type: 11,
+              name: "image",
+              description: "The image to describe",
+              required: true,
+            },
+          ],
+        },
+        attachments: [
+          {
+            id: <string>data.id,
+            filename: data.filename,
+            uploaded_filename: data.upload_filename,
+          },
+        ],
       },
       nonce,
     };
