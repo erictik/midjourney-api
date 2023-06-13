@@ -31,10 +31,32 @@ import { Midjourney } from "midjourney";
     Ws:true,
   });
   await client.init();
-  const msg = await client.Imagine("A little pink elephant", (uri: string) => {
-    console.log("loading", uri);
+  const Imagine = await client.Imagine("A little pink elephant", (uri: string, progress:string) => {
+   onsole.log("Imagine", uri, "progress", progress);
   });
-  console.log({ msg });
+  console.log({ Imagine });
+
+  const Variation = await client.Variation(
+    Imagine.content,
+    2,
+    <string>Imagine.id,
+    <string>Imagine.hash,
+    (uri: string, progress:string) => {
+     onsole.log("Imagine", uri, "progress", progress);
+    }
+  );
+  console.log({ Variation });
+  const Upscale = await client.Upscale(
+    Variation.content,
+    2,
+    <string>Variation.id,
+    <string>Variation.hash,
+    (uri: string, progress: string) => {
+      console.log("Upscale", uri, "progress", progress);
+    }
+  );
+  console.log({ Upscale });
+
 ```
 
 ## Example
