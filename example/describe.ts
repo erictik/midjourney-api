@@ -21,13 +21,8 @@ async function main() {
   );
   console.log({ msg });
 }
-main()
-  .then(() => {
-    console.log("finished");
-    process.exit(0);
-  })
-  .catch((err) => {
-    console.log("finished");
-    console.error(err);
-    process.exit(1);
-  });
+main().catch((err) => {
+  console.log("finished");
+  console.error(err);
+  process.exit(1);
+});

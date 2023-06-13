@@ -127,8 +127,14 @@ export class WsMessage {
     this.messageUpdate(message);
   }
   private messageUpdate(message: any) {
-    const { content, embeds, id } = message;
+    this.log("messageUpdate", message);
+
+    const { content, embeds, interaction, nonce, id } = message;
     if (content === "") {
+      //describe
+      if (interaction.name === "describe" && !nonce) {
+        this.emitDescribe(id, embeds[0].description);
+      }
       if (embeds && embeds.length > 0 && embeds[0].color === 0) {
         this.log(embeds[0].title, embeds[0].description);
         //maybe info
@@ -304,6 +310,11 @@ export class WsMessage {
   private emitImage(type: string, message: WsEventMsg) {
     this.emit(type, message);
   }
+  private emitDescribe(id: string, data: any) {
+    const event = this.getEventById(id);
+    if (!event) return;
+    this.emit(event.nonce, data);
+  }
   on(event: string, callback: (message: any) => void) {
     this.event.push({ event, callback });
   }
@@ -329,6 +340,16 @@ export class WsMessage {
     };
     this.event.push({ event: "info", callback: once });
   }
+  onceDescribe(nonce: string, callback: (data: any) => void) {
+    const once = (message: any) => {
+      this.remove(nonce, once);
+      this.removeWaitMjEvent(nonce);
+      callback(message);
+    };
+    this.waitMjEvents.set(nonce, { nonce });
+    this.event.push({ event: nonce, callback: once });
+  }
+
   removeInfo(callback: (message: any) => void) {
     this.remove("info", callback);
   }
@@ -347,6 +368,7 @@ export class WsMessage {
     this.waitMjEvents.set(nonce, { nonce });
     this.event.push({ event: nonce, callback: once });
   }
+
   async waitImageMessage(nonce: string, loading?: LoadingHandler) {
     return new Promise<MJMessage | null>((resolve, reject) => {
       this.onceImage(nonce, ({ message, error }) => {
@@ -359,6 +381,15 @@ export class WsMessage {
           return;
         }
         message && loading && loading(message.uri, message.progress || "");
+      });
+    });
+  }
+
+  async waitDescribe(nonce: string) {
+    return new Promise<string[] | null>((resolve) => {
+      this.onceDescribe(nonce, (message) => {
+        const data = message.split("\n\n");
+        resolve(data);
       });
     });
   }
