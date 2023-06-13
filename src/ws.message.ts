@@ -4,6 +4,7 @@ import {
   MJMessage,
   LoadingHandler,
   WsEventMsg,
+  MJInfo,
 } from "./interfaces";
 
 import { MidjourneyApi } from "./midjourne.api";
@@ -363,14 +364,14 @@ export class WsMessage {
   }
 
   async waitInfo() {
-    return new Promise<any | null>((resolve, reject) => {
+    return new Promise<MJInfo | null>((resolve, reject) => {
       this.onceInfo((message) => {
         resolve(this.msg2Info(message));
       });
     });
   }
   msg2Info(msg: string) {
-    const jsonResult = {
+    let jsonResult: MJInfo = {
       subscription: "",
       jobMode: "",
       visibilityMode: "",
@@ -380,7 +381,7 @@ export class WsMessage {
       queuedJobsFast: "",
       queuedJobsRelax: "",
       runningJobs: "",
-    };
+    }; // Initialize jsonResult with empty object
     msg.split("\n").forEach(function (line) {
       const colonIndex = line.indexOf(":");
       if (colonIndex > -1) {

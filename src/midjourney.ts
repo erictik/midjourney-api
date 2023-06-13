@@ -38,7 +38,7 @@ export class Midjourney extends MidjourneyMessage {
   }
   async Imagine(prompt: string, loading?: LoadingHandler) {
     if (!prompt.includes("--seed")) {
-      const seed = random(1000, 999999);
+      const seed = random(10000, 9999999);
       prompt = `${prompt} --seed ${seed}`;
     }
 
@@ -67,6 +67,7 @@ export class Midjourney extends MidjourneyMessage {
     if (this.wsClient) {
       return this.wsClient.waitInfo();
     }
+    return null;
   }
 
   async Variation(

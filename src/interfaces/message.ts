@@ -18,3 +18,15 @@ export interface WsEventMsg {
   error?: Error;
   message?: MJMessage;
 }
+
+export interface MJInfo {
+  subscription: string;
+  jobMode: string;
+  visibilityMode: string;
+  fastTimeRemaining: string;
+  lifetimeUsage: string;
+  relaxedUsage: string;
+  queuedJobsFast: string;
+  queuedJobsRelax: string;
+  runningJobs: string;
+}
