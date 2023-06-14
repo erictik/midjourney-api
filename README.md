@@ -79,8 +79,8 @@ npm install
 ```
 
 3. set the environment variables
-   * [How to get your Discord SALAI_TOKEN:](https://www.androidauthority.com/get-discord-token-3149920/)
-   * How to get server and channel ids: you have to [create a new personal channel](https://discord.com/blog/starting-your-first-discord-server), when you click on a channel in your server in the browser expect to have the follow URL pattern `https://discord.com/channels/$SERVER_ID/$CHANNEL_ID`
+  - [How to get your Discord SALAI_TOKEN:](https://www.androidauthority.com/get-discord-token-3149920/)
+  - How to get server and channel ids: you have to [create a new personal channel](https://discord.com/blog/starting-your-first-discord-server), when you click on a channel in your server in the browser expect to have the follow URL pattern `https://discord.com/channels/$SERVER_ID/$CHANNEL_ID`
 
 ```bash
 #example variables, please set up yours
@@ -97,10 +97,13 @@ npx tsx example/imagine-ws.ts
 ```
 
 ## route-map
+- [x] `/imagine` `variation` `upscale` 
 - [x] websocket get message
 - [x] call back error
-- [x] add `/info` `/fast` and `/relax`
-- [ ] `/describe` 
+- [x] verify human
+- [x] `/info`
+- [x] `/fast api` and `/relax api`
+- [x] `/describe` 
 
 
 
