@@ -32,13 +32,15 @@ export class Midjourney extends MidjourneyMessage {
     return new Promise<Midjourney>((resolve) => {
       this.wsClient = new WsMessage(this.config, this.MJApi);
       this.wsClient.once("ready", () => {
+        this.log(`ws ready`);
         resolve(this);
       });
     });
   }
   async Imagine(prompt: string, loading?: LoadingHandler) {
+    prompt = prompt.trim();
     if (!prompt.includes("--seed")) {
-      const seed = random(10000, 9999999);
+      const seed = random(10000000, 999999999);
       prompt = `${prompt} --seed ${seed}`;
     }
 

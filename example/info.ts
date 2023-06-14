@@ -18,6 +18,7 @@ async function main() {
   await client.init();
   const msg = await client.Info();
   console.log({ msg });
+  client.Close();
 }
 main()
   .then(() => {

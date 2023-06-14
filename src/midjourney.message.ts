@@ -37,18 +37,14 @@ export class MidjourneyMessage {
     options?: string,
     index?: number
   ) {
-    // remove urls
-    const regex = /(<)?(https?:\/\/[^\s]*)(>)?/gi;
-    prompt = prompt.replace(regex, "");
-    // remove multiple spaces
-    prompt = prompt.trim();
+    const seed = prompt.match(/--seed (\d+)/)?.[1];
 
     const data = await this.safeRetrieveMessages(this.config.Limit);
     for (let i = 0; i < data.length; i++) {
       const item = data[i];
       if (
         item.author.id === "936929561302675456" &&
-        item.content.includes(`${prompt}`)
+        item.content.includes(`${seed}`)
       ) {
         this.log(JSON.stringify(item));
         // Upscaled or Variation
@@ -72,6 +68,7 @@ export class MidjourneyMessage {
         }
         const imageUrl = item.attachments[0].url;
         //waiting
+        this.log(`waiting.content`, item.content);
         if (
           item.attachments[0].filename.startsWith("grid") ||
           item.components.length === 0
