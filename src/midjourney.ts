@@ -69,6 +69,23 @@ export class Midjourney extends MidjourneyMessage {
     }
     return null;
   }
+
+  async Fast() {
+    const nonce = nextNonce();
+    const httpStatus = await this.MJApi.FastApi(nonce);
+    if (httpStatus !== 204) {
+      throw new Error(`FastApi failed with status ${httpStatus}`);
+    }
+    return null;
+  }
+  async Relax() {
+    const nonce = nextNonce();
+    const httpStatus = await this.MJApi.RelaxApi(nonce);
+    if (httpStatus !== 204) {
+      throw new Error(`RelaxApi failed with status ${httpStatus}`);
+    }
+    return null;
+  }
   async Describe(imgUri: string) {
     const nonce = nextNonce();
     const DcImage = await this.MJApi.UploadImage(imgUri);

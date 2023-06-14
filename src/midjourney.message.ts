@@ -31,6 +31,7 @@ export class MidjourneyMessage {
     this.config.Debug && console.log(...args, new Date().toISOString());
   }
   async FilterMessages(
+    timestamp: number,
     prompt: string,
     loading?: LoadingHandler,
     options?: string,
@@ -51,6 +52,10 @@ export class MidjourneyMessage {
       ) {
         this.log(JSON.stringify(item));
         // Upscaled or Variation
+        if (item.timestamp < timestamp) {
+          this.log("old message");
+          continue;
+        }
         if (
           options &&
           !(
@@ -101,8 +106,9 @@ export class MidjourneyMessage {
     return uri.split("_").pop()?.split(".")[0] ?? "";
   }
   async WaitMessage(prompt: string, loading?: LoadingHandler) {
+    var timestamp = Date.now();
     for (let i = 0; i < this.config.MaxWait; i++) {
-      const msg = await this.FilterMessages(prompt, loading);
+      const msg = await this.FilterMessages(timestamp, prompt, loading);
       if (msg !== null) {
         return msg;
       }
@@ -117,8 +123,15 @@ export class MidjourneyMessage {
     options: string,
     loading?: LoadingHandler
   ) {
+    var timestamp = Date.now();
+
     for (let i = 0; i < this.config.MaxWait; i++) {
-      const msg = await this.FilterMessages(content, loading, options);
+      const msg = await this.FilterMessages(
+        timestamp,
+        content,
+        loading,
+        options
+      );
       if (msg !== null) {
         return msg;
       }
@@ -132,8 +145,10 @@ export class MidjourneyMessage {
     index: number,
     loading?: LoadingHandler
   ) {
+    var timestamp = Date.now();
     for (let i = 0; i < this.config.MaxWait; i++) {
       const msg = await this.FilterMessages(
+        timestamp,
         content,
         loading,
         "Upscaled",
