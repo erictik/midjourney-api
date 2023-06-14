@@ -161,6 +161,7 @@ export class Midjourney extends MidjourneyMessage {
   Close() {
     if (this.wsClient) {
       this.wsClient.close();
+      this.wsClient = null;
     }
   }
 }
