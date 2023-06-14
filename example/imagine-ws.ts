@@ -51,6 +51,7 @@ async function main() {
     }
   );
   console.log({ Upscale });
+  client.Close();
 }
 main()
   .then(() => {

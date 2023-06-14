@@ -138,4 +138,10 @@ export class Midjourney extends MidjourneyMessage {
     }
     return await this.WaitUpscaledMessage(content, index, loading);
   }
+
+  Close() {
+    if (this.wsClient) {
+      this.wsClient.close();
+    }
+  }
 }

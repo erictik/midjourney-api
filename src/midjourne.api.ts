@@ -8,17 +8,17 @@ import path from "path";
 import * as mime from "mime";
 
 export class MidjourneyApi {
-  private ApiQueue = CreateQueue(1);
-  agent?: HttpsProxyAgent<string>;
-  upId = Date.now() % 10; // upload id
+  private apiQueue = CreateQueue(1);
+  Agent?: HttpsProxyAgent<string>;
+  UpId = Date.now() % 10; // upload id
   constructor(public config: MJConfig) {
     if (this.config.ProxyUrl && this.config.ProxyUrl !== "") {
-      this.agent = new HttpsProxyAgent(this.config.ProxyUrl);
+      this.Agent = new HttpsProxyAgent(this.config.ProxyUrl);
     }
   }
   // limit the number of concurrent interactions
   protected async safeIteractions(payload: any) {
-    return this.ApiQueue.addTask(
+    return this.apiQueue.addTask(
       () =>
         new Promise<number>((resolve) => {
           this.interactions(payload, (res) => {
@@ -36,7 +36,7 @@ export class MidjourneyApi {
         "Content-Type": "application/json",
         Authorization: this.config.SalaiToken,
       };
-      const agent = this.agent;
+      const agent = this.Agent;
       const response = await fetch(
         `${this.config.DiscordBaseUrl}/api/v9/interactions`,
         {
@@ -265,7 +265,11 @@ export class MidjourneyApi {
     };
     return this.safeIteractions(payload);
   }
-
+  /**
+   *
+   * @param fileUrl http or local file path
+   * @returns
+   */
   async UploadImage(fileUrl: string) {
     let fileData;
     let mimeType;
@@ -290,7 +294,7 @@ export class MidjourneyApi {
     const { attachments } = await this.attachments({
       filename,
       file_size,
-      id: this.upId++,
+      id: this.UpId++,
     });
     const UploadSlot = attachments[0];
     await this.uploadImage(UploadSlot, fileData, mimeType);
@@ -330,12 +334,6 @@ export class MidjourneyApi {
       } ${await response.text()}`
     );
   }
-
-  /**
-   * Upload an image to an upload slot provided by the attachments function.
-   * @param slot use uploadUrl to put the image
-   * @returns
-   */
   private async uploadImage(
     slot: UploadSlot,
     data: ArrayBuffer,
@@ -356,7 +354,6 @@ export class MidjourneyApi {
       );
     }
   }
-
   async DescribeApi(data: DiscordImage, nonce?: string) {
     const payload = {
       type: 2,
