@@ -254,6 +254,11 @@ export class WsMessage {
   }
 
   protected content2progress(content: string) {
+    const spcon = content.split("**");
+    if (spcon.length < 3) {
+      return "";
+    }
+    content = spcon[2];
     const regex = /\(([^)]+)\)/; // matches the value inside the first parenthesis
     const match = content.match(regex);
     let progress = "";

@@ -58,14 +58,7 @@ export class MidjourneyMessage {
           item.components.length === 0
         ) {
           this.log(`content`, item.content);
-          const regex = /\(([^)]+)\)/; // matches the value inside the first parenthesis
-          const match = item.content.match(regex);
-          let progress = "wait";
-          if (match) {
-            progress = match[1];
-          } else {
-            this.log("No match found");
-          }
+          const progress = this.content2progress(item.content);
           loading?.(imageUrl, progress);
           break;
         }
@@ -82,6 +75,20 @@ export class MidjourneyMessage {
       }
     }
     return null;
+  }
+  protected content2progress(content: string) {
+    const spcon = content.split("**");
+    if (spcon.length < 3) {
+      return "";
+    }
+    content = spcon[2];
+    const regex = /\(([^)]+)\)/; // matches the value inside the first parenthesis
+    const match = content.match(regex);
+    let progress = "";
+    if (match) {
+      progress = match[1];
+    }
+    return progress;
   }
   UriToHash(uri: string) {
     return uri.split("_").pop()?.split(".")[0] ?? "";
