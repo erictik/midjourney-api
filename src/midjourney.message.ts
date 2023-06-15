@@ -42,21 +42,9 @@ export class MidjourneyMessage {
         item.author.id === "936929561302675456" &&
         item.content.includes(`${seed}`)
       ) {
-        this.log(timestamp, item.timestamp);
-        this.log(JSON.stringify(item));
-        if (new Date(item.timestamp).getTime() < timestamp) {
+        const itemTimestamp = new Date(item.timestamp).getTime();
+        if (itemTimestamp < timestamp) {
           this.log("old message");
-          continue;
-        }
-        // Upscaled or Variation
-        if (
-          options &&
-          !(
-            item.content.includes(options) ||
-            (options === "Upscaled" && item.content.includes(`Image #${index}`))
-          )
-        ) {
-          this.log("no options");
           continue;
         }
         if (item.attachments.length === 0) {
@@ -65,7 +53,6 @@ export class MidjourneyMessage {
         }
         const imageUrl = item.attachments[0].url;
         //waiting
-        this.log(`waiting.content`, item.content);
         if (
           item.attachments[0].filename.startsWith("grid") ||
           item.components.length === 0

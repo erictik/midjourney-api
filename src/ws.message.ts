@@ -143,8 +143,7 @@ export class WsMessage {
     this.messageUpdate(message);
   }
   private messageUpdate(message: any) {
-    this.log("messageUpdate", message);
-
+    // this.log("messageUpdate", message);
     const { content, embeds, interaction, nonce, id } = message;
     if (content === "") {
       //describe
