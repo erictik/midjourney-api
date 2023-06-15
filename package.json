@@ -45,7 +45,6 @@
   },
   "dependencies": {
     "@huggingface/inference": "^2.5.0",
-    "https-proxy-agent": "^7.0.0",
     "isomorphic-ws": "^5.0.0",
     "mime": "^3.0.0",
     "p-queue": "^6.6.2",
