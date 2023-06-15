@@ -110,18 +110,20 @@ export class WsMessage {
           //warning
           console.warn(embeds[0].description);
         }
-        if (embeds[0].title.includes("continue")) {
-          if (embeds[0].description.includes("verify you're human")) {
-            //verify human
-            await this.verifyHuman(message);
+        if (embeds[0].title) {
+          if (embeds[0].title.includes("continue")) {
+            if (embeds[0].description.includes("verify you're human")) {
+              //verify human
+              await this.verifyHuman(message);
+              return;
+            }
+          }
+          if (embeds[0].title.includes("Invalid")) {
+            //error
+            const error = new Error(embeds[0].description);
+            this.EventError(id, error);
             return;
           }
-        }
-        if (embeds[0].title.includes("Invalid")) {
-          //error
-          const error = new Error(embeds[0].description);
-          this.EventError(id, error);
-          return;
         }
       }
     }

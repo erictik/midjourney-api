@@ -50,7 +50,7 @@ export class MidjourneyApi {
       //discord api rate limit
       await sleep(950);
       if (response.status >= 400) {
-        console.error("api.error.config", { config: this.config });
+        console.error("api.error.config", { payload, config: this.config });
       }
       return response.status;
     } catch (error) {
