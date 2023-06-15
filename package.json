@@ -1,6 +1,6 @@
 {
   "name": "midjourney",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "description": "Node.js client for the unofficial MidJourney API.",
   "main": "libs/index.js",
   "types": "libs/index.d.ts",
@@ -45,7 +45,6 @@
   },
   "dependencies": {
     "@huggingface/inference": "^2.5.0",
-    "https-proxy-agent": "^7.0.0",
     "isomorphic-ws": "^5.0.0",
     "mime": "^3.0.0",
     "p-queue": "^6.6.2",
