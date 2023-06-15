@@ -39,9 +39,9 @@ export class Midjourney extends MidjourneyMessage {
   }
   async Imagine(prompt: string, loading?: LoadingHandler) {
     prompt = prompt.trim();
-    if (!prompt.includes("--seed")) {
-      const seed = random(10000000, 999999999);
-      prompt = `${prompt} --seed ${seed}`;
+    if (!this.wsClient) {
+      const seed = random(1000000000, 9999999999);
+      prompt = `[${seed}] ${prompt}`;
     }
 
     const nonce = nextNonce();

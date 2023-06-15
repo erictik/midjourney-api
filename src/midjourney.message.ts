@@ -33,8 +33,8 @@ export class MidjourneyMessage {
     options?: string,
     index?: number
   ) {
-    const seed = prompt.match(/--seed (\d+)/)?.[1];
-
+    const seed = prompt.match(/\[(.*?)\]/)?.[1];
+    this.log(`seed:`, seed);
     const data = await this.safeRetrieveMessages(this.config.Limit);
     for (let i = 0; i < data.length; i++) {
       const item = data[i];
@@ -42,12 +42,13 @@ export class MidjourneyMessage {
         item.author.id === "936929561302675456" &&
         item.content.includes(`${seed}`)
       ) {
+        this.log(timestamp, item.timestamp);
         this.log(JSON.stringify(item));
-        // Upscaled or Variation
-        if (item.timestamp < timestamp) {
+        if (new Date(item.timestamp).getTime() < timestamp) {
           this.log("old message");
           continue;
         }
+        // Upscaled or Variation
         if (
           options &&
           !(
