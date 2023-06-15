@@ -95,44 +95,51 @@ export class WsMessage {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
   private async messageCreate(message: any) {
-    // this.log("messageCreate", message);
     const { embeds, id, nonce, components } = message;
+
     if (nonce) {
       this.log("waiting start image or info or error");
       this.updateMjEventIdByNonce(id, nonce);
-      if (embeds && embeds.length > 0) {
-        if (embeds[0].color === 16711680) {
-          //error
-          const error = new Error(embeds[0].description);
-          this.EventError(id, error);
-          return;
-        } else if (embeds[0].color === 16776960) {
-          //warning
-          console.warn(embeds[0].description);
-        }
-        if (embeds[0].title) {
-          if (embeds[0].title.includes("continue")) {
-            if (embeds[0].description.includes("verify you're human")) {
+
+      if (embeds?.[0]) {
+        const { color, description, title } = embeds[0];
+        this.log("embeds[0].color", color);
+        switch (color) {
+          case 16711680: //error
+            const error = new Error(description);
+            this.EventError(id, error);
+            return;
+
+          case 16776960: //warning
+            console.warn(description);
+            break;
+
+          default:
+            if (
+              title?.includes("continue") &&
+              description?.includes("verify you're human")
+            ) {
               //verify human
               await this.verifyHuman(message);
               return;
             }
-          }
-          if (embeds[0].title.includes("Invalid")) {
-            //error
-            const error = new Error(embeds[0].description);
-            this.EventError(id, error);
-            return;
-          }
+
+            if (title?.includes("Invalid")) {
+              //error
+              const error = new Error(description);
+              this.EventError(id, error);
+              return;
+            }
         }
       }
     }
-    //finished image
-    if (!nonce && components.length > 0) {
+
+    if (!nonce && components?.length > 0) {
       this.log("finished image");
       this.done(message);
       return;
     }
+
     this.messageUpdate(message);
   }
   private messageUpdate(message: any) {
