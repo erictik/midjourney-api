@@ -83,6 +83,7 @@ npm install
 3. set the environment variables
   - [How to get your Discord SALAI_TOKEN:](https://www.androidauthority.com/get-discord-token-3149920/)
   - How to get server and channel ids: you have to [create a new personal channel](https://discord.com/blog/starting-your-first-discord-server), when you click on a channel in your server in the browser expect to have the follow URL pattern `https://discord.com/channels/$SERVER_ID/$CHANNEL_ID`
+  - [Invite Midjourney Bot to Your Server](https://docs.midjourney.com/docs/invite-the-bot)
 
 ```bash
 #example variables, please set up yours
