@@ -11,6 +11,8 @@ Node.js client for the unofficial MidJourney API.
 [discord-bot](https://github.com/erictik/midjourney-discord-wrapper/)
 [web-ui](https://github.com/erictik/midjourney-ui/)  
 
+Proxy agent not supported.
+The edge runtime does not support Node.js 'http' module.
 ## Install
 
 ```bash
