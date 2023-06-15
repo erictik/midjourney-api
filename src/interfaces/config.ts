@@ -35,5 +35,5 @@ export const DefaultMJConfig: MJConfig = {
   Limit: 50,
   MaxWait: 100,
   DiscordBaseUrl: "https://discord.com",
-  WsBaseUrl: "wss://gateway.discord.gg?v=9&encoding=json&compress=gzip-stream`",
+  WsBaseUrl: "wss://gateway.discord.gg?v=9&encoding=json&compress=gzip-stream",
 };
