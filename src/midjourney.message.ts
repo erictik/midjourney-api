@@ -7,13 +7,10 @@ import {
 } from "./interfaces";
 import { CreateQueue } from "./queue";
 import { sleep } from "./utls";
-import fetch from "node-fetch";
-import { HttpsProxyAgent } from "https-proxy-agent";
 
 export class MidjourneyMessage {
   private magApiQueue = CreateQueue(1);
   public config: MJConfig;
-  agent?: HttpsProxyAgent<string>;
   constructor(defaults: MJConfigParam) {
     const { SalaiToken } = defaults;
     if (!SalaiToken) {
@@ -24,7 +21,6 @@ export class MidjourneyMessage {
       ...defaults,
     };
     if (this.config.ProxyUrl && this.config.ProxyUrl !== "") {
-      this.agent = new HttpsProxyAgent(this.config.ProxyUrl);
     }
   }
   protected log(...args: any[]) {
@@ -169,12 +165,10 @@ export class MidjourneyMessage {
       "Content-Type": "application/json",
       Authorization: this.config.SalaiToken,
     };
-    const agent = this.agent;
     const response = await fetch(
       `${this.config.DiscordBaseUrl}/api/v10/channels/${this.config.ChannelId}/messages?limit=${limit}`,
       {
         headers,
-        agent,
       }
     );
     if (!response.ok) {

@@ -1,19 +1,17 @@
 import { DiscordImage, MJConfig, UploadParam, UploadSlot } from "./interfaces";
 import { CreateQueue } from "./queue";
 import { nextNonce, sleep } from "./utls";
-import fetch from "node-fetch";
-import { HttpsProxyAgent } from "https-proxy-agent";
 import * as fs from "fs";
 import path from "path";
 import * as mime from "mime";
-
+interface CustomRequestInit extends RequestInit {
+  agent?: any;
+}
 export class MidjourneyApi {
   private apiQueue = CreateQueue(1);
-  Agent?: HttpsProxyAgent<string>;
   UpId = Date.now() % 10; // upload id
   constructor(public config: MJConfig) {
     if (this.config.ProxyUrl && this.config.ProxyUrl !== "") {
-      this.Agent = new HttpsProxyAgent(this.config.ProxyUrl);
     }
   }
   // limit the number of concurrent interactions
@@ -36,16 +34,19 @@ export class MidjourneyApi {
         "Content-Type": "application/json",
         Authorization: this.config.SalaiToken,
       };
-      const agent = this.Agent;
-      const response = await fetch(
-        `${this.config.DiscordBaseUrl}/api/v9/interactions`,
-        {
-          method: "POST",
-          body: JSON.stringify(payload),
-          headers: headers,
-          agent,
-        }
-      );
+      console.log("api.DiscordBaseUrl", this.config.DiscordBaseUrl);
+
+      let fetchUrl = `${this.config.ProxyUrl}?url=${encodeURIComponent(
+        `${this.config.DiscordBaseUrl}/api/v9/interactions`
+      )}`;
+
+      fetchUrl = `${this.config.DiscordBaseUrl}/api/v9/interactions`;
+      console.log("api.fetchUrl", fetchUrl);
+      const response = await fetch(fetchUrl, {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: headers,
+      });
       callback && callback(response.status);
       //discord api rate limit
       await sleep(950);
