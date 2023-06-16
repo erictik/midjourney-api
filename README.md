@@ -8,11 +8,9 @@ Node.js client for the unofficial MidJourney api.
 	</p>
 </div>
 
-[discord-bot](https://github.com/erictik/midjourney-discord-wrapper/)
+[discord-bot](https://github.com/erictik/midjourney-discord/)
 [web-ui](https://github.com/erictik/midjourney-ui/)  
 
-Proxy agent not supported.
-The edge runtime does not support Node.js 'http' module.
 ## Install
 
 ```bash
@@ -105,11 +103,13 @@ npx tsx example/imagine-ws.ts
 ## route-map
 - [x] `/imagine` `variation` `upscale` 
 - [x] websocket get message
-- [x] call back error
+- [x] callback error
 - [x] verify human
 - [x] `/info`
 - [x] `/fast api` and `/relax api`
 - [x] `/describe` 
+- [x] [proxy](https://github.com/erictik/midjourney-discord/blob/main/examples/proxy.ts)
+- [ ] get command payload from discord 
 ---
 <a href='https://ko-fi.com/erictik' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee' /></a>
 ## Star History
