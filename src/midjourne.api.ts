@@ -10,10 +10,7 @@ interface CustomRequestInit extends RequestInit {
 export class MidjourneyApi {
   private apiQueue = CreateQueue(1);
   UpId = Date.now() % 10; // upload id
-  constructor(public config: MJConfig) {
-    if (this.config.ProxyUrl && this.config.ProxyUrl !== "") {
-    }
-  }
+  constructor(public config: MJConfig) {}
   // limit the number of concurrent interactions
   protected async safeIteractions(payload: any) {
     return this.apiQueue.addTask(
@@ -34,19 +31,14 @@ export class MidjourneyApi {
         "Content-Type": "application/json",
         Authorization: this.config.SalaiToken,
       };
-      console.log("api.DiscordBaseUrl", this.config.DiscordBaseUrl);
-
-      let fetchUrl = `${this.config.ProxyUrl}?url=${encodeURIComponent(
-        `${this.config.DiscordBaseUrl}/api/v9/interactions`
-      )}`;
-
-      fetchUrl = `${this.config.DiscordBaseUrl}/api/v9/interactions`;
-      console.log("api.fetchUrl", fetchUrl);
-      const response = await fetch(fetchUrl, {
-        method: "POST",
-        body: JSON.stringify(payload),
-        headers: headers,
-      });
+      const response = await this.config.fetch(
+        `${this.config.DiscordBaseUrl}/api/v9/interactions`,
+        {
+          method: "POST",
+          body: JSON.stringify(payload),
+          headers: headers,
+        }
+      );
       callback && callback(response.status);
       //discord api rate limit
       await sleep(950);
@@ -278,7 +270,7 @@ export class MidjourneyApi {
     let file_size;
 
     if (fileUrl.startsWith("http")) {
-      const response = await fetch(fileUrl);
+      const response = await this.config.fetch(fileUrl);
       fileData = await response.arrayBuffer();
       mimeType = response.headers.get("content-type");
       filename = path.basename(fileUrl) || "image.png";
@@ -321,7 +313,7 @@ export class MidjourneyApi {
       `${this.config.DiscordBaseUrl}/api/v9/channels/${this.config.ChannelId}/attachments`
     );
     const body = { files };
-    const response = await fetch(url.toString(), {
+    const response = await this.config.fetch(url.toString(), {
       headers,
       method: "POST",
       body: JSON.stringify(body),
@@ -342,7 +334,7 @@ export class MidjourneyApi {
   ): Promise<void> {
     const body = new Uint8Array(data);
     const headers = { "content-type": contentType };
-    const response = await fetch(slot.upload_url, {
+    const response = await this.config.fetch(slot.upload_url, {
       method: "PUT",
       headers,
       body,

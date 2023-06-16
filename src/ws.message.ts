@@ -10,8 +10,6 @@ import {
 import { MidjourneyApi } from "./midjourne.api";
 import { VerifyHuman } from "./verify.human";
 import WebSocket from "isomorphic-ws";
-// import { HttpsProxyAgent } from "https-proxy-agent";
-
 export class WsMessage {
   ws: WebSocket;
   MJBotId = "936929561302675456";
@@ -21,14 +19,9 @@ export class WsMessage {
   private waitMjEvents: Map<string, WaitMjEvent> = new Map();
   private reconnectTime: boolean[] = [];
   private heartbeatInterval = 0;
-  // agent?: HttpsProxyAgent<string>;
 
   constructor(public config: MJConfig, public MJApi: MidjourneyApi) {
-    if (this.config.ProxyUrl && this.config.ProxyUrl !== "") {
-      // this.agent = new HttpsProxyAgent(this.config.ProxyUrl);
-    }
-    // const agent = this.agent;
-    this.ws = new WebSocket(this.config.WsBaseUrl);
+    this.ws = new this.config.WebSocket(this.config.WsBaseUrl);
     this.ws.addEventListener("open", this.open.bind(this));
   }
 
@@ -53,7 +46,7 @@ export class WsMessage {
   private reconnect() {
     if (this.closed) return;
     // const agent = this.agent;
-    this.ws = new WebSocket(this.config.WsBaseUrl);
+    this.ws = new this.config.WebSocket(this.config.WsBaseUrl);
     this.ws.addEventListener("open", this.open.bind(this));
   }
   // After opening ws
@@ -218,7 +211,7 @@ export class WsMessage {
     const uri = embeds[0].image.url;
     const categories = components[0].components;
     const classify = categories.map((c: any) => c.label);
-    const verifyClient = new VerifyHuman(HuggingFaceToken);
+    const verifyClient = new VerifyHuman(this.config);
     const category = await verifyClient.verify(uri, classify);
     if (category) {
       const custom_id = categories.find(
