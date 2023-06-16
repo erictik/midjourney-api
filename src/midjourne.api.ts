@@ -178,7 +178,7 @@ export class MidjourneyApi {
       channel_id: this.config.ChannelId,
       session_id: this.config.SessionId,
       data: {
-        version: "972289487818334209",
+        version: "1118961510123847776",
         id: "972289487818334209",
         name: "info",
         type: 1,
@@ -363,7 +363,7 @@ export class MidjourneyApi {
       channel_id: this.config.ChannelId,
       session_id: this.config.SessionId,
       data: {
-        version: "1092492867185950853",
+        version: "1118961510123847774",
         id: "1092492867185950852",
         name: "describe",
         type: 1,
