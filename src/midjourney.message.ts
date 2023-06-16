@@ -20,8 +20,6 @@ export class MidjourneyMessage {
       ...DefaultMJConfig,
       ...defaults,
     };
-    if (this.config.ProxyUrl && this.config.ProxyUrl !== "") {
-    }
   }
   protected log(...args: any[]) {
     this.config.Debug && console.log(...args, new Date().toISOString());
@@ -164,7 +162,7 @@ export class MidjourneyMessage {
       "Content-Type": "application/json",
       Authorization: this.config.SalaiToken,
     };
-    const response = await fetch(
+    const response = await this.config.fetch(
       `${this.config.DiscordBaseUrl}/api/v10/channels/${this.config.ChannelId}/messages?limit=${limit}`,
       {
         headers,
