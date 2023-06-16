@@ -1,6 +1,6 @@
-# midjourney-api
+# midjourney-client
 
-Node.js client for the unofficial MidJourney API.
+Node.js client for the unofficial MidJourney api.
 <div align="center">
 	<p>
 		<a href="https://discord.gg/GavuGHQbV4"><img src="https://img.shields.io/discord/1082500871478329374?color=5865F2&logo=discord&logoColor=white" alt="Discord server" /></a>
