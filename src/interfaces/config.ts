@@ -1,7 +1,7 @@
 import WebSocket from "isomorphic-ws";
 
 export type FetchFn = typeof fetch;
-export type WebSocketFn = typeof WebSocket;
+export type WebSocketCl = typeof WebSocket;
 
 export interface MJConfig {
   ChannelId: string;
@@ -16,7 +16,7 @@ export interface MJConfig {
   DiscordBaseUrl: string;
   WsBaseUrl: string;
   fetch: FetchFn;
-  WebSocket: WebSocketFn;
+  WebSocket: WebSocketCl;
 }
 export interface MJConfigParam {
   SalaiToken: string;
@@ -31,7 +31,7 @@ export interface MJConfigParam {
   DiscordBaseUrl?: string;
   WsBaseUrl?: string;
   fetch?: FetchFn;
-  WebSocket?: WebSocketFn;
+  WebSocket?: WebSocketCl;
 }
 
 export const DefaultMJConfig: MJConfig = {
