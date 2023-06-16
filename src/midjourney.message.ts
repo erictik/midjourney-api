@@ -93,8 +93,12 @@ export class MidjourneyMessage {
   UriToHash(uri: string) {
     return uri.split("_").pop()?.split(".")[0] ?? "";
   }
-  async WaitMessage(prompt: string, loading?: LoadingHandler) {
-    var timestamp = Date.now();
+  async WaitMessage(
+    prompt: string,
+    loading?: LoadingHandler,
+    timestamp?: number
+  ) {
+    timestamp = timestamp ?? Date.now();
     for (let i = 0; i < this.config.MaxWait; i++) {
       const msg = await this.FilterMessages(timestamp, prompt, loading);
       if (msg !== null) {
