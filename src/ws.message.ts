@@ -21,7 +21,7 @@ export class WsMessage {
   private heartbeatInterval = 0;
 
   constructor(public config: MJConfig, public MJApi: MidjourneyApi) {
-    this.ws = new WebSocket(this.config.WsBaseUrl);
+    this.ws = new this.config.WebSocket(this.config.WsBaseUrl);
     this.ws.addEventListener("open", this.open.bind(this));
   }
 
@@ -46,7 +46,7 @@ export class WsMessage {
   private reconnect() {
     if (this.closed) return;
     // const agent = this.agent;
-    this.ws = new WebSocket(this.config.WsBaseUrl);
+    this.ws = new this.config.WebSocket(this.config.WsBaseUrl);
     this.ws.addEventListener("open", this.open.bind(this));
   }
   // After opening ws
