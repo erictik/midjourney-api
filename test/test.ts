@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { Midjourney, WsMessage } from "../src";
+import { DefaultMJConfig, Midjourney, WsMessage } from "../src";
 import { nextNonce } from "../src/utls";
 /**
  *
@@ -10,7 +10,9 @@ import { nextNonce } from "../src/utls";
  */
 
 function test2() {
-  console.log(nextNonce());
-  console.log(nextNonce());
+  const config = {
+    ...DefaultMJConfig,
+    ...{},
+  };
 }
 test2();
