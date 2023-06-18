@@ -8,6 +8,7 @@ import {
 } from "./interfaces";
 
 import { MidjourneyApi } from "./midjourne.api";
+import { formatOptions } from "./utls";
 import { VerifyHuman } from "./verify.human";
 import WebSocket from "isomorphic-ws";
 export class WsMessage {
@@ -239,14 +240,15 @@ export class WsMessage {
 
   private done(message: any) {
     const { content, id, attachments, components, flags } = message;
-    console.log("components=====", JSON.stringify(message));
+    console.log("components=====", JSON.stringify(components));
     const MJmsg: MJMessage = {
       id,
+      flags,
+      content,
       hash: this.uriToHash(attachments[0].url),
       progress: "done",
-      flags: flags,
       uri: attachments[0].url,
-      content: content,
+      options: formatOptions(components),
     };
     this.filterMessages(MJmsg);
     return;

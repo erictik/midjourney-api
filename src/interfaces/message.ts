@@ -5,6 +5,7 @@ export interface MJMessage {
   id?: string;
   hash?: string;
   progress?: string;
+  options?: MJOptions[];
 }
 
 export type LoadingHandler = (uri: string, progress: string) => void;
@@ -34,5 +35,6 @@ export interface MJInfo {
 
 export interface MJOptions {
   label: string;
+  type: string;
   custom: string;
 }

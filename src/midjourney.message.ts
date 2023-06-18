@@ -1,3 +1,4 @@
+import { format } from "path";
 import {
   DefaultMJConfig,
   LoadingHandler,
@@ -6,7 +7,7 @@ import {
   MJConfigParam,
 } from "./interfaces";
 import { CreateQueue } from "./queue";
-import { sleep } from "./utls";
+import { formatOptions, sleep } from "./utls";
 
 export class MidjourneyMessage {
   private magApiQueue = CreateQueue(1);
@@ -61,12 +62,13 @@ export class MidjourneyMessage {
         //finished
         const content = item.content.split("**")[1];
         const msg: MJMessage = {
+          content,
           id: item.id,
           uri: imageUrl,
           flags: item.flags,
           hash: this.UriToHash(imageUrl),
-          content: content,
           progress: "done",
+          options: formatOptions(item.components),
         };
         return msg;
       }
