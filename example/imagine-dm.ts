@@ -13,7 +13,7 @@ async function main() {
     Debug: true,
     Ws: true,
   });
-  await client.init();
+  await client.Connect();
   const msg = await client.Imagine(
     "A little white dog",
     (uri: string, progress: string) => {

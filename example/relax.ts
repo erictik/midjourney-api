@@ -15,7 +15,7 @@ async function main() {
     Debug: true,
     Ws: true,
   });
-  await client.init();
+  await client.Connect();
   await client.Relax();
   const msg = await client.Info();
   console.log({ msg });

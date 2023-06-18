@@ -4,16 +4,10 @@ import { nextNonce, sleep } from "./utls";
 import * as fs from "fs";
 import path from "path";
 import * as mime from "mime";
-interface CustomRequestInit extends RequestInit {
-  agent?: any;
-}
 export class MidjourneyApi {
   private apiQueue = CreateQueue(1);
   UpId = Date.now() % 10; // upload id
-  constructor(public config: MJConfig) {
-    if (this.config.ProxyUrl && this.config.ProxyUrl !== "") {
-    }
-  }
+  constructor(public config: MJConfig) {}
   // limit the number of concurrent interactions
   protected async safeIteractions(payload: any) {
     return this.apiQueue.addTask(
@@ -34,19 +28,14 @@ export class MidjourneyApi {
         "Content-Type": "application/json",
         Authorization: this.config.SalaiToken,
       };
-      console.log("api.DiscordBaseUrl", this.config.DiscordBaseUrl);
-
-      let fetchUrl = `${this.config.ProxyUrl}?url=${encodeURIComponent(
-        `${this.config.DiscordBaseUrl}/api/v9/interactions`
-      )}`;
-
-      fetchUrl = `${this.config.DiscordBaseUrl}/api/v9/interactions`;
-      console.log("api.fetchUrl", fetchUrl);
-      const response = await fetch(fetchUrl, {
-        method: "POST",
-        body: JSON.stringify(payload),
-        headers: headers,
-      });
+      const response = await this.config.fetch(
+        `${this.config.DiscordBaseUrl}/api/v9/interactions`,
+        {
+          method: "POST",
+          body: JSON.stringify(payload),
+          headers: headers,
+        }
+      );
       callback && callback(response.status);
       //discord api rate limit
       await sleep(950);
@@ -105,61 +94,84 @@ export class MidjourneyApi {
     };
     return this.safeIteractions(payload);
   }
-  async VariationApi(
-    index: number,
-    messageId: string,
-    messageHash: string,
-    nonce?: string
-  ) {
-    const payload = {
-      type: 3,
-      guild_id: this.config.ServerId,
-      channel_id: this.config.ChannelId,
-      message_flags: 0,
-      message_id: messageId,
-      application_id: "936929561302675456",
-      session_id: this.config.SessionId,
-      data: {
-        component_type: 2,
-        custom_id: `MJ::JOB::variation::${index}::${messageHash}`,
-      },
+  async VariationApi({
+    index,
+    msgId,
+    hash,
+    nonce = nextNonce(),
+    flags = 0,
+  }: {
+    index: 1 | 2 | 3 | 4;
+    msgId: string;
+    hash: string;
+    nonce?: string;
+    flags?: number;
+  }) {
+    return this.CustomApi({
+      msgId,
+      customId: `MJ::JOB::variation::${index}::${hash}`,
+      flags,
       nonce,
-    };
-    return this.safeIteractions(payload);
+    });
   }
-  async UpscaleApi(
-    index: number,
-    messageId: string,
-    messageHash: string,
-    nonce?: string
-  ) {
-    const guild_id = this.config.ServerId;
-    const payload = {
-      type: 3,
-      guild_id,
-      channel_id: this.config.ChannelId,
-      message_flags: 0,
-      message_id: messageId,
-      application_id: "936929561302675456",
-      session_id: this.config.SessionId,
-      data: {
-        component_type: 2,
-        custom_id: `MJ::JOB::upsample::${index}::${messageHash}`,
-      },
+  async UpscaleApi({
+    index,
+    msgId,
+    hash,
+    nonce = nextNonce(),
+    flags,
+  }: {
+    index: 1 | 2 | 3 | 4;
+    msgId: string;
+    hash: string;
+    nonce?: string;
+    flags: number;
+  }) {
+    return this.CustomApi({
+      msgId,
+      customId: `MJ::JOB::upsample::${index}::${hash}`,
+      flags,
       nonce,
-    };
-    return this.safeIteractions(payload);
+    });
+  }
+  async RerollApi({
+    msgId,
+    hash,
+    nonce = nextNonce(),
+    flags,
+  }: {
+    msgId: string;
+    hash: string;
+    nonce?: string;
+    flags: number;
+  }) {
+    return this.CustomApi({
+      msgId,
+      customId: `MJ::JOB::reroll::0::${hash}::SOLO`,
+      flags,
+      nonce,
+    });
   }
 
-  async ClickBtnApi(messageId: string, customId: string, nonce?: string) {
+  async CustomApi({
+    msgId: msgId,
+    customId,
+    flags,
+    nonce = nextNonce(),
+  }: {
+    msgId: string;
+    customId: string;
+    flags: number;
+    nonce?: string;
+  }) {
     const guild_id = this.config.ServerId;
     const payload = {
       type: 3,
       nonce,
       guild_id,
       channel_id: this.config.ChannelId,
-      message_flags: 0,
-      message_id: messageId,
+      message_flags: flags,
+      message_id: msgId,
       application_id: "936929561302675456",
       session_id: this.config.SessionId,
       data: {
@@ -278,7 +290,7 @@ export class MidjourneyApi {
     let file_size;
 
     if (fileUrl.startsWith("http")) {
-      const response = await fetch(fileUrl);
+      const response = await this.config.fetch(fileUrl);
       fileData = await response.arrayBuffer();
       mimeType = response.headers.get("content-type");
       filename = path.basename(fileUrl) || "image.png";
@@ -321,7 +333,7 @@ export class MidjourneyApi {
       `${this.config.DiscordBaseUrl}/api/v9/channels/${this.config.ChannelId}/attachments`
     );
     const body = { files };
-    const response = await fetch(url.toString(), {
+    const response = await this.config.fetch(url.toString(), {
       headers,
       method: "POST",
       body: JSON.stringify(body),
@@ -342,7 +354,7 @@ export class MidjourneyApi {
   ): Promise<void> {
     const body = new Uint8Array(data);
     const headers = { "content-type": contentType };
-    const response = await fetch(slot.upload_url, {
+    const response = await this.config.fetch(slot.upload_url, {
       method: "PUT",
       headers,
       body,

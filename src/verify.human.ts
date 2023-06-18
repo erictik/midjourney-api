@@ -1,9 +1,11 @@
 import { HfInference } from "@huggingface/inference";
+import { MJConfig } from "./interfaces";
 export class VerifyHuman {
   private inference: HfInference;
 
-  constructor(HuggingFaceToken: string) {
-    if (HuggingFaceToken === "") {
+  constructor(public config: MJConfig) {
+    const { HuggingFaceToken } = config;
+    if (HuggingFaceToken === "" || HuggingFaceToken) {
       throw new Error("HuggingFaceToken is required");
     }
     this.inference = new HfInference(HuggingFaceToken);
@@ -12,7 +14,7 @@ export class VerifyHuman {
   async verify(imageUri: string, categories: string[]) {
     console.log("verify----start", imageUri, categories);
     const imageCates = await this.inference.imageClassification({
-      data: await (await fetch(imageUri)).blob(),
+      data: await (await this.config.fetch(imageUri)).blob(),
       model: "google/vit-base-patch16-224",
     });
     console.log("verify----response", { imageCates });

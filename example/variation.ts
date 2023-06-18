@@ -25,25 +25,27 @@ async function main() {
     console.log("no message");
     return;
   }
-  const Variation = await client.Variation(
-    msg.content,
-    1,
-    <string>msg.id,
-    <string>msg.hash,
-    (uri: string, progress: string) => {
+  const Variation = await client.Variation({
+    index: 1,
+    msgId: <string>msg.id,
+    hash: <string>msg.hash,
+    flags: msg.flags,
+    content: msg.content,
+    loading: (uri: string, progress: string) => {
       console.log("Variation.loading", uri, "progress", progress);
-    }
-  );
+    },
+  });
   console.log({ Variation });
-  const Variation2 = await client.Variation(
-    msg.content,
-    2,
-    <string>msg.id,
-    <string>msg.hash,
-    (uri: string, progress: string) => {
+  const Variation2 = await client.Variation({
+    index: 2,
+    msgId: <string>msg.id,
+    hash: <string>msg.hash,
+    flags: msg.flags,
+    content: msg.content,
+    loading: (uri: string, progress: string) => {
       console.log("Variation2.loading", uri, "progress", progress);
-    }
-  );
+    },
+  });
   console.log({ Variation2 });
 }
 main().catch((err) => {

@@ -15,23 +15,24 @@ async function main() {
     Debug: true,
     Ws: true,
   });
-  await client.init();
+  await client.Connect();
   const msg = await client.Imagine("a cool cat, blue ears, yellow hat");
   console.log({ msg });
   if (!msg) {
     console.log("no message");
     return;
   }
-  const msg2 = await client.Upscale(
-    msg.content,
-    2,
-    <string>msg.id,
-    <string>msg.hash,
-    (uri: string, progress: string) => {
+  const msg2 = await client.Upscale({
+    index: 2,
+    msgId: <string>msg.id,
+    hash: <string>msg.hash,
+    flags: msg.flags,
+    loading: (uri: string, progress: string) => {
       console.log("loading", uri, "progress", progress);
-    }
-  );
+    },
+  });
   console.log({ msg2 });
+  client.Close();
 }
 main().catch((err) => {
   console.error(err);

@@ -1,3 +1,8 @@
+import WebSocket from "isomorphic-ws";
+
+export type FetchFn = typeof fetch;
+export type WebSocketCl = typeof WebSocket;
+
 export interface MJConfig {
   ChannelId: string;
   SalaiToken: string;
@@ -10,7 +15,8 @@ export interface MJConfig {
   HuggingFaceToken?: string;
   DiscordBaseUrl: string;
   WsBaseUrl: string;
-  ProxyUrl?: string;
+  fetch: FetchFn;
+  WebSocket: WebSocketCl;
 }
 export interface MJConfigParam {
   SalaiToken: string;
@@ -24,7 +30,8 @@ export interface MJConfigParam {
   SessionId?: string;
   DiscordBaseUrl?: string;
   WsBaseUrl?: string;
-  ProxyUrl?: string;
+  fetch?: FetchFn;
+  WebSocket?: WebSocketCl;
 }
 
 export const DefaultMJConfig: MJConfig = {
@@ -33,7 +40,10 @@ export const DefaultMJConfig: MJConfig = {
   SessionId: "8bb7f5b79c7a49f7d0824ab4b8773a81",
   Debug: false,
   Limit: 50,
+  Ws: true,
   MaxWait: 200,
   DiscordBaseUrl: "https://discord.com",
   WsBaseUrl: "wss://gateway.discord.gg?v=9&encoding=json&compress=gzip-stream",
+  fetch: fetch,
+  WebSocket: WebSocket,
 };
