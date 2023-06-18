@@ -15,7 +15,7 @@ async function main() {
     Debug: true,
     Ws: true,
   });
-  await client.init();
+  await client.Connect();
   const msg = await client.Describe(
     "https://img.ohdat.io/midjourney-image/1b74cab8-70c9-474e-bfbb-093e9a3cfd5c/0_1.png"
   );

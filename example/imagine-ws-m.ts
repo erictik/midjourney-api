@@ -14,9 +14,8 @@ async function main() {
     SalaiToken: <string>process.env.SALAI_TOKEN,
     HuggingFaceToken: <string>process.env.HUGGINGFACE_TOKEN,
     Debug: true,
-    Ws: true,
   });
-  await client.init();
+  await client.Connect();
   client
     .Imagine("A little pink elephant", (uri) => {
       console.log("loading123---", uri);

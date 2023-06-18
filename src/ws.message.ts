@@ -156,7 +156,7 @@ export class WsMessage {
     this.processingImage(message);
   }
   private processingImage(message: any) {
-    const { content, id, attachments } = message;
+    const { content, id, attachments, flags } = message;
     const event = this.getEventById(id);
     if (!event) {
       return;
@@ -169,6 +169,7 @@ export class WsMessage {
     const MJmsg: MJMessage = {
       uri: attachments[0].url,
       content: content,
+      flags: flags,
       progress: this.content2progress(content),
     };
     const eventMsg: WsEventMsg = {
@@ -207,7 +208,7 @@ export class WsMessage {
       this.log("HuggingFaceToken is empty");
       return;
     }
-    const { embeds, components } = message;
+    const { embeds, components, id, flags } = message;
     const uri = embeds[0].image.url;
     const categories = components[0].components;
     const classify = categories.map((c: any) => c.label);
@@ -217,9 +218,12 @@ export class WsMessage {
       const custom_id = categories.find(
         (c: any) => c.label === category
       ).custom_id;
-      const httpStatus = await this.MJApi.ClickBtnApi(custom_id, message.id);
+      const httpStatus = await this.MJApi.CustomApi({
+        msgId: id,
+        customId: custom_id,
+        flags,
+      });
       this.log("verifyHumanApi", httpStatus, custom_id, message.id);
-      // this.log("verify success", category);
     }
   }
   private EventError(id: string, error: Error) {
@@ -234,11 +238,13 @@ export class WsMessage {
   }
 
   private done(message: any) {
-    const { content, id, attachments } = message;
+    const { content, id, attachments, components, flags } = message;
+    console.log("components=====", JSON.stringify(message));
     const MJmsg: MJMessage = {
       id,
       hash: this.uriToHash(attachments[0].url),
       progress: "done",
+      flags: flags,
       uri: attachments[0].url,
       content: content,
     };

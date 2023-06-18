@@ -27,9 +27,7 @@ export class MidjourneyMessage {
   async FilterMessages(
     timestamp: number,
     prompt: string,
-    loading?: LoadingHandler,
-    options?: string,
-    index?: number
+    loading?: LoadingHandler
   ) {
     const seed = prompt.match(/\[(.*?)\]/)?.[1];
     this.log(`seed:`, seed);
@@ -65,6 +63,7 @@ export class MidjourneyMessage {
         const msg: MJMessage = {
           id: item.id,
           uri: imageUrl,
+          flags: item.flags,
           hash: this.UriToHash(imageUrl),
           content: content,
           progress: "done",
@@ -103,51 +102,6 @@ export class MidjourneyMessage {
         return msg;
       }
       this.log(i, "wait no message found");
-      await sleep(1000 * 2);
-    }
-    return null;
-  }
-
-  async WaitOptionMessage(
-    content: string,
-    options: string,
-    loading?: LoadingHandler
-  ) {
-    var timestamp = Date.now();
-
-    for (let i = 0; i < this.config.MaxWait; i++) {
-      const msg = await this.FilterMessages(
-        timestamp,
-        content,
-        loading,
-        options
-      );
-      if (msg !== null) {
-        return msg;
-      }
-      this.log(i, content, "wait no message found");
-      await sleep(1000 * 2);
-    }
-    return null;
-  }
-  async WaitUpscaledMessage(
-    content: string,
-    index: number,
-    loading?: LoadingHandler
-  ) {
-    var timestamp = Date.now();
-    for (let i = 0; i < this.config.MaxWait; i++) {
-      const msg = await this.FilterMessages(
-        timestamp,
-        content,
-        loading,
-        "Upscaled",
-        index
-      );
-      if (msg !== null) {
-        return msg;
-      }
-      this.log(i, content, "wait no message found");
       await sleep(1000 * 2);
     }
     return null;

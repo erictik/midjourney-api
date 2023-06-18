@@ -1,6 +1,7 @@
 export interface MJMessage {
   uri: string;
   content: string;
+  flags: number;
   id?: string;
   hash?: string;
   progress?: string;
@@ -29,4 +30,9 @@ export interface MJInfo {
   queuedJobsFast: string;
   queuedJobsRelax: string;
   runningJobs: string;
+}
+
+export interface MJOptions {
+  label: string;
+  custom: string;
 }
