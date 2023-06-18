@@ -16,7 +16,7 @@ async function main() {
     Debug: true,
     Ws: true,
   });
-  await client.init();
+  await client.Connect();
   const Imagine = await client.Imagine(
     "Red hamster smoking a cigaret, https://media.discordapp.net/attachments/1108515696385720410/1118385339732590682/DanielH_A_giant_hamster_monster._Friendly_in_a_business_suit_si_d4be1836-a4e1-41a8-b1d7-99eebc521220.png?width=1878&height=1878 ",
     (uri: string, progress: string) => {
@@ -27,30 +27,41 @@ async function main() {
   if (!Imagine) {
     return;
   }
-  const Variation = await client.Variation(
-    Imagine.content,
-    2,
-    <string>Imagine.id,
-    <string>Imagine.hash,
-    (uri: string, progress: string) => {
+  const reroll = await client.Reroll({
+    msgId: <string>Imagine.id,
+    hash: <string>Imagine.hash,
+    flags: Imagine.flags,
+    loading: (uri: string, progress: string) => {
+      console.log("Reroll.loading", uri, "progress", progress);
+    },
+  });
+  console.log({ reroll });
+
+  const Variation = await client.Variation({
+    index: 2,
+    msgId: <string>Imagine.id,
+    hash: <string>Imagine.hash,
+    flags: Imagine.flags,
+    loading: (uri: string, progress: string) => {
       console.log("Variation.loading", uri, "progress", progress);
-    }
-  );
+    },
+  });
 
   console.log({ Variation });
   if (!Variation) {
     return;
   }
-  const Upscale = await client.Upscale(
-    Variation.content,
-    2,
-    <string>Variation.id,
-    <string>Variation.hash,
-    (uri: string, progress: string) => {
+  const Upscale = await client.Upscale({
+    index: 2,
+    msgId: <string>Variation.id,
+    hash: <string>Variation.hash,
+    flags: Variation.flags,
+    loading: (uri: string, progress: string) => {
       console.log("Upscale.loading", uri, "progress", progress);
-    }
-  );
+    },
+  });
   console.log({ Upscale });
+
   client.Close();
 }
 main()

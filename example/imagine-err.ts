@@ -16,7 +16,7 @@ async function main() {
     Ws: true,
   });
 
-  await client.init();
+  await client.Connect();
   const msg = await client.Imagine(
     "https://edge-runtime.vercel.app/features/available-apis",
     (uri: string, progress: string) => {
