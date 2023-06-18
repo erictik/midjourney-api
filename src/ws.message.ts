@@ -89,7 +89,7 @@ export class WsMessage {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
   private async messageCreate(message: any) {
-    const { embeds, id, nonce, components } = message;
+    const { embeds, id, nonce, components, attachments } = message;
 
     if (nonce) {
       this.log("waiting start image or info or error");
@@ -128,8 +128,7 @@ export class WsMessage {
       }
     }
 
-    if (!nonce && components?.length > 0) {
-      this.log("finished image");
+    if (!nonce && attachments?.length > 0 && components?.length > 0) {
       this.done(message);
       return;
     }
@@ -240,7 +239,6 @@ export class WsMessage {
 
   private done(message: any) {
     const { content, id, attachments, components, flags } = message;
-    console.log("components=====", JSON.stringify(components));
     const MJmsg: MJMessage = {
       id,
       flags,
