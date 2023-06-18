@@ -240,7 +240,9 @@ export class WsMessage {
 
   private done(message: any) {
     const { content, id, attachments, components, flags } = message;
-    console.log("components=====", JSON.stringify(components));
+    if(!attachments.length) {
+      return
+    }
     const MJmsg: MJMessage = {
       id,
       flags,
