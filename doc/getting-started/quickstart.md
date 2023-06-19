@@ -1,26 +1,24 @@
 # Quickstart
 
-
-
-> ### **Step1: Get your Discord Token**
+> #### **Step1: Get your Discord Token**[Join the Beta](https://discord.com/invite/GavuGHQbV4)
 
 {% content-ref url="broken-reference" %}
 [Broken link](broken-reference)
 {% endcontent-ref %}
 
-> ### **Step2: Join Discord Server**
+> #### **Step2: Join Discord Server**
 
 {% content-ref url="broken-reference" %}
 [Broken link](broken-reference)
 {% endcontent-ref %}
 
-> ### **Step3: Install**  midjourney
+> #### **Step3: Install** midjourney
 
 {% content-ref url="install.md" %}
 [install.md](install.md)
 {% endcontent-ref %}
 
-> ### **Step3:** Use the imagine api&#x20;
+> #### **Step3:** Use the imagine api
 
 {% tabs %}
 {% tab title="Typescirpt" %}
