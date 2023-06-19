@@ -4,10 +4,13 @@ import { nextNonce, sleep } from "./utls";
 import * as fs from "fs";
 import path from "path";
 import * as mime from "mime";
-export class MidjourneyApi {
+import { Command } from "./command";
+export class MidjourneyApi extends Command {
   private apiQueue = CreateQueue(1);
   UpId = Date.now() % 10; // upload id
-  constructor(public config: MJConfig) {}
+  constructor(public config: MJConfig) {
+    super(config);
+  }
   // limit the number of concurrent interactions
   protected async safeIteractions(payload: any) {
     return this.apiQueue.addTask(
@@ -49,49 +52,7 @@ export class MidjourneyApi {
     }
   }
   async ImagineApi(prompt: string, nonce: string = nextNonce()) {
-    const guild_id = this.config.ServerId;
-    const payload = {
-      type: 2,
-      application_id: "936929561302675456",
-      guild_id,
-      channel_id: this.config.ChannelId,
-      session_id: this.config.SessionId,
-      data: {
-        version: "1118961510123847772",
-        id: "938956540159881230",
-        name: "imagine",
-        type: 1,
-        options: [
-          {
-            type: 3,
-            name: "prompt",
-            value: prompt,
-          },
-        ],
-        application_command: {
-          id: "938956540159881230",
-          application_id: "936929561302675456",
-          version: "1118961510123847772",
-          default_permission: true,
-          default_member_permissions: null,
-          type: 1,
-          nsfw: false,
-          name: "imagine",
-          description: "Create images with Midjourney",
-          dm_permission: true,
-          options: [
-            {
-              type: 3,
-              name: "prompt",
-              description: "The prompt to imagine",
-              required: true,
-            },
-          ],
-        },
-        attachments: [],
-      },
-      nonce,
-    };
+    const payload = await this.imaginePayload(prompt, nonce);
     return this.safeIteractions(payload);
   }
   async VariationApi({
@@ -164,11 +125,10 @@ export class MidjourneyApi {
     flags: number;
     nonce?: string;
   }) {
-    const guild_id = this.config.ServerId;
     const payload = {
       type: 3,
       nonce,
-      guild_id,
+      guild_id: this.config.ServerId,
       channel_id: this.config.ChannelId,
       message_flags: flags,
       message_id: msgId,
@@ -182,100 +142,15 @@ export class MidjourneyApi {
     return this.safeIteractions(payload);
   }
   async InfoApi(nonce?: string) {
-    const guild_id = this.config.ServerId;
-    const payload = {
-      type: 2,
-      application_id: "936929561302675456",
-      guild_id,
-      channel_id: this.config.ChannelId,
-      session_id: this.config.SessionId,
-      data: {
-        version: "1118961510123847776",
-        id: "972289487818334209",
-        name: "info",
-        type: 1,
-        options: [],
-        application_command: {
-          id: "972289487818334209",
-          application_id: "936929561302675456",
-          version: "972289487818334209",
-          default_member_permissions: null,
-          type: 1,
-          nsfw: false,
-          name: "info",
-          description: "View information about your profile.",
-          dm_permission: true,
-          contexts: null,
-        },
-        attachments: [],
-      },
-      nonce,
-    };
+    const payload = await this.infoPayload(nonce);
     return this.safeIteractions(payload);
   }
   async FastApi(nonce?: string) {
-    const guild_id = this.config.ServerId;
-    const payload = {
-      type: 2,
-      application_id: "936929561302675456",
-      guild_id,
-      channel_id: this.config.ChannelId,
-      session_id: this.config.SessionId,
-      data: {
-        version: "987795926183731231",
-        id: "972289487818334212",
-        name: "fast",
-        type: 1,
-        options: [],
-        application_command: {
-          id: "972289487818334212",
-          application_id: "936929561302675456",
-          version: "987795926183731231",
-          default_member_permissions: null,
-          type: 1,
-          nsfw: false,
-          name: "fast",
-          description: "Switch to fast mode",
-          dm_permission: true,
-          contexts: null,
-        },
-        attachments: [],
-      },
-      nonce,
-    };
+    const payload = await this.fastPayload(nonce);
     return this.safeIteractions(payload);
   }
   async RelaxApi(nonce?: string) {
-    const guild_id = this.config.ServerId;
-    const channel_id = this.config.ChannelId;
-    const payload = {
-      type: 2,
-      application_id: "936929561302675456",
-      guild_id,
-      channel_id,
-      session_id: this.config.SessionId,
-      data: {
-        version: "987795926183731232",
-        id: "972289487818334213",
-        name: "relax",
-        type: 1,
-        options: [],
-        application_command: {
-          id: "972289487818334213",
-          application_id: "936929561302675456",
-          version: "987795926183731232",
-          default_member_permissions: null,
-          type: 1,
-          nsfw: false,
-          name: "relax",
-          description: "Switch to relax mode",
-          dm_permission: true,
-          contexts: null,
-        },
-        attachments: [],
-      },
-      nonce,
-    };
+    const payload = await this.relaxPayload(nonce);
     return this.safeIteractions(payload);
   }
   /**
@@ -367,49 +242,8 @@ export class MidjourneyApi {
       );
     }
   }
-  async DescribeApi(data: DiscordImage, nonce?: string) {
-    const payload = {
-      type: 2,
-      application_id: "936929561302675456",
-      guild_id: this.config.ServerId,
-      channel_id: this.config.ChannelId,
-      session_id: this.config.SessionId,
-      data: {
-        version: "1118961510123847774",
-        id: "1092492867185950852",
-        name: "describe",
-        type: 1,
-        options: [{ type: 11, name: "image", value: data.id }],
-        application_command: {
-          id: "1092492867185950852",
-          application_id: "936929561302675456",
-          version: "1092492867185950853",
-          default_member_permissions: null,
-          type: 1,
-          nsfw: false,
-          name: "describe",
-          description: "Writes a prompt based on your image.",
-          dm_permission: true,
-          contexts: null,
-          options: [
-            {
-              type: 11,
-              name: "image",
-              description: "The image to describe",
-              required: true,
-            },
-          ],
-        },
-        attachments: [
-          {
-            id: <string>data.id,
-            filename: data.filename,
-            uploaded_filename: data.upload_filename,
-          },
-        ],
-      },
-      nonce,
-    };
+  async DescribeApi(image: DiscordImage, nonce?: string) {
+    const payload = await this.describePayload(image, nonce);
     return this.safeIteractions(payload);
   }
 }
