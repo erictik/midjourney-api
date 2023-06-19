@@ -63,6 +63,36 @@ export class Midjourney extends MidjourneyMessage {
     }
   }
 
+  async Settings() {
+    const nonce = nextNonce();
+    const httpStatus = await this.MJApi.SettingsApi(nonce);
+    if (httpStatus !== 204) {
+      throw new Error(`ImagineApi failed with status ${httpStatus}`);
+    }
+    if (this.wsClient) {
+      return this.wsClient.waitSettings();
+    }
+    return null;
+  }
+  async Reset() {
+    const settings = await this.Settings();
+    if (!settings) {
+      throw new Error(`Settings not found`);
+    }
+    const reset = settings.options.find((o) => o.label === "Reset Settings");
+    if (!reset) {
+      throw new Error(`Reset Settings not found`);
+    }
+    const httpstatus = await this.MJApi.CustomApi({
+      msgId: settings.id,
+      customId: reset.custom,
+      flags: settings.flags,
+    });
+    if (httpstatus !== 204) {
+      throw new Error(`Reset failed with status ${httpstatus}`);
+    }
+  }
+
   async Info() {
     const nonce = nextNonce();
     const httpStatus = await this.MJApi.InfoApi(nonce);

@@ -5,6 +5,7 @@ import {
   LoadingHandler,
   WsEventMsg,
   MJInfo,
+  MJSettings,
 } from "./interfaces";
 
 import { MidjourneyApi } from "./midjourne.api";
@@ -136,21 +137,24 @@ export class WsMessage {
     this.messageUpdate(message);
   }
   private messageUpdate(message: any) {
-    // this.log("messageUpdate", message);
+    // this.log("messageUpdate", JSON.stringify(message));
+
     const { content, embeds, interaction, nonce, id } = message;
+    //settings
+    if (interaction.name === "settings" && !nonce) {
+      this.emit("settings", message);
+      return;
+    }
+    //describe
+    if (interaction.name === "describe" && !nonce) {
+      this.emitDescribe(id, embeds[0].description);
+    }
+    //info
+    if (interaction.name === "info" && !nonce) {
+      this.emit("info", embeds[0].description);
+      return;
+    }
     if (content === "") {
-      //describe
-      if (interaction.name === "describe" && !nonce) {
-        this.emitDescribe(id, embeds[0].description);
-      }
-      if (embeds && embeds.length > 0 && embeds[0].color === 0) {
-        this.log(embeds[0].title, embeds[0].description);
-        //maybe info
-        if (embeds[0].title.includes("info")) {
-          this.emit("info", embeds[0].description);
-          return;
-        }
-      }
       return;
     }
     this.processingImage(message);
@@ -359,6 +363,13 @@ export class WsMessage {
     };
     this.event.push({ event: "info", callback: once });
   }
+  onceSettings(callback: (message: any) => void) {
+    const once = (message: any) => {
+      this.remove("settings", once);
+      callback(message);
+    };
+    this.event.push({ event: "settings", callback: once });
+  }
   onceDescribe(nonce: string, callback: (data: any) => void) {
     const once = (message: any) => {
       this.remove(nonce, once);
@@ -420,6 +431,19 @@ export class WsMessage {
       });
     });
   }
+  async waitSettings() {
+    return new Promise<MJSettings | null>((resolve, reject) => {
+      this.onceSettings((message) => {
+        resolve({
+          id: message.id,
+          flags: message.flags,
+          content: message,
+          options: formatOptions(message.components),
+        });
+      });
+    });
+  }
+
   msg2Info(msg: string) {
     let jsonResult: MJInfo = {
       subscription: "",

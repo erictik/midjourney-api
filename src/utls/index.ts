@@ -23,8 +23,10 @@ export const formatOptions = (components: any) => {
       const item = formatOptions(component.components);
       data = data.concat(item);
     }
+    if (!component.custom_id) continue;
     data.push({
       type: component.type,
+      style: component.style,
       label: component.label || component.emoji?.name,
       custom: component.custom_id,
     });

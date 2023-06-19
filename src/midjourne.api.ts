@@ -145,6 +145,10 @@ export class MidjourneyApi extends Command {
     const payload = await this.infoPayload(nonce);
     return this.safeIteractions(payload);
   }
+  async SettingsApi(nonce?: string) {
+    const payload = await this.settingsPayload(nonce);
+    return this.safeIteractions(payload);
+  }
   async FastApi(nonce?: string) {
     const payload = await this.fastPayload(nonce);
     return this.safeIteractions(payload);

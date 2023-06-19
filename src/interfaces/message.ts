@@ -35,6 +35,13 @@ export interface MJInfo {
 
 export interface MJOptions {
   label: string;
-  type: string;
+  type: number;
+  style: number;
   custom: string;
+}
+export interface MJSettings {
+  content: string;
+  id: string;
+  flags: number;
+  options: MJOptions[];
 }
