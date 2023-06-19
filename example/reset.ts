@@ -2,9 +2,9 @@ import "dotenv/config";
 import { Midjourney } from "../src";
 /**
  *
- * a simple example of using the settings api
+ * a simple example of using the reset api
  * ```
- * npx tsx example/settings.ts
+ * npx tsx example/reset.ts
  * ```
  */
 async function main() {
