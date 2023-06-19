@@ -137,30 +137,32 @@ export class WsMessage {
     this.messageUpdate(message);
   }
   private messageUpdate(message: any) {
-    // this.log("messageUpdate", JSON.stringify(message));
+    const { content, embeds, interaction = {}, nonce, id } = message;
 
-    const { content, embeds, interaction, nonce, id } = message;
-    //settings
-    if (interaction.name === "settings" && !nonce) {
-      this.emit("settings", message);
-      return;
+    if (!nonce) {
+      const { name } = interaction;
+
+      switch (name) {
+        case "settings":
+          this.emit("settings", message);
+          return;
+        case "describe":
+          this.emitDescribe(id, embeds?.[0]?.description);
+          break;
+        case "info":
+          this.emit("info", embeds?.[0]?.description);
+          return;
+      }
     }
-    //describe
-    if (interaction.name === "describe" && !nonce) {
-      this.emitDescribe(id, embeds[0].description);
+    if (content) {
+      this.processingImage(message);
     }
-    //info
-    if (interaction.name === "info" && !nonce) {
-      this.emit("info", embeds[0].description);
-      return;
-    }
-    if (content === "") {
-      return;
-    }
-    this.processingImage(message);
   }
   private processingImage(message: any) {
-    const { content, id, attachments, flags } = message;
+    const { content = "", id, attachments, flags } = message;
+    if (!content) {
+      return;
+    }
     const event = this.getEventById(id);
     if (!event) {
       return;
