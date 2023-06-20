@@ -32,7 +32,7 @@ import { Midjourney } from "midjourney";
   });
   await client.Connect();
   const Imagine = await client.Imagine("A little pink elephant", (uri: string, progress:string) => {
-   onsole.log("Imagine", uri, "progress", progress);
+   console.log("Imagine", uri, "progress", progress);
   });
   console.log({ Imagine });
 
