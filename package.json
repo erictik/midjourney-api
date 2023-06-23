@@ -8,6 +8,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
+    "start": "npx tsx main.ts",
     "prettier": "prettier --write .",
     "prettier:check": "prettier --check ."
   },
@@ -45,11 +46,14 @@
   },
   "dependencies": {
     "@huggingface/inference": "^2.5.0",
+    "express": "^4.18.2",
     "isomorphic-ws": "^5.0.0",
     "mime": "^3.0.0",
+    "mongoose": "^7.3.1",
     "p-queue": "^6.6.2",
     "snowyflake": "^2.0.0",
     "tslib": "^2.5.0",
+    "uuid": "^9.0.0",
     "ws": "^8.13.0"
   }
 }

@@ -1,7 +1,5 @@
 # imagine
 
-
-
 <pre class="language-typescript"><code class="lang-typescript"><strong>import { Midjourney } from "midjourney";
 </strong>async function main() {
   const client = new Midjourney({

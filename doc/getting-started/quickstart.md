@@ -23,6 +23,7 @@
 {% tabs %}
 {% tab title="Typescirpt" %}
 {% code overflow="wrap" lineNumbers="true" %}
+
 ```typescript
 import { Midjourney } from "midjourney";
 
@@ -41,28 +42,29 @@ const msg = await client.Imagine(
 );
 console.log({ msg });
 ```
+
 {% endcode %}
 {% endtab %}
 
 {% tab title="Javascirpt" %}
 {% code overflow="wrap" lineNumbers="true" %}
+
 ```javascript
 const { Midjourney } = require("midjourney");
 
-  const client = new Midjourney({
-    ServerId: "1082500871478329374",
-    ChannelId: "1094892992281718894",
-    SalaiToken: "your discord token",
-    Debug: true,
-    Ws:true,
-  });
-  const msg = await client.Imagine("A little pink elephant", (uri, progress) => {
-    console.log("loading:", uri, "progress:", progress);
-  });
-  console.log({ msg });
-
-
+const client = new Midjourney({
+  ServerId: "1082500871478329374",
+  ChannelId: "1094892992281718894",
+  SalaiToken: "your discord token",
+  Debug: true,
+  Ws: true,
+});
+const msg = await client.Imagine("A little pink elephant", (uri, progress) => {
+  console.log("loading:", uri, "progress:", progress);
+});
+console.log({ msg });
 ```
+
 {% endcode %}
 {% endtab %}
 {% endtabs %}
