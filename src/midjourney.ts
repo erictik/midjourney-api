@@ -205,6 +205,87 @@ export class Midjourney extends MidjourneyMessage {
     return await this.WaitMessage(content, loading);
   }
 
+  async Custom({
+    msgId,
+    customId,
+    content,
+    flags,
+    loading,
+  }: {
+    msgId: string;
+    customId: string;
+    content?: string;
+    flags: number;
+    loading?: LoadingHandler;
+  }) {
+    const nonce = nextNonce();
+    const httpStatus = await this.MJApi.CustomApi({
+      msgId,
+      customId,
+      flags,
+      nonce,
+    });
+    if (httpStatus !== 204) {
+      throw new Error(`CustomApi failed with status ${httpStatus}`);
+    }
+    if (this.wsClient) {
+      return await this.wsClient.waitImageMessage(nonce, loading);
+    }
+    if (content === undefined || content === "") {
+      throw new Error(`content is required`);
+    }
+    return await this.WaitMessage(content, loading);
+  }
+
+  async ZoomOut({
+    level,
+    msgId,
+    hash,
+    content,
+    flags,
+    loading,
+  }: {
+    level: "high" | "low" | "2x" | "1.5x";
+    msgId: string;
+    hash: string;
+    content?: string;
+    flags: number;
+    loading?: LoadingHandler;
+  }) {
+    const nonce = nextNonce();
+    let customId: string;
+    switch (level) {
+      case "high":
+        customId = `MJ::JOB::high_variation::1::${hash}::SOLO`;
+        break;
+      case "low":
+        customId = `MJ::JOB::low_variation::1::${hash}::SOLO`;
+        break;
+      case "2x":
+        customId = `MJ::Outpaint::50::1::${hash}::SOLO`;
+        break;
+      case "1.5x":
+        customId = `MJ::Outpaint::75::1::${hash}::SOLO`;
+        break;
+    }
+    const httpStatus = await this.MJApi.CustomApi({
+      msgId,
+      customId,
+      flags,
+      nonce,
+    });
+    if (httpStatus !== 204) {
+      throw new Error(`UpscaleApi failed with status ${httpStatus}`);
+    }
+    if (this.wsClient) {
+      return await this.wsClient.waitImageMessage(nonce, loading);
+    }
+    if (content === undefined || content === "") {
+      throw new Error(`content is required`);
+    }
+    return await this.WaitMessage(content, loading);
+  }
+
   async Reroll({
     msgId,
     hash,
