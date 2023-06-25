@@ -252,7 +252,6 @@ export class Midjourney extends MidjourneyMessage {
     flags: number;
     loading?: LoadingHandler;
   }) {
-    const nonce = nextNonce();
     let customId: string;
     switch (level) {
       case "high":
@@ -268,22 +267,13 @@ export class Midjourney extends MidjourneyMessage {
         customId = `MJ::Outpaint::75::1::${hash}::SOLO`;
         break;
     }
-    const httpStatus = await this.MJApi.CustomApi({
+    return this.Custom({
       msgId,
       customId,
+      content,
       flags,
-      nonce,
+      loading,
     });
-    if (httpStatus !== 204) {
-      throw new Error(`UpscaleApi failed with status ${httpStatus}`);
-    }
-    if (this.wsClient) {
-      return await this.wsClient.waitImageMessage(nonce, loading);
-    }
-    if (content === undefined || content === "") {
-      throw new Error(`content is required`);
-    }
-    return await this.WaitMessage(content, loading);
   }
 
   async Reroll({

@@ -115,7 +115,7 @@ export class MidjourneyApi extends Command {
   }
 
   async CustomApi({
-    msgId: msgId,
+    msgId,
     customId,
     flags,
     nonce = nextNonce(),

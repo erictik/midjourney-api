@@ -16,7 +16,7 @@ async function main() {
     Ws: true,
   });
   await client.Connect();
-  const Imagine = await client.Imagine("a cool cat, blue ears, yellow hat");
+  const Imagine = await client.Imagine("a cool cat, blue ears");
   console.log(Imagine);
   if (!Imagine) {
     console.log("no message");
@@ -31,14 +31,19 @@ async function main() {
       console.log("loading", uri, "progress", progress);
     },
   });
+  if (!Upscale) {
+    console.log("no message");
+    return;
+  }
   const zoomout = Upscale?.options?.find((o) => o.label === "Zoom Out 2x");
   if (!zoomout) {
     console.log("no zoomout");
     return;
   }
-  const zoomout2x = client.Custom({
-    msgId: <string>Imagine.id,
-    flags: Imagine.flags,
+  const zoomout2x = await client.Custom({
+    msgId: <string>Upscale.id,
+    flags: Upscale.flags,
+    content: Upscale.content,
     customId: zoomout.custom,
     loading: (uri: string, progress: string) => {
       console.log("loading", uri, "progress", progress);

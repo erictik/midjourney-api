@@ -31,12 +31,16 @@ async function main() {
       console.log("loading", uri, "progress", progress);
     },
   });
+  if (!Upscale) {
+    console.log("no message");
+    return;
+  }
   console.log(Upscale);
   const Zoomout = await client.ZoomOut({
     level: "2x",
-    msgId: <string>Imagine.id,
-    hash: <string>Imagine.hash,
-    flags: Imagine.flags,
+    msgId: <string>Upscale.id,
+    hash: <string>Upscale.hash,
+    flags: Upscale.flags,
     loading: (uri: string, progress: string) => {
       console.log("loading", uri, "progress", progress);
     },
