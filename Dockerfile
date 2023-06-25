@@ -10,6 +10,6 @@ USER node
 
 RUN yarn install --pure-lockfile --production
 
-COPY --chown=node:node . .
+# COPY --chown=node:node . .
 
 EXPOSE 3000
