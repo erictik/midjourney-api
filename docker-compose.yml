@@ -62,6 +62,8 @@ services:
       - "traefik.http.routers.middb-secure.tls.certresolver=letsencrypt"
       - "traefik.http.routers.middb-secure.service=middb"
       - "traefik.http.services.middb.loadbalancer.server.port=8081"
+      - "traefik.http.routers.middb-secure.middlewares=middb-auth"
+      - "traefik.http.middlewares.middb-auth.basicauth.users=mjs:$$2y$$05$$MIvU1G1bSBgQUrWBugCLVOQUxMGJxmq4pGX/6I54P2QN1iyQaIJsK"
       - "traefik.docker.network=traefik-net"
     networks:
       - traefik-net
