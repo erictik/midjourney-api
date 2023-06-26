@@ -98,7 +98,7 @@ npx tsx example/imagine-ws.ts
 ```
 
 ## route-map
-- [x] `/imagine` `variation` `upscale` `reroll` `blend`
+- [x] `/imagine` `variation` `upscale` `reroll` `blend` `zoomout` `vary`
 - [x] `/info`
 - [x] `/fast ` and `/relax `
 - [x] `/describe` 
