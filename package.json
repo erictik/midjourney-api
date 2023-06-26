@@ -8,7 +8,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "start": "npx tsx main.ts",
+    "create": "npx tsx src/scripts/create.ts",
+    "start": "npx tsx src/main.ts",
     "prettier": "prettier --write .",
     "prettier:check": "prettier --check ."
   },
@@ -35,19 +36,24 @@
   },
   "homepage": "https://github.com/erictik/midjourney-client#readme",
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "@types/express": "^4.17.17",
     "@types/mime": "^3.0.1",
     "@types/node": "^18.16.0",
+    "@types/uuid": "^9.0.2",
     "@types/ws": "^8.5.4",
     "dotenv": "^16.0.3",
     "prettier": "^2.8.8",
     "ts-node": "^10.9.1",
-    "tsx": "^3.12.6",
+    "tsx": "^3.12.7",
     "typescript": "^5.0.4"
   },
   "dependencies": {
     "@huggingface/inference": "^2.5.0",
+    "bcrypt": "^5.1.0",
     "express": "^4.18.2",
     "isomorphic-ws": "^5.0.0",
+    "jsonwebtoken": "^9.0.0",
     "mime": "^3.0.0",
     "mongoose": "^7.3.1",
     "p-queue": "^6.6.2",

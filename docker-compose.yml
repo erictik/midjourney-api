@@ -3,7 +3,7 @@ version: "3"
 services:
   app:
     build: .
-    command: yarn run start
+    command: npm start
     env_file:
       - .env
     restart: always
@@ -15,7 +15,7 @@ services:
       - .:/app
     networks:
       - traefik-net
-      - app-network
+      - app-net
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.midapi.entrypoints=web"
@@ -37,7 +37,7 @@ services:
     volumes:
       - dbdata:/data/db
     networks:
-      - app-network
+      - app-net
       - mongo-net
 
   mongo-express:
@@ -61,6 +61,8 @@ services:
       - "traefik.http.routers.middb-secure.tls=true"
       - "traefik.http.routers.middb-secure.tls.certresolver=letsencrypt"
       - "traefik.http.routers.middb-secure.service=middb"
+      - "traefik.http.routers.middb-secure.middlewares=middb-auth"
+      - "traefik.http.middlewares.middb-auth.basicauth.users=mjs:$$2y$$05$$MIvU1G1bSBgQUrWBugCLVOQUxMGJxmq4pGX/6I54P2QN1iyQaIJsK"
       - "traefik.http.services.middb.loadbalancer.server.port=8081"
       - "traefik.http.routers.middb-secure.middlewares=middb-auth"
       - "traefik.http.middlewares.middb-auth.basicauth.users=mjs:$$2y$$05$$MIvU1G1bSBgQUrWBugCLVOQUxMGJxmq4pGX/6I54P2QN1iyQaIJsK"
@@ -76,7 +78,7 @@ volumes:
 
 
 networks:
-  app-network:
+  app-net:
   mongo-net:
   traefik-net:
     external: true
