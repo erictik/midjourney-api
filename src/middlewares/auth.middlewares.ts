@@ -9,4 +9,14 @@ export async function authenticateToken(req: any, res: any, next: any) {
     }
 
     const user = await User.findOne({ token: token });
+    if (user) {
+        req.user = user;
+        next();
+    } else {
+        console.log(token)
+        console.log(user)
+        res.status(403).json({ message: "Invalid token" });
+        return;
+    }
+
 }

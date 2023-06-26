@@ -15,7 +15,7 @@ services:
       - .:/app
     networks:
       - traefik-net
-      - app-network
+      - app-net
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.midapi.entrypoints=web"
@@ -37,7 +37,7 @@ services:
     volumes:
       - dbdata:/data/db
     networks:
-      - app-network
+      - app-net
       - mongo-net
 
   mongo-express:
@@ -76,7 +76,7 @@ volumes:
 
 
 networks:
-  app-network:
+  app-net:
   mongo-net:
   traefik-net:
     external: true

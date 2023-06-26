@@ -8,7 +8,7 @@ COPY package.json ./
 
 USER node
 
-RUN npm install --pure-lockfile --production
+RUN npm install --only=production
 
 # COPY --chown=node:node . .
 
