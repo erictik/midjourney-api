@@ -6,6 +6,7 @@ import {
   WsEventMsg,
   MJInfo,
   MJSettings,
+  MJOptions,
 } from "./interfaces";
 
 import { MidjourneyApi } from "./midjourne.api";
@@ -137,7 +138,14 @@ export class WsMessage {
     this.messageUpdate(message);
   }
   private messageUpdate(message: any) {
-    const { content, embeds, interaction = {}, nonce, id } = message;
+    const {
+      content,
+      embeds,
+      interaction = {},
+      nonce,
+      id,
+      components,
+    } = message;
 
     if (!nonce) {
       const { name } = interaction;
@@ -147,7 +155,10 @@ export class WsMessage {
           this.emit("settings", message);
           return;
         case "describe":
-          this.emitDescribe(id, embeds?.[0]?.description);
+          this.emitDescribe(id, {
+            descriptions: embeds?.[0]?.description.split("\n\n"),
+            options: formatOptions(components),
+          });
           break;
         case "info":
           this.emit("info", embeds?.[0]?.description);
@@ -418,10 +429,12 @@ export class WsMessage {
   }
 
   async waitDescribe(nonce: string) {
-    return new Promise<string[] | null>((resolve) => {
+    return new Promise<{
+      options: MJOptions[];
+      descriptions: string[];
+    } | null>((resolve) => {
       this.onceDescribe(nonce, (message) => {
-        const data = message.split("\n\n");
-        resolve(data);
+        resolve(message);
       });
     });
   }

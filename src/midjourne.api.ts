@@ -204,15 +204,16 @@ export class MidjourneyApi extends Command {
   private async attachments(
     ...files: UploadParam[]
   ): Promise<{ attachments: UploadSlot[] }> {
+    const { SalaiToken, DiscordBaseUrl, ChannelId, fetch } = this.config;
     const headers = {
-      Authorization: this.config.SalaiToken,
+      Authorization: SalaiToken,
       "content-type": "application/json",
     };
     const url = new URL(
-      `${this.config.DiscordBaseUrl}/api/v9/channels/${this.config.ChannelId}/attachments`
+      `${DiscordBaseUrl}/api/v9/channels/${ChannelId}/attachments`
     );
     const body = { files };
-    const response = await this.config.fetch(url.toString(), {
+    const response = await this.config.fetch(url, {
       headers,
       method: "POST",
       body: JSON.stringify(body),
@@ -220,11 +221,10 @@ export class MidjourneyApi extends Command {
     if (response.status === 200) {
       return (await response.json()) as { attachments: UploadSlot[] };
     }
-    throw new Error(
-      `Attachments return ${response.status} ${
-        response.statusText
-      } ${await response.text()}`
-    );
+    const error = `Attachments return ${response.status} ${
+      response.statusText
+    } ${await response.text()}`;
+    throw new Error(error);
   }
   private async uploadImage(
     slot: UploadSlot,
