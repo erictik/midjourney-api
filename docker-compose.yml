@@ -1,0 +1,51 @@
+version: "3"
+
+services:
+  app:
+    build: .
+    command: npm start
+    env_file:
+      - .env
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+    volumes:
+      - .:/app
+    networks:
+      - app-net
+
+  mongodb:
+    image: mongo
+    env_file:
+      - .env
+    volumes:
+      - dbdata:/data/db
+    networks:
+      - app-net
+      - mongo-net
+
+  mongo-express:
+    image: mongo-express
+    restart: unless-stopped
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongodb
+      ME_CONFIG_MONGODB_PORT: "27017"
+      # ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      # ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      ports:
+        - "8081:8081"
+    networks:
+      - traefik-net
+      - mongo-net
+    depends_on:
+      - mongodb
+
+volumes:
+  dbdata:
+
+
+networks:
+  app-net:
+  mongo-net:

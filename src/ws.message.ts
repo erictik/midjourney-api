@@ -23,9 +23,10 @@ export class WsMessage {
   private reconnectTime: boolean[] = [];
   private heartbeatInterval = 0;
 
-  constructor(public config: MJConfig, public MJApi: MidjourneyApi) {
+  constructor(public config: MJConfig, public MJApi: MidjourneyApi, public updatefnc: Function = () => { }) {
     this.ws = new this.config.WebSocket(this.config.WsBaseUrl);
     this.ws.addEventListener("open", this.open.bind(this));
+    this.updatefnc = updatefnc;
   }
 
   private async heartbeat(num: number) {
@@ -199,6 +200,7 @@ export class WsMessage {
   private parseMessage(data: string) {
     const msg = JSON.parse(data);
     if (msg.t === null || msg.t === "READY_SUPPLEMENTAL") return;
+    this.updatefnc(msg);
     if (msg.t === "READY") {
       this.emit("ready", null);
       return;

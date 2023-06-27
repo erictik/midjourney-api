@@ -1,6 +1,7 @@
 # midjourney-client
 
 Node.js client for the unofficial MidJourney api.
+
 <div align="center">
 	<p>
 		<a href="https://discord.gg/GavuGHQbV4"><img src="https://img.shields.io/discord/1082500871478329374?color=5865F2&logo=discord&logoColor=white" alt="Discord server" /></a>
@@ -20,40 +21,42 @@ yarn add midjourney
 
 ```typescript
 import { Midjourney } from "midjourney";
-  const client = new Midjourney({
-    ServerId: <string>process.env.SERVER_ID,
-    ChannelId: <string>process.env.CHANNEL_ID,
-    SalaiToken: <string>process.env.SALAI_TOKEN,
-    Debug: true,
-    Ws:true,
-  });
-  await client.Connect();
-  const Imagine = await client.Imagine("A little pink elephant", (uri: string, progress:string) => {
-   console.log("Imagine", uri, "progress", progress);
-  });
-  console.log({ Imagine });
+const client = new Midjourney({
+  ServerId: <string>process.env.SERVER_ID,
+  ChannelId: <string>process.env.CHANNEL_ID,
+  SalaiToken: <string>process.env.SALAI_TOKEN,
+  Debug: true,
+  Ws: true,
+});
+await client.Connect();
+const Imagine = await client.Imagine(
+  "A little pink elephant",
+  (uri: string, progress: string) => {
+    console.log("Imagine", uri, "progress", progress);
+  }
+);
+console.log({ Imagine });
 
-  const Variation = await client.Variation({
-    index: 2,
-    msgId: <string>Imagine.id,
-    hash: <string>Imagine.hash,
-    flags: Imagine.flags,
-    loading: (uri: string, progress: string) => {
-      console.log("Variation.loading", uri, "progress", progress);
-    },
-  });
-  console.log({ Variation });
-  const Upscale = await client.Upscale({
-    index: 2,
-    msgId: <string>Variation.id,
-    hash: <string>Variation.hash,
-    flags: Variation.flags,
-    loading: (uri: string, progress: string) => {
-      console.log("Upscale.loading", uri, "progress", progress);
-    },
-  });
-  console.log({ Upscale });
-
+const Variation = await client.Variation({
+  index: 2,
+  msgId: <string>Imagine.id,
+  hash: <string>Imagine.hash,
+  flags: Imagine.flags,
+  loading: (uri: string, progress: string) => {
+    console.log("Variation.loading", uri, "progress", progress);
+  },
+});
+console.log({ Variation });
+const Upscale = await client.Upscale({
+  index: 2,
+  msgId: <string>Variation.id,
+  hash: <string>Variation.hash,
+  flags: Variation.flags,
+  loading: (uri: string, progress: string) => {
+    console.log("Upscale.loading", uri, "progress", progress);
+  },
+});
+console.log({ Upscale });
 ```
 
 ## Example
@@ -76,12 +79,12 @@ npm install
 ```
 
 3. set the environment variables
-  - [How to get your Discord SALAI_TOKEN:](https://www.androidauthority.com/get-discord-token-3149920/)
-  - [Create a server](https://discord.com/blog/starting-your-first-discord-server) and  [Invite Midjourney Bot to Your Server](https://docs.midjourney.com/docs/invite-the-bot)  
-  OR [Join my discord server](https://discord.com/invite/GavuGHQbV4)
-  - How to get server and channel ids:  
-    when you click on a channel in your server in the browser expect to have the follow URL pattern `https://discord.com/channels/$SERVER_ID/$CHANNEL_ID`
 
+- [How to get your Discord SALAI_TOKEN:](https://www.androidauthority.com/get-discord-token-3149920/)
+- [Create a server](https://discord.com/blog/starting-your-first-discord-server) and [Invite Midjourney Bot to Your Server](https://docs.midjourney.com/docs/invite-the-bot)  
+  OR [Join my discord server](https://discord.com/invite/GavuGHQbV4)
+- How to get server and channel ids:  
+  when you click on a channel in your server in the browser expect to have the follow URL pattern `https://discord.com/channels/$SERVER_ID/$CHANNEL_ID`
 
 ```bash
 #example variables, please set up yours
@@ -101,7 +104,7 @@ npx tsx example/imagine-ws.ts
 - [x] `/imagine` `variation` `upscale` `reroll` `blend` `zoomout` `vary`
 - [x] `/info`
 - [x] `/fast ` and `/relax `
-- [x] `/describe` 
+- [x] `/describe`
 - [x] `/settings` `reset`
 - [x] verify human
 - [x] [proxy](https://github.com/erictik/midjourney-discord/blob/main/examples/proxy.ts)
@@ -112,6 +115,9 @@ npx tsx example/imagine-ws.ts
 - [midjourney-discord](https://github.com/erictik/midjourney-discord)-bot
 - [phrame](https://github.com/jakowenko/phrame)
 ---
+
 <a href='https://ko-fi.com/erictik' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee' /></a>
+
 ## Star History
+
 [![Star History Chart](https://api.star-history.com/svg?repos=erictik/midjourney-client&type=Date)](https://star-history.com/#erictik/midjourney-client&Date)

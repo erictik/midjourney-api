@@ -24,13 +24,13 @@ export class Midjourney extends MidjourneyMessage {
     };
     this.MJApi = new MidjourneyApi(this.config);
   }
-  async Connect() {
+  async Connect(updatefnc: Function = () => { }) {
     if (!this.config.Ws) {
       return this;
     }
     if (this.wsClient) return this;
     return new Promise<Midjourney>((resolve) => {
-      this.wsClient = new WsMessage(this.config, this.MJApi);
+      this.wsClient = new WsMessage(this.config, this.MJApi, updatefnc);
       this.wsClient.once("ready", () => {
         this.log(`ws ready`);
         resolve(this);
