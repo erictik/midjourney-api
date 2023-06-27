@@ -7,28 +7,14 @@ services:
     env_file:
       - .env
     restart: always
-    # ports:
-    #   - "3000:3000"
+    ports:
+      - "3000:3000"
     depends_on:
       - mongodb
     volumes:
       - .:/app
     networks:
-      - traefik-net
       - app-net
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.midapi.entrypoints=web"
-      - "traefik.http.routers.midapi.rule=Host(`midapi.bot.inbeet.tech`)"
-      - "traefik.http.middlewares.midapi-https-redirect.redirectscheme.scheme=https"
-      - "traefik.http.routers.midapi.middlewares=midapi-https-redirect"
-      - "traefik.http.routers.midapi-secure.entrypoints=websecure"
-      - "traefik.http.routers.midapi-secure.rule=Host(`midapi.bot.inbeet.tech`)"
-      - "traefik.http.routers.midapi-secure.tls=true"
-      - "traefik.http.routers.midapi-secure.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.midapi-secure.service=midapi"
-      - "traefik.http.services.midapi.loadbalancer.server.port=3000"
-      - "traefik.docker.network=traefik-net"
 
   mongodb:
     image: mongo
@@ -48,25 +34,8 @@ services:
       ME_CONFIG_MONGODB_PORT: "27017"
       # ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       # ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-      # ports:
-      #   - "8081:8081"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.middb.entrypoints=web"
-      - "traefik.http.routers.middb.rule=Host(`middb.bot.inbeet.tech`)"
-      - "traefik.http.middlewares.middb-https-redirect.redirectscheme.scheme=https"
-      - "traefik.http.routers.middb.middlewares=middb-https-redirect"
-      - "traefik.http.routers.middb-secure.entrypoints=websecure"
-      - "traefik.http.routers.middb-secure.rule=Host(`middb.bot.inbeet.tech`)"
-      - "traefik.http.routers.middb-secure.tls=true"
-      - "traefik.http.routers.middb-secure.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.middb-secure.service=middb"
-      - "traefik.http.routers.middb-secure.middlewares=middb-auth"
-      - "traefik.http.middlewares.middb-auth.basicauth.users=mjs:$$2y$$05$$MIvU1G1bSBgQUrWBugCLVOQUxMGJxmq4pGX/6I54P2QN1iyQaIJsK"
-      - "traefik.http.services.middb.loadbalancer.server.port=8081"
-      - "traefik.http.routers.middb-secure.middlewares=middb-auth"
-      - "traefik.http.middlewares.middb-auth.basicauth.users=mjs:$$2y$$05$$MIvU1G1bSBgQUrWBugCLVOQUxMGJxmq4pGX/6I54P2QN1iyQaIJsK"
-      - "traefik.docker.network=traefik-net"
+      ports:
+        - "8081:8081"
     networks:
       - traefik-net
       - mongo-net
@@ -80,5 +49,3 @@ volumes:
 networks:
   app-net:
   mongo-net:
-  traefik-net:
-    external: true
