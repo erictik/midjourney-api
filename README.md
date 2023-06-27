@@ -9,9 +9,6 @@ Node.js client for the unofficial MidJourney api.
 	</p>
 </div>
 
-[discord-bot](https://github.com/erictik/midjourney-discord/)
-[web-ui](https://github.com/erictik/midjourney-ui/)
-
 ## Install
 
 ```bash
@@ -104,8 +101,7 @@ npx tsx example/imagine-ws.ts
 ```
 
 ## route-map
-
-- [x] `/imagine` `variation` `upscale` `reroll` `blend`
+- [x] `/imagine` `variation` `upscale` `reroll` `blend` `zoomout` `vary`
 - [x] `/info`
 - [x] `/fast ` and `/relax `
 - [x] `/describe`
@@ -113,7 +109,11 @@ npx tsx example/imagine-ws.ts
 - [x] verify human
 - [x] [proxy](https://github.com/erictik/midjourney-discord/blob/main/examples/proxy.ts)
 - [x] autoload command payload
-
+---
+## Projects
+- [midjourney-ui](https://github.com/erictik/midjourney-ui/)
+- [midjourney-discord](https://github.com/erictik/midjourney-discord)-bot
+- [phrame](https://github.com/jakowenko/phrame)
 ---
 
 <a href='https://ko-fi.com/erictik' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee' /></a>

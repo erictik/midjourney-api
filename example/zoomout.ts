@@ -2,9 +2,9 @@ import "dotenv/config";
 import { Midjourney } from "../src";
 /**
  *
- * a simple example of how to use the Upscale with ws command
+ * a simple example of how to use the zoomout with ws command
  * ```
- * npx tsx example/upscale-ws.ts
+ * npx tsx example/zoomout.ts
  * ```
  */
 async function main() {
@@ -31,7 +31,22 @@ async function main() {
       console.log("loading", uri, "progress", progress);
     },
   });
+  if (!Upscale) {
+    console.log("no message");
+    return;
+  }
   console.log(Upscale);
+  const Zoomout = await client.ZoomOut({
+    level: "2x",
+    msgId: <string>Upscale.id,
+    hash: <string>Upscale.hash,
+    flags: Upscale.flags,
+    loading: (uri: string, progress: string) => {
+      console.log("loading", uri, "progress", progress);
+    },
+  });
+  console.log(Zoomout);
+
   client.Close();
 }
 main().catch((err) => {
