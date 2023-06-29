@@ -2,6 +2,7 @@ import { DiscordImage, MJConfig } from "./interfaces";
 
 type CommandName =
   | "imagine"
+  | "shorten"
   | "describe"
   | "info"
   | "fast"
@@ -15,6 +16,7 @@ export class Command {
     info: undefined,
     fast: undefined,
     relax: undefined,
+    shorten: undefined,
     settings: undefined,
   };
 
@@ -55,6 +57,17 @@ export class Command {
   }
   async imaginePayload(prompt: string, nonce?: string) {
     const data = await this.commandData("imagine", [
+      {
+        type: 3,
+        name: "prompt",
+        value: prompt,
+      },
+    ]);
+    return this.data2Paylod(data, nonce);
+  }
+
+  async shortenPayload(prompt: string, nonce?: string) {
+    const data = await this.commandData("shorten", [
       {
         type: 3,
         name: "prompt",

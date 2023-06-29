@@ -135,6 +135,18 @@ export class Midjourney extends MidjourneyMessage {
     return null;
   }
 
+  async Shorten(prompt: string) {
+    const nonce = nextNonce();
+    const httpStatus = await this.MJApi.ShortenApi(prompt, nonce);
+    if (httpStatus !== 204) {
+      throw new Error(`ShortenApi failed with status ${httpStatus}`);
+    }
+    if (this.wsClient) {
+      return this.wsClient.waitShorten(nonce);
+    }
+    return null;
+  }
+
   async Variation({
     index,
     msgId,

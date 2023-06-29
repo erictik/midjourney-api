@@ -55,6 +55,10 @@ export class MidjourneyApi extends Command {
     const payload = await this.imaginePayload(prompt, nonce);
     return this.safeIteractions(payload);
   }
+  async ShortenApi(prompt: string, nonce: string = nextNonce()) {
+    const payload = await this.shortenPayload(prompt, nonce);
+    return this.safeIteractions(payload);
+  }
   async VariationApi({
     index,
     msgId,

@@ -102,6 +102,7 @@ npx tsx example/imagine-ws.ts
 - [x] `/info`
 - [x] `/fast ` and `/relax `
 - [x] `/describe` 
+- [x] [`/shorten`](https://github.com/erictik/midjourney-client/blob/main/example/shorten.ts)
 - [x] `/settings` `reset`
 - [x] verify human
 - [x] [proxy](https://github.com/erictik/midjourney-discord/blob/main/examples/proxy.ts)
