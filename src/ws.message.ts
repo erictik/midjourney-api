@@ -10,7 +10,7 @@ import {
 } from "./interfaces";
 
 import { MidjourneyApi } from "./midjourne.api";
-import { formatOptions } from "./utls";
+import { formatOptions, formatPrompts } from "./utls";
 import { VerifyHuman } from "./verify.human";
 import WebSocket from "isomorphic-ws";
 export class WsMessage {
@@ -155,8 +155,15 @@ export class WsMessage {
           this.emit("settings", message);
           return;
         case "describe":
-          this.emitDescribe(id, {
+          this.emitMJ(id, {
             descriptions: embeds?.[0]?.description.split("\n\n"),
+            options: formatOptions(components),
+          });
+          break;
+        case "shorten":
+          this.emitMJ(id, {
+            description: embeds?.[0]?.description,
+            prompts: formatPrompts(embeds?.[0]?.description as string),
             options: formatOptions(components),
           });
           break;
@@ -346,7 +353,7 @@ export class WsMessage {
   private emitImage(type: string, message: WsEventMsg) {
     this.emit(type, message);
   }
-  private emitDescribe(id: string, data: any) {
+  private emitMJ(id: string, data: any) {
     const event = this.getEventById(id);
     if (!event) return;
     this.emit(event.nonce, data);
@@ -383,7 +390,7 @@ export class WsMessage {
     };
     this.event.push({ event: "settings", callback: once });
   }
-  onceDescribe(nonce: string, callback: (data: any) => void) {
+  onceMJ(nonce: string, callback: (data: any) => void) {
     const once = (message: any) => {
       this.remove(nonce, once);
       this.removeWaitMjEvent(nonce);
@@ -433,7 +440,18 @@ export class WsMessage {
       options: MJOptions[];
       descriptions: string[];
     } | null>((resolve) => {
-      this.onceDescribe(nonce, (message) => {
+      this.onceMJ(nonce, (message) => {
+        resolve(message);
+      });
+    });
+  }
+  async waitShorten(nonce: string) {
+    return new Promise<{
+      options: MJOptions[];
+      prompts: string[];
+      description: string;
+    } | null>((resolve) => {
+      this.onceMJ(nonce, (message) => {
         resolve(message);
       });
     });

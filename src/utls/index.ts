@@ -15,6 +15,17 @@ const snowflake = new Snowyflake({
 
 export const nextNonce = (): string => snowflake.nextId().toString();
 
+export const formatPrompts = (prompts: string) => {
+  const regex = /(\d️⃣ .+)/g;
+  const matches = prompts.match(regex);
+  if (matches) {
+    const shortenedPrompts = matches.map((match) => match.trim());
+    return shortenedPrompts;
+  } else {
+    console.log("No matches found.");
+  }
+};
+
 export const formatOptions = (components: any) => {
   var data: MJOptions[] = [];
   for (var i = 0; i < components.length; i++) {
