@@ -76,7 +76,7 @@ npm install
 ```
 
 3. set the environment variables
-  - [How to get your Discord SALAI_TOKEN:](https://www.androidauthority.com/get-discord-token-3149920/)
+  - [How to get your Discord TOKEN:](https://www.androidauthority.com/get-discord-token-3149920/)
   - [Create a server](https://discord.com/blog/starting-your-first-discord-server) and  [Invite Midjourney Bot to Your Server](https://docs.midjourney.com/docs/invite-the-bot)  
   OR [Join my discord server](https://discord.com/invite/GavuGHQbV4)
   - How to get server and channel ids:  
@@ -88,7 +88,7 @@ npm install
 
 export SERVER_ID="1082500871478329374"
 export CHANNEL_ID="1094892992281718894"
-export SALAI_TOKEN="your-salai-token"
+export SALAI_TOKEN="your-discord-token"
 ```
 
 Then, run the example with the following command:
