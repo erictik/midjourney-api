@@ -41,18 +41,9 @@ export class Command {
     });
 
     const data = await response.json();
-
-    if ("application_commands" in data) {
-      const application_commands = data.application_commands;
-      if (application_commands[0]) {
-        // console.log(
-        //   `got ${name} application_commands`,
-        //   application_commands[0]
-        // );
-        return application_commands[0];
-      }
+    if (data?.application_commands?.[0]) {
+      return data.application_commands[0];
     }
-
     throw new Error(`Failed to get application_commands for command ${name}`);
   }
   async imaginePayload(prompt: string, nonce?: string) {
