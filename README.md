@@ -1,6 +1,7 @@
-# midjourney-client
+# midjourney-api
 
-Node.js client for the unofficial MidJourney api.
+Node.js client for the unofficial MidJourney api.  
+Major update New [niji bot](https://github.com/erictik/midjourney-api/blob/main/example/imagine-niji.ts) & [custom zoom](https://github.com/erictik/midjourney-api/blob/main/example/customzoom.ts) & [remix mode](https://github.com/erictik/midjourney-api/blob/main/example/variation-ws.ts)
 <div align="center">
 	<p>
 		<a href="https://discord.gg/GavuGHQbV4"><img src="https://img.shields.io/discord/1082500871478329374?color=5865F2&logo=discord&logoColor=white" alt="Discord server" /></a>
@@ -63,8 +64,8 @@ To run the included example, you must have [Node.js](https://nodejs.org/en/) ins
 1. clone the repository
 
 ```bash
-git clone https://github.com/erictik/midjourney-client.git
-cd midjourney-client
+git clone https://github.com/erictik/midjourney-api.git
+cd midjourney-api
 ```
 
 2. install dependencies
@@ -101,15 +102,15 @@ npx tsx example/imagine-ws.ts
 - [x] `/imagine` `variation` `upscale` `reroll` `blend` `zoomout` `vary`
 - [x] `/info`
 - [x] `/fast ` and `/relax `
-- [x] [`/prefer remix`](https://github.com/erictik/midjourney-client/blob/main/example/prefer-remix.ts) 
-- [x] [`variation (remix mode)`](https://github.com/erictik/midjourney-client/blob/main/example/variation-ws.ts)
+- [x] [`/prefer remix`](https://github.com/erictik/midjourney-api/blob/main/example/prefer-remix.ts) 
+- [x] [`variation (remix mode)`](https://github.com/erictik/midjourney-api/blob/main/example/variation-ws.ts)
 - [x] `/describe` 
-- [x] [`/shorten`](https://github.com/erictik/midjourney-client/blob/main/example/shorten.ts)
+- [x] [`/shorten`](https://github.com/erictik/midjourney-api/blob/main/example/shorten.ts)
 - [x] `/settings` `reset`
 - [x] verify human
 - [x] [proxy](https://github.com/erictik/midjourney-discord/blob/main/examples/proxy.ts)
-- [x] [niji bot](https://github.com/erictik/midjourney-discord/blob/main/examples/imagine-niji.ts)
-- [x] [custom zoom](https://github.com/erictik/midjourney-discord/blob/main/examples/customzoom.ts)
+- [x] [niji bot](https://github.com/erictik/midjourney-api/blob/main/example/imagine-niji.ts)
+- [x] [custom zoom](https://github.com/erictik/midjourney-api/blob/main/example/customzoom.ts)
 - [x] autoload command payload
 ---
 ## Projects
@@ -120,4 +121,4 @@ npx tsx example/imagine-ws.ts
 ---
 <a href='https://ko-fi.com/erictik' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee' /></a>
 ## Star History
-[![Star History Chart](https://api.star-history.com/svg?repos=erictik/midjourney-client&type=Date)](https://star-history.com/#erictik/midjourney-client&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=erictik/midjourney-api&type=Date)](https://star-history.com/#erictik/midjourney-api&Date)
