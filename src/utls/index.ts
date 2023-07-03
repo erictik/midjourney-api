@@ -104,11 +104,11 @@ export const uriToHash = (uri: string) => {
 
 export const content2progress = (content: string) => {
   if (!content) return "";
-  const spcon = content.split("**");
-  if (spcon.length < 3) {
+  const spcon = content.split("<@");
+  if (spcon.length < 2) {
     return "";
   }
-  content = spcon[2];
+  content = spcon[1];
   const regex = /\(([^)]+)\)/; // matches the value inside the first parenthesis
   const match = content.match(regex);
   let progress = "";

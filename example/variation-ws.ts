@@ -12,13 +12,18 @@ async function main() {
     ServerId: <string>process.env.SERVER_ID,
     ChannelId: <string>process.env.CHANNEL_ID,
     SalaiToken: <string>process.env.SALAI_TOKEN,
-    Debug: true,
+    // Debug: true,
     Ws: true, //enable ws is required for remix mode
   });
   await client.init(); //init auto enable remix mode
   const prompt = "the queen of the underworld, race";
-  const Imagine = await client.Imagine(prompt);
-  console.log({ Imagine });
+  const Imagine = await client.Imagine(
+    prompt,
+    (uri: string, progress: string) => {
+      console.log("Imagine.loading", uri, "progress", progress);
+    }
+  );
+  console.log(Imagine);
   if (!Imagine) {
     console.log("no message");
     return;

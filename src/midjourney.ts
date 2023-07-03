@@ -26,7 +26,7 @@ export class Midjourney extends MidjourneyMessage {
   }
   async Connect() {
     //if auth failed, will throw error
-    await this.MJApi.cacheCommand("info");
+    await this.MJApi.cacheCommand("settings");
     if (!this.config.Ws) {
       return this;
     }
@@ -42,13 +42,14 @@ export class Midjourney extends MidjourneyMessage {
   }
   async init() {
     await this.Connect();
-    const info = await this.Info();
-    this.log(`info`, info);
     const settings = await this.Settings();
-    const remix = settings?.options.find((o) => o.label === "Remix mode")
-    if (remix?.style == 3) {
-      this.config.Remix = true
-      this.log(`Remix mode enabled`)
+    if (settings){
+      this.log(`settings:`, settings.content);
+      const remix = settings.options.find((o) => o.label === "Remix mode")
+      if (remix?.style == 3) {
+        this.config.Remix = true
+        this.log(`Remix mode enabled`)
+      }
     }
     return this;
   }
