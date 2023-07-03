@@ -27,7 +27,6 @@ export class Midjourney extends MidjourneyMessage {
   async Connect() {
     //if auth failed, will throw error
     await this.MJApi.cacheCommand("info");
-    
     if (!this.config.Ws) {
       return this;
     }
@@ -35,8 +34,8 @@ export class Midjourney extends MidjourneyMessage {
     return new Promise<Midjourney>((resolve) => {
       this.wsClient = new WsMessage(this.config, this.MJApi);
       this.wsClient.once("ready", (user) => {
-        //TODO: print user nickname
-        this.log(`🎊 ws ready!!! hi:${user.global_name}`);
+        //print user nickname
+        console.log(`🎊 ws ready!!! Hi: ${user.global_name}`);
         resolve(this);
       });
     });
@@ -130,6 +129,17 @@ export class Midjourney extends MidjourneyMessage {
     const httpStatus = await this.MJApi.RelaxApi(nonce);
     if (httpStatus !== 204) {
       throw new Error(`RelaxApi failed with status ${httpStatus}`);
+    }
+    return null;
+  }
+  async SwitchRemix() {
+    const nonce = nextNonce();
+    const httpStatus = await this.MJApi.SwitchRemixApi(nonce);
+    if (httpStatus !== 204) {
+      throw new Error(`RelaxApi failed with status ${httpStatus}`);
+    }
+    if (this.wsClient) {
+      return this.wsClient.waitContent("prefer-remix");
     }
     return null;
   }

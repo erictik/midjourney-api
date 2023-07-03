@@ -3,6 +3,7 @@ import { DiscordImage, MJConfig } from "./interfaces";
 type CommandName =
   | "imagine"
   | "shorten"
+  | "prefer"
   | "describe"
   | "info"
   | "fast"
@@ -16,6 +17,7 @@ export class Command {
     info: undefined,
     fast: undefined,
     relax: undefined,
+    prefer: undefined,
     shorten: undefined,
     settings: undefined,
   };
@@ -56,6 +58,17 @@ export class Command {
     ]);
     return this.data2Paylod(data, nonce);
   }
+  async PreferPayload(prompt: string, nonce?: string) {
+    const data = await this.commandData("prefer", [
+      {
+        "type": 1,
+        "name": "remix",
+        "options": []
+      },
+    ]);
+    return this.data2Paylod(data, nonce);
+  }
+
 
   async shortenPayload(prompt: string, nonce?: string) {
     const data = await this.commandData("shorten", [

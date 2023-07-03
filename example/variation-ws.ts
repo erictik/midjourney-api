@@ -2,7 +2,7 @@ import "dotenv/config";
 import { Midjourney } from "../src";
 /**
  *
- * a simple example of how to use the Variation with ws command
+ * a simple example of how to use the Variation (remix mode) with ws command
  * ```
  * npx tsx example/variation-ws.ts
  * ```
@@ -13,10 +13,10 @@ async function main() {
     ChannelId: <string>process.env.CHANNEL_ID,
     SalaiToken: <string>process.env.SALAI_TOKEN,
     Debug: true,
-    Ws: true,
+    Ws: true, //enable ws is required for remix mode
   });
-  await client.init(); //init auto enable remix
-  const prompt =  "the queen of the underworld, race"
+  await client.init(); //init auto enable remix mode
+  const prompt = "the queen of the underworld, race";
   const Imagine = await client.Imagine(prompt);
   console.log({ Imagine });
   if (!Imagine) {
@@ -28,7 +28,7 @@ async function main() {
     msgId: <string>Imagine.id,
     hash: <string>Imagine.hash,
     flags: Imagine.flags,
-    content:prompt,
+    content: prompt,
     loading: (uri: string, progress: string) => {
       console.log("Variation2.loading", uri, "progress", progress);
     },

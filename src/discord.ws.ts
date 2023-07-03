@@ -160,6 +160,7 @@ export class WsMessage {
     this.messageUpdate(message);
   }
   private messageUpdate(message: any) {
+    // this.log("messageUpdate",message);
     const {
       content,
       embeds,
@@ -182,14 +183,19 @@ export class WsMessage {
             options: formatOptions(components),
           });
           break;
+        case "prefer remix":
+          if (content != "") {
+            this.emit("prefer-remix", content);
+          }
+          break;
         case "shorten":
-          const shorten : MJShorten = {
+          const shorten: MJShorten = {
             description: embeds?.[0]?.description,
             prompts: formatPrompts(embeds?.[0]?.description as string),
             options: formatOptions(components),
             id,
-            flags:message.flags,
-          }
+            flags: message.flags,
+          };
           this.emitMJ(id, shorten);
           break;
         case "info":
@@ -222,14 +228,12 @@ export class WsMessage {
     const { channel_id, author } = message;
     if (!(author && author.id === this.MJBotId)) return;
     if (channel_id !== this.config.ChannelId) return;
-    // this.log("messageCreate====", message);
     this.messageCreate(message);
   }
   private async onMessageUpdate(message: any) {
     const { channel_id, author } = message;
     if (!(author && author.id === this.MJBotId)) return;
     if (channel_id !== this.config.ChannelId) return;
-    // this.log("messageUpdate====", message);
     this.messageUpdate(message);
   }
 
@@ -252,12 +256,14 @@ export class WsMessage {
         this.emitSystem("messageUpdate", message);
         break;
       case "INTERACTION_SUCCESS":
-        this.log("INTERACTION_SUCCESS", message);
-        this.emitSystem("interactionSuccess", message);
+        if (message.nonce) {
+          this.emitSystem("interactionSuccess", message);
+        }
         break;
       case "INTERACTION_CREATE":
-        this.log("INTERACTION_CREATE", message);
-        this.emitSystem("interactionCreate", message);
+        if (message.nonce) {
+          this.emitSystem("interactionCreate", message);
+        }
     }
   }
   private async verifyHuman(message: any) {
@@ -473,59 +479,6 @@ export class WsMessage {
     this.event.push({ event: nonce, callback: once });
   }
 
-  // async waitImageMessage({
-  //   nonce,
-  //   prompt,
-  //   onmodal,
-  //   loading,
-  // }: {
-  //   nonce: string;
-  //   prompt?: string;
-  //   onmodal?: OnModal;
-  //   loading?: LoadingHandler;
-  // }) {
-  //   return new Promise<MJMessage | null>((resolve, reject) => {
-  //     this.waitMjEvents.set(nonce, {
-  //       nonce,
-  //       prompt,
-  //       onmodal: async (nonce,id) => {
-  //         if (!onmodal) return "";
-  //         var newnonce =  await onmodal(nonce,id)
-  //         this.removeWaitMjEvent(nonce);
-  //         this.onceImage(newnonce, ({ message, error }) => {
-  //           if (error) {
-  //             this.removeWaitMjEvent(newnonce);
-  //             reject(error);
-  //             return;
-  //           }
-  //           if (message && message.progress === "done") {
-  //             this.removeWaitMjEvent(newnonce);
-  //             resolve(message);
-  //             return;
-  //           }
-  //           message && loading && loading(message.uri, message.progress || "");
-  //         });
-  //         return newnonce
-  //       },
-  //     });
-
-  //     //FIXME
-  //     this.onceImage(nonce, ({ message, error }) => {
-  //       if (error) {
-  //         this.removeWaitMjEvent(nonce);
-  //         reject(error);
-  //         return;
-  //       }
-  //       if (message && message.progress === "done") {
-  //         this.removeWaitMjEvent(nonce);
-  //         resolve(message);
-  //         return;
-  //       }
-  //       message && loading && loading(message.uri, message.progress || "");
-  //     });
-  //   });
-  // }
-
   async waitImageMessage({
     nonce,
     prompt,
@@ -586,6 +539,13 @@ export class WsMessage {
   async waitShorten(nonce: string) {
     return new Promise<MJShorten | null>((resolve) => {
       this.onceMJ(nonce, (message) => {
+        resolve(message);
+      });
+    });
+  }
+  async waitContent(event: string) {
+    return new Promise<string | null>((resolve) => {
+      this.once(event, (message) => {
         resolve(message);
       });
     });

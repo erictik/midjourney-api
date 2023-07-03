@@ -3,9 +3,9 @@ import { Midjourney } from "../src";
 import { sleep } from "../src/utls";
 /**
  *
- * a simple example of how to use the options with ws command
+ * a simple example of how to use the (custom zoom) options with ws command
  * ```
- * npx tsx example/options.ts
+ * npx tsx example/customzoom.ts
  * ```
  */
 async function main() {
@@ -14,9 +14,9 @@ async function main() {
     ChannelId: <string>process.env.CHANNEL_ID,
     SalaiToken: <string>process.env.SALAI_TOKEN,
     Debug: true,
-    Ws: true,
+    Ws: true, //enable ws is required for custom zoom
   });
-  await client.Connect();
+  await client.init();
   const prompt = "Christmas dinner with spaghetti with family in a cozy house, we see interior details , simple blue&white illustration"
   const Imagine = await client.Imagine(prompt);
   console.log(Imagine);
