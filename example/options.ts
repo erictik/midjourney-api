@@ -1,5 +1,6 @@
 import "dotenv/config";
 import { Midjourney } from "../src";
+import { sleep } from "../src/utls";
 /**
  *
  * a simple example of how to use the options with ws command
@@ -16,7 +17,8 @@ async function main() {
     Ws: true,
   });
   await client.Connect();
-  const Imagine = await client.Imagine("a cool cat, blue ears");
+  const prompt = "Christmas dinner with spaghetti with family in a cozy house, we see interior details , simple blue&white illustration"
+  const Imagine = await client.Imagine(prompt);
   console.log(Imagine);
   if (!Imagine) {
     console.log("no message");
@@ -35,22 +37,24 @@ async function main() {
     console.log("no message");
     return;
   }
-  const zoomout = Upscale?.options?.find((o) => o.label === "Zoom Out 2x");
+  console.log(Upscale);
+
+  const zoomout = Upscale?.options?.find((o) => o.label === "Custom Zoom");
   if (!zoomout) {
     console.log("no zoomout");
     return;
   }
+  await sleep(1400);
   const zoomout2x = await client.Custom({
     msgId: <string>Upscale.id,
     flags: Upscale.flags,
-    content: Upscale.content,
+    content: `${prompt} --zoom 2`,
     customId: zoomout.custom,
     loading: (uri: string, progress: string) => {
       console.log("loading", uri, "progress", progress);
     },
   });
-  console.log("zoomout2x", zoomout2x);
-
+  console.log("Custom Zoom", zoomout2x);
   client.Close();
 }
 main().catch((err) => {

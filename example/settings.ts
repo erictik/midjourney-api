@@ -13,7 +13,7 @@ async function main() {
     ChannelId: <string>process.env.CHANNEL_ID,
     SalaiToken: <string>process.env.SALAI_TOKEN,
     Debug: true,
-    Ws: true,
+    Ws: true, //Important 
   });
   await client.Connect();
   const msg = await client.Settings();
@@ -22,10 +22,10 @@ async function main() {
     return;
   }
   // //niji5
-  // const niji5 = msg.options.filter((x) => {
-  //   return x.label === "Niji version 5";
-  // })[0];
-  // console.log(niji5);
+  const niji5 = msg.options.filter((x) => {
+    return x.label === "Niji version 5";
+  })[0];
+  console.log(niji5);
   // const httpstatus = await client.MJApi.CustomApi({
   //   msgId: msg.id,
   //   customId: niji5.custom,

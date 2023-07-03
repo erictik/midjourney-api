@@ -145,7 +145,7 @@ export class MidjourneyApi extends Command {
     };
     return this.safeIteractions(payload);
   }
-
+  //FIXME: get SubmitCustomId from discord api
   async ModalSubmitApi({
     nonce ,
     msgId,
@@ -162,10 +162,8 @@ export class MidjourneyApi extends Command {
     var payload = {
       type: 5,
       application_id: "936929561302675456",
-      guild_id: this.config.ServerId,
       channel_id: this.config.ChannelId,
-      session_id: this.config.SessionId,
-      nonce,
+      guild_id: this.config.ServerId,
       data: {
         id:msgId,
         custom_id: customId,
@@ -182,7 +180,10 @@ export class MidjourneyApi extends Command {
           },
         ],
       },
+      session_id: this.config.SessionId,
+      nonce,
     }
+    console.log(submitCustomId,JSON.stringify(payload))
     return this.safeIteractions(payload);
   }
   async RemixApi({
@@ -246,7 +247,7 @@ export class MidjourneyApi extends Command {
     })
   }
 
-  async  CustomZoompi({
+  async CustomZoomImagineApi({
     nonce ,
     msgId,
     customId,
@@ -257,6 +258,7 @@ export class MidjourneyApi extends Command {
     customId: string;
     prompt: string;
   }){
+    customId = customId.replace("MJ::CustomZoom","MJ::OutpaintCustomZoomModal")
     return this.ModalSubmitApi({
       nonce,
       msgId,
