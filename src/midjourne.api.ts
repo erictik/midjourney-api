@@ -183,7 +183,7 @@ export class MidjourneyApi extends Command {
       session_id: this.config.SessionId,
       nonce,
     }
-    console.log(submitCustomId,JSON.stringify(payload))
+    console.log("submitCustomId",JSON.stringify(payload))
     return this.safeIteractions(payload);
   }
   async RemixApi({

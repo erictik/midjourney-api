@@ -6,7 +6,7 @@ import {
 } from "./interfaces";
 import { MidjourneyApi } from "./midjourne.api";
 import { MidjourneyMessage } from "./discord.message";
-import { custom2Type, nextNonce, random } from "./utls";
+import { toRemixCustom, custom2Type, nextNonce, random } from "./utls";
 import { WsMessage } from "./discord.ws";
 export class Midjourney extends MidjourneyMessage {
   public config: MJConfig;
@@ -45,6 +45,12 @@ export class Midjourney extends MidjourneyMessage {
     await this.Connect();
     const info = await this.Info();
     this.log(`info`, info);
+    const settings = await this.Settings();
+    const remix = settings?.options.find((o) => o.label === "Remix mode")
+    if (remix?.style == 3) {
+      this.config.Remix = true
+      this.log(`Remix mode enabled`)
+    }
     return this;
   }
   async Imagine(prompt: string, loading?: LoadingHandler) {
@@ -249,7 +255,25 @@ export class Midjourney extends MidjourneyMessage {
                 );
               }
               return newNonce;
+            case "variation":
+              if(this.config.Remix !== true){
+                return "";
+              }
+              customId = toRemixCustom(customId);
+              const remixHttpStatus = await this.MJApi.RemixApi({
+                msgId: id,
+                customId,
+                prompt: content,
+                nonce: newNonce,
+              });
+              if (remixHttpStatus !== 204) {
+                throw new Error(
+                  `RemixApi failed with status ${remixHttpStatus}`
+                );
+              }
+              return newNonce;
             default:
+              return "";
               throw new Error(`unknown customId ${customId}`);
           }
         },

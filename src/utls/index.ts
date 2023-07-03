@@ -22,7 +22,7 @@ export const formatPrompts = (prompts: string) => {
     const shortenedPrompts = matches.map((match) => match.trim());
     return shortenedPrompts;
   } else {
-    console.log("No matches found.");
+    return [];
   }
 };
 
@@ -96,12 +96,11 @@ export const formatInfo = (msg: string) => {
     }
   });
   return jsonResult;
-}
+};
 
 export const uriToHash = (uri: string) => {
   return uri.split("_").pop()?.split(".")[0] ?? "";
-}
-
+};
 
 export const content2progress = (content: string) => {
   if (!content) return "";
@@ -117,7 +116,7 @@ export const content2progress = (content: string) => {
     progress = match[1];
   }
   return progress;
-}
+};
 
 export const content2prompt = (content: string) => {
   if (!content) return "";
@@ -129,7 +128,7 @@ export const content2prompt = (content: string) => {
     console.log("No match found.", content);
     return content;
   }
-}
+};
 
 export function custom2Type(custom: string) {
   if (custom.includes("upsample")) {
@@ -148,3 +147,8 @@ export function custom2Type(custom: string) {
   return null;
 }
 
+export const toRemixCustom = (customID: string) => {
+  const parts = customID.split("::");
+  const convertedString = `MJ::RemixModal::${parts[4]}::${parts[3]}::1`;
+  return convertedString;
+};

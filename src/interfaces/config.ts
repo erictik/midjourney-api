@@ -12,6 +12,7 @@ export interface MJConfig {
   SessionId: string;
   ServerId?: string;
   Ws?: boolean;
+  Remix?: boolean;
   HuggingFaceToken?: string;
   DiscordBaseUrl: string;
   WsBaseUrl: string;

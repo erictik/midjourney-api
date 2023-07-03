@@ -8,10 +8,18 @@ import {
   MJSettings,
   MJOptions,
   OnModal,
+  MJShorten,
 } from "./interfaces";
 
 import { MidjourneyApi } from "./midjourne.api";
-import { content2progress, content2prompt, formatInfo, formatOptions, formatPrompts, uriToHash } from "./utls";
+import {
+  content2progress,
+  content2prompt,
+  formatInfo,
+  formatOptions,
+  formatPrompts,
+  uriToHash,
+} from "./utls";
 import { VerifyHuman } from "./verify.human";
 import WebSocket from "isomorphic-ws";
 export class WsMessage {
@@ -175,11 +183,14 @@ export class WsMessage {
           });
           break;
         case "shorten":
-          this.emitMJ(id, {
+          const shorten : MJShorten = {
             description: embeds?.[0]?.description,
             prompts: formatPrompts(embeds?.[0]?.description as string),
             options: formatOptions(components),
-          });
+            id,
+            flags:message.flags,
+          }
+          this.emitMJ(id, shorten);
           break;
         case "info":
           this.emit("info", embeds?.[0]?.description);
@@ -192,7 +203,13 @@ export class WsMessage {
   }
 
   //interaction success
-  private async onInteractionSuccess({ nonce, id }: { nonce: string; id: string }) {
+  private async onInteractionSuccess({
+    nonce,
+    id,
+  }: {
+    nonce: string;
+    id: string;
+  }) {
     this.log("interactionSuccess", nonce, id);
     const event = this.getEventByNonce(nonce);
     if (!event) {
@@ -205,14 +222,14 @@ export class WsMessage {
     const { channel_id, author } = message;
     if (!(author && author.id === this.MJBotId)) return;
     if (channel_id !== this.config.ChannelId) return;
-    this.log("messageCreate====", message);
+    // this.log("messageCreate====", message);
     this.messageCreate(message);
   }
   private async onMessageUpdate(message: any) {
     const { channel_id, author } = message;
     if (!(author && author.id === this.MJBotId)) return;
     if (channel_id !== this.config.ChannelId) return;
-    this.log("messageUpdate====", message);
+    // this.log("messageUpdate====", message);
     this.messageUpdate(message);
   }
 
@@ -235,8 +252,12 @@ export class WsMessage {
         this.emitSystem("messageUpdate", message);
         break;
       case "INTERACTION_SUCCESS":
+        this.log("INTERACTION_SUCCESS", message);
         this.emitSystem("interactionSuccess", message);
         break;
+      case "INTERACTION_CREATE":
+        this.log("INTERACTION_CREATE", message);
+        this.emitSystem("interactionCreate", message);
     }
   }
   private async verifyHuman(message: any) {
@@ -356,7 +377,6 @@ export class WsMessage {
     this.log("updateMjEventIdByNonce success", this.waitMjEvents.get(nonce));
   }
 
-
   protected async log(...args: any[]) {
     this.config.Debug && console.info(...args, new Date().toISOString());
   }
@@ -385,7 +405,15 @@ export class WsMessage {
   ) {
     this.on(event, callback);
   }
-  private emitSystem(type: "ready" | "messageCreate" | "messageUpdate" | "interactionSuccess", message: MJEmit) {
+  private emitSystem(
+    type:
+      | "ready"
+      | "messageCreate"
+      | "messageUpdate"
+      | "interactionSuccess"
+      | "interactionCreate",
+    message: MJEmit
+  ) {
     this.emit(type, message);
   }
   once(event: string, callback: (message: any) => void) {
@@ -481,7 +509,7 @@ export class WsMessage {
   //       },
   //     });
 
-  //     //FIXME 
+  //     //FIXME
   //     this.onceImage(nonce, ({ message, error }) => {
   //       if (error) {
   //         this.removeWaitMjEvent(nonce);
@@ -556,11 +584,7 @@ export class WsMessage {
     });
   }
   async waitShorten(nonce: string) {
-    return new Promise<{
-      options: MJOptions[];
-      prompts: string[];
-      description: string;
-    } | null>((resolve) => {
+    return new Promise<MJShorten | null>((resolve) => {
       this.onceMJ(nonce, (message) => {
         resolve(message);
       });
