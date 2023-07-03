@@ -35,9 +35,13 @@ export class Command {
     if (this.cache[name] !== undefined) {
       return this.cache[name];
     }
-    const command = await this.getCommand(name);
-    this.cache[name] = command;
-    return command;
+    if (this.config.ServerId){
+      const command = await this.getCommand(name);
+      this.cache[name] = command;
+      return command;
+    }
+    this.allCommand();
+    return this.cache[name];
   }
   async allCommand() {
     const searchParams = new URLSearchParams({
@@ -67,7 +71,7 @@ export class Command {
       query: name,
       limit: "1",
       include_applications: "true",
-      command_ids: `${this.config.BotId}`,
+      // command_ids: `${this.config.BotId}`,
     });
     const url = `${this.config.DiscordBaseUrl}/api/v9/channels/${this.config.ChannelId}/application-commands/search?${searchParams}`;
     const response = await this.config.fetch(url, {
