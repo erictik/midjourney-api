@@ -10,7 +10,7 @@ import { Midjourney, NijiBot } from "../src";
 async function main() {
   const client = new Midjourney({
     SalaiToken: <string>process.env.SALAI_TOKEN,
-    BotId: NijiBot,
+    BotId: NijiBot, // NijiBot 
     ChannelId: "1125452970276954204",
     Debug: true,
     Ws: true,
