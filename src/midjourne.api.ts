@@ -1,4 +1,4 @@
-import { DiscordImage, MJConfig, UploadParam, UploadSlot } from "./interfaces";
+import { CustomZoomModalSubmitID, DescribeModalSubmitID, DiscordImage, MJConfig, ModalSubmitID, RemixModalSubmitID, ShortenModalSubmitID, UploadParam, UploadSlot } from "./interfaces";
 import { CreateQueue } from "./queue";
 import { nextNonce, sleep } from "./utls";
 import * as fs from "fs";
@@ -145,6 +145,128 @@ export class MidjourneyApi extends Command {
     };
     return this.safeIteractions(payload);
   }
+
+  async ModalSubmitApi({
+    nonce ,
+    msgId,
+    customId,
+    prompt,
+    submitCustomId
+  }:{
+    nonce: string;
+    msgId: string;
+    customId: string;
+    prompt: string;
+    submitCustomId:ModalSubmitID;
+  }) {
+    var payload = {
+      type: 5,
+      application_id: "936929561302675456",
+      guild_id: this.config.ServerId,
+      channel_id: this.config.ChannelId,
+      session_id: this.config.SessionId,
+      nonce,
+      data: {
+        id:msgId,
+        custom_id: customId,
+        components: [
+          {
+            type: 1,
+            components: [
+              {
+                type: 4,
+                custom_id: submitCustomId,
+                value:prompt,
+              },
+            ],
+          },
+        ],
+      },
+    }
+    return this.safeIteractions(payload);
+  }
+  async RemixApi({
+    nonce ,
+    msgId,
+    customId,
+    prompt,
+  }:{
+    nonce: string;
+    msgId: string;
+    customId: string;
+    prompt: string;
+  }) {
+    return this.ModalSubmitApi({
+      nonce,
+      msgId,
+      customId,
+      prompt,
+      submitCustomId:RemixModalSubmitID
+    })
+  }
+  async ShortenImagineApi({
+    nonce ,
+    msgId,
+    customId,
+    prompt,
+  }:{
+    nonce: string;
+    msgId: string;
+    customId: string;
+    prompt: string;
+  }){
+    return this.ModalSubmitApi({
+      nonce,
+      msgId,
+      customId,
+      prompt,
+      submitCustomId:ShortenModalSubmitID
+    })
+  }
+
+
+  
+  async DescribeImagineApi({
+    nonce ,
+    msgId,
+    customId,
+    prompt,
+  }:{
+    nonce: string;
+    msgId: string;
+    customId: string;
+    prompt: string;
+  }){
+    return this.ModalSubmitApi({
+      nonce,
+      msgId,
+      customId,
+      prompt,
+      submitCustomId:DescribeModalSubmitID
+    })
+  }
+
+  async  CustomZoompi({
+    nonce ,
+    msgId,
+    customId,
+    prompt,
+  }:{
+    nonce: string;
+    msgId: string;
+    customId: string;
+    prompt: string;
+  }){
+    return this.ModalSubmitApi({
+      nonce,
+      msgId,
+      customId,
+      prompt,
+      submitCustomId:CustomZoomModalSubmitID
+    })
+  }
+
+
   async InfoApi(nonce?: string) {
     const payload = await this.infoPayload(nonce);
     return this.safeIteractions(payload);

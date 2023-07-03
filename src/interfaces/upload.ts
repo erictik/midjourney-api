@@ -3,7 +3,6 @@ export type UploadParam = {
   file_size: number;
   id: number | string;
 };
-
 export type UploadSlot = {
   id: number;
   upload_filename: string;

@@ -5,9 +5,9 @@ import {
   MJConfigParam,
 } from "./interfaces";
 import { MidjourneyApi } from "./midjourne.api";
-import { MidjourneyMessage } from "./midjourney.message";
+import { MidjourneyMessage } from "./discord.message";
 import { nextNonce, random } from "./utls";
-import { WsMessage } from "./ws.message";
+import { WsMessage } from "./discord.ws";
 export class Midjourney extends MidjourneyMessage {
   public config: MJConfig;
   private wsClient?: WsMessage;
