@@ -18,13 +18,14 @@ async function main() {
   await client.Connect();
   const info = await client.Info();
   console.log(info);
-  // const msg = await client.Imagine(
-  //   "A little white dog",
-  //   (uri: string, progress: string) => {
-  //     console.log("loading", uri, "progress", progress);
-  //   }
-  // );
-  // console.log({ msg });
+  const msg = await client.Imagine(
+    "A little white dog",
+    (uri: string, progress: string) => {
+      console.log("loading", uri, "progress", progress);
+    }
+  );
+  console.log( msg );
+  client.Close();
 }
 main()
   .then(() => {

@@ -10,7 +10,6 @@ import {
   OnModal,
   MJShorten,
 } from "./interfaces";
-
 import { MidjourneyApi } from "./midjourne.api";
 import {
   content2progress,
@@ -30,12 +29,13 @@ export class WsMessage {
   private waitMjEvents: Map<string, WaitMjEvent> = new Map();
   private reconnectTime: boolean[] = [];
   private heartbeatInterval = 0;
-
+  public UserId = "";
   constructor(public config: MJConfig, public MJApi: MidjourneyApi) {
     this.ws = new this.config.WebSocket(this.config.WsBaseUrl);
     this.ws.addEventListener("open", this.open.bind(this));
     this.onSystem("messageCreate", this.onMessageCreate.bind(this));
     this.onSystem("messageUpdate", this.onMessageUpdate.bind(this));
+    this.onSystem("ready", this.onReady.bind(this));
     this.onSystem("interactionSuccess", this.onInteractionSuccess.bind(this));
   }
 
@@ -114,7 +114,7 @@ export class WsMessage {
   private async messageCreate(message: any) {
     const { embeds, id, nonce, components, attachments } = message;
     if (nonce) {
-      this.log("waiting start image or info or error");
+      // this.log("waiting start image or info or error");
       this.updateMjEventIdByNonce(id, nonce);
 
       if (embeds?.[0]) {
@@ -158,7 +158,7 @@ export class WsMessage {
     this.messageUpdate(message);
   }
   private messageUpdate(message: any) {
-    // this.log("messageUpdate",message);
+    // this.log("messageUpdate", message);
     const {
       content,
       embeds,
@@ -214,25 +214,29 @@ export class WsMessage {
     nonce: string;
     id: string;
   }) {
-    this.log("interactionSuccess", nonce, id);
+    // this.log("interactionSuccess", nonce, id);
     const event = this.getEventByNonce(nonce);
     if (!event) {
       return;
     }
     event.onmodal && event.onmodal(nonce, id);
   }
-
+  private async onReady(user: any) {
+    this.UserId = user.id;
+  }
   private async onMessageCreate(message: any) {
-    const { channel_id, author } = message;
-    console.log("author", author.id);
-    if (!(author && author.id === this.config.BotId)) return;
+    const { channel_id, author, interaction } = message;
     if (channel_id !== this.config.ChannelId) return;
+    if (author?.id !== this.config.BotId) return;
+    if (interaction && interaction.user.id !== this.UserId) return;
     this.messageCreate(message);
   }
+
   private async onMessageUpdate(message: any) {
-    const { channel_id, author } = message;
-    if (!(author && author.id === this.config.BotId)) return;
+    const { channel_id, author, interaction } = message;
     if (channel_id !== this.config.ChannelId) return;
+    if (author?.id !== this.config.BotId) return;
+    if (interaction && interaction.user.id !== this.UserId) return;
     this.messageUpdate(message);
   }
 
@@ -243,7 +247,7 @@ export class WsMessage {
       return;
     }
     const message = msg.d;
-    this.log("has message", msg.t);
+    this.log("message event", msg.t);
     switch (msg.t) {
       case "READY":
         this.emitSystem("ready", message.user);

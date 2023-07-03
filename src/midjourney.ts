@@ -255,7 +255,6 @@ export class Midjourney extends MidjourneyMessage {
           if (content === undefined || content === "") {
             return "";
           }
-          console.log("onmodalonmodal", nonde, id);
           const newNonce = nextNonce();
           switch (custom2Type(customId)) {
             case "customZoom":
