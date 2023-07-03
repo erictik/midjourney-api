@@ -26,7 +26,12 @@ export class Midjourney extends MidjourneyMessage {
   }
   async Connect() {
     //if auth failed, will throw error
-    await this.MJApi.cacheCommand("settings");
+    if (this.config.ServerId)
+    {
+      await this.MJApi.getCommand('settings');
+    } else{
+      await this.MJApi.allCommand();
+    }   
     if (!this.config.Ws) {
       return this;
     }
@@ -109,7 +114,7 @@ export class Midjourney extends MidjourneyMessage {
     const nonce = nextNonce();
     const httpStatus = await this.MJApi.InfoApi(nonce);
     if (httpStatus !== 204) {
-      throw new Error(`ImagineApi failed with status ${httpStatus}`);
+      throw new Error(`InfoApi failed with status ${httpStatus}`);
     }
     if (this.wsClient) {
       return this.wsClient.waitInfo();

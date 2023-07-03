@@ -2,10 +2,12 @@ import WebSocket from "isomorphic-ws";
 
 export type FetchFn = typeof fetch;
 export type WebSocketCl = typeof WebSocket;
-
+export const MJBot = "936929561302675456";
+export const NijiBot = "1022952195194359889";
 export interface MJConfig {
   ChannelId: string;
   SalaiToken: string;
+  BotId: typeof MJBot | typeof NijiBot; 
   Debug: boolean;
   Limit: number;
   MaxWait: number;
@@ -22,6 +24,7 @@ export interface MJConfig {
 export interface MJConfigParam {
   SalaiToken: string;
   ChannelId?: string;
+  BotId?: typeof MJBot | typeof NijiBot; 
   Debug?: boolean;
   Limit?: number;
   MaxWait?: number;
@@ -36,6 +39,7 @@ export interface MJConfigParam {
 }
 
 export const DefaultMJConfig: MJConfig = {
+  BotId: MJBot,
   ChannelId: "1077800642086703114",
   SalaiToken: "",
   SessionId: "8bb7f5b79c7a49f7d0824ab4b8773a81",

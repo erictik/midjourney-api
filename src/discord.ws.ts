@@ -24,8 +24,6 @@ import { VerifyHuman } from "./verify.human";
 import WebSocket from "isomorphic-ws";
 export class WsMessage {
   ws: WebSocket;
-  //TODO add MJBotId to config
-  MJBotId = "936929561302675456";
   private closed = false;
   private event: Array<{ event: string; callback: (message: any) => void }> =
     [];
@@ -226,13 +224,14 @@ export class WsMessage {
 
   private async onMessageCreate(message: any) {
     const { channel_id, author } = message;
-    if (!(author && author.id === this.MJBotId)) return;
+    console.log("author", author.id);
+    if (!(author && author.id === this.config.BotId)) return;
     if (channel_id !== this.config.ChannelId) return;
     this.messageCreate(message);
   }
   private async onMessageUpdate(message: any) {
     const { channel_id, author } = message;
-    if (!(author && author.id === this.MJBotId)) return;
+    if (!(author && author.id === this.config.BotId)) return;
     if (channel_id !== this.config.ChannelId) return;
     this.messageUpdate(message);
   }

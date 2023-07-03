@@ -39,12 +39,12 @@ export class MidjourneyApi extends Command {
           headers: headers,
         }
       );
+      if (response.status >= 400) {
+        console.error("api.error.config", { payload:JSON.stringify(payload), config: this.config });
+      }
       callback && callback(response.status);
       //discord api rate limit
       await sleep(950);
-      if (response.status >= 400) {
-        console.error("api.error.config", { payload, config: this.config });
-      }
       return response.status;
     } catch (error) {
       console.error(error);
