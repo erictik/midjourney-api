@@ -1,10 +1,11 @@
 import "dotenv/config";
 import { Midjourney } from "../src";
+import { sleep } from "../src/utls";
 /**
  *
- * a simple example of how to use the options with ws command
+ * a simple example of how to use the (custom zoom) options with ws command
  * ```
- * npx tsx example/options.ts
+ * npx tsx example/customzoom.ts
  * ```
  */
 async function main() {
@@ -13,10 +14,11 @@ async function main() {
     ChannelId: <string>process.env.CHANNEL_ID,
     SalaiToken: <string>process.env.SALAI_TOKEN,
     Debug: true,
-    Ws: true,
+    Ws: true, //enable ws is required for custom zoom
   });
-  await client.Connect();
-  const Imagine = await client.Imagine("a cool cat, blue ears");
+  await client.init();
+  const prompt = "Christmas dinner with spaghetti with family in a cozy house, we see interior details , simple blue&white illustration"
+  const Imagine = await client.Imagine(prompt);
   console.log(Imagine);
   if (!Imagine) {
     console.log("no message");
@@ -35,22 +37,24 @@ async function main() {
     console.log("no message");
     return;
   }
-  const zoomout = Upscale?.options?.find((o) => o.label === "Zoom Out 2x");
+  console.log(Upscale);
+
+  const zoomout = Upscale?.options?.find((o) => o.label === "Custom Zoom");
   if (!zoomout) {
     console.log("no zoomout");
     return;
   }
+  await sleep(1400);
   const zoomout2x = await client.Custom({
     msgId: <string>Upscale.id,
     flags: Upscale.flags,
-    content: Upscale.content,
+    content: `${prompt} --zoom 2`,
     customId: zoomout.custom,
     loading: (uri: string, progress: string) => {
       console.log("loading", uri, "progress", progress);
     },
   });
-  console.log("zoomout2x", zoomout2x);
-
+  console.log("Custom Zoom", zoomout2x);
   client.Close();
 }
 main().catch((err) => {

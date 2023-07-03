@@ -2,28 +2,23 @@ import "dotenv/config";
 import { Midjourney } from "../src";
 /**
  *
- * a simple example of using the imagine api via DM Midjourney Bot
+ * a simple example of using the prefer remix api
  * ```
- * npx tsx example/imagine-dm.ts
+ * npx tsx example/prefer-remix.ts
  * ```
  */
 async function main() {
   const client = new Midjourney({
+    ServerId: <string>process.env.SERVER_ID,
+    ChannelId: <string>process.env.CHANNEL_ID,
     SalaiToken: <string>process.env.SALAI_TOKEN,
     Debug: true,
-    Ws: true,
+    Ws: true, //enable ws is required for prefer remix
   });
   await client.Connect();
-  const info =  await client.Info();
-  console.log(info);
-  return
-  // const msg = await client.Imagine(
-  //   "A little white dog",
-  //   (uri: string, progress: string) => {
-  //     console.log("loading", uri, "progress", progress);
-  //   }
-  // );
-  // console.log({ msg });
+  const msg = await client.SwitchRemix();
+  console.log(msg);
+  client.Close();
 }
 main()
   .then(() => {

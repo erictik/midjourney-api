@@ -101,11 +101,15 @@ npx tsx example/imagine-ws.ts
 - [x] `/imagine` `variation` `upscale` `reroll` `blend` `zoomout` `vary`
 - [x] `/info`
 - [x] `/fast ` and `/relax `
+- [x] [`/prefer remix`](https://github.com/erictik/midjourney-client/blob/main/example/prefer-remix.ts) 
+- [x] [`variation (remix mode)`](https://github.com/erictik/midjourney-client/blob/main/example/variation-ws.ts)
 - [x] `/describe` 
 - [x] [`/shorten`](https://github.com/erictik/midjourney-client/blob/main/example/shorten.ts)
 - [x] `/settings` `reset`
 - [x] verify human
 - [x] [proxy](https://github.com/erictik/midjourney-discord/blob/main/examples/proxy.ts)
+- [x] [niji bot](https://github.com/erictik/midjourney-discord/blob/main/examples/imagine-niji.ts)
+- [x] [custom zoom](https://github.com/erictik/midjourney-discord/blob/main/examples/customzoom.ts)
 - [x] autoload command payload
 ---
 ## Projects

@@ -1,4 +1,3 @@
-import { format } from "path";
 import {
   DefaultMJConfig,
   LoadingHandler,

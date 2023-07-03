@@ -9,14 +9,15 @@ export interface MJMessage {
 }
 
 export type LoadingHandler = (uri: string, progress: string) => void;
+export type OnModal = (nonce: string, id: string) => Promise<string>;
 
 export interface WaitMjEvent {
   nonce: string;
   prompt?: string;
   id?: string;
-  index?: number;
+  onmodal?: OnModal;
 }
-export interface WsEventMsg {
+export interface MJEmit {
   error?: Error;
   message?: MJMessage;
 }
@@ -44,4 +45,12 @@ export interface MJSettings {
   id: string;
   flags: number;
   options: MJOptions[];
+}
+
+export interface MJShorten {
+  description: string;
+  id: string;
+  flags: number;
+  options: MJOptions[];
+  prompts: string[];
 }
