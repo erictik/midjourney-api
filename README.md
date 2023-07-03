@@ -108,6 +108,8 @@ npx tsx example/imagine-ws.ts
 - [x] `/settings` `reset`
 - [x] verify human
 - [x] [proxy](https://github.com/erictik/midjourney-discord/blob/main/examples/proxy.ts)
+- [x] [niji bot](https://github.com/erictik/midjourney-discord/blob/main/examples/imagine-niji.ts)
+- [x] [custom zoom](https://github.com/erictik/midjourney-discord/blob/main/examples/customzoom.ts)
 - [x] autoload command payload
 ---
 ## Projects
