@@ -229,6 +229,7 @@ export class WsMessage {
     if (channel_id !== this.config.ChannelId) return;
     if (author?.id !== this.config.BotId) return;
     if (interaction && interaction.user.id !== this.UserId) return;
+    this.log('[messageCreate]', JSON.stringify(message));
     this.messageCreate(message);
   }
 
@@ -237,6 +238,7 @@ export class WsMessage {
     if (channel_id !== this.config.ChannelId) return;
     if (author?.id !== this.config.BotId) return;
     if (interaction && interaction.user.id !== this.UserId) return;
+    this.log('[messageUpdate]', JSON.stringify(message));
     this.messageUpdate(message);
   }
 

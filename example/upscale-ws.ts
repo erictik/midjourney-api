@@ -12,11 +12,16 @@ async function main() {
     ServerId: <string>process.env.SERVER_ID,
     ChannelId: <string>process.env.CHANNEL_ID,
     SalaiToken: <string>process.env.SALAI_TOKEN,
-    Debug: true,
+    // Debug: true,
     Ws: true,
   });
   await client.Connect();
-  const Imagine = await client.Imagine("a cool cat, blue ears, yellow hat");
+  const Imagine = await client.Imagine(
+    "a cool cat, blue ears, yellow hat --v 4",
+    (uri: string, progress: string) => {
+      console.log("loading", uri, "progress", progress);
+    }
+  );
   console.log(Imagine);
   if (!Imagine) {
     console.log("no message");
