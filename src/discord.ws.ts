@@ -116,7 +116,6 @@ export class WsMessage {
     if (nonce) {
       // this.log("waiting start image or info or error");
       this.updateMjEventIdByNonce(id, nonce);
-
       if (embeds?.[0]) {
         const { color, description, title } = embeds[0];
         this.log("embeds[0].color", color);
@@ -229,7 +228,7 @@ export class WsMessage {
     if (channel_id !== this.config.ChannelId) return;
     if (author?.id !== this.config.BotId) return;
     if (interaction && interaction.user.id !== this.UserId) return;
-    this.log('[messageCreate]', JSON.stringify(message));
+    this.log("[messageCreate]", JSON.stringify(message));
     this.messageCreate(message);
   }
 
@@ -238,7 +237,7 @@ export class WsMessage {
     if (channel_id !== this.config.ChannelId) return;
     if (author?.id !== this.config.BotId) return;
     if (interaction && interaction.user.id !== this.UserId) return;
-    this.log('[messageUpdate]', JSON.stringify(message));
+    this.log("[messageUpdate]", JSON.stringify(message));
     this.messageUpdate(message);
   }
 
@@ -315,6 +314,7 @@ export class WsMessage {
       hash: uriToHash(attachments[0].url),
       progress: "done",
       uri: attachments[0].url,
+      proxy_url: attachments[0].proxy_url,
       options: formatOptions(components),
     };
     this.filterMessages(MJmsg);
@@ -336,6 +336,7 @@ export class WsMessage {
     }
     const MJmsg: MJMessage = {
       uri: attachments[0].url,
+      proxy_url: attachments[0].proxy_url,
       content: content,
       flags: flags,
       progress: content2progress(content),

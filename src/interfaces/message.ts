@@ -1,5 +1,6 @@
 export interface MJMessage {
   uri: string;
+  proxy_url?: string;
   content: string;
   flags: number;
   id?: string;

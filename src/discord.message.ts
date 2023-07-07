@@ -35,7 +35,7 @@ export class MidjourneyMessage {
     for (let i = 0; i < data.length; i++) {
       const item = data[i];
       if (
-        item.author.id === "936929561302675456" &&
+        item.author.id === this.config.BotId &&
         item.content.includes(`${seed}`)
       ) {
         const itemTimestamp = new Date(item.timestamp).getTime();
@@ -64,6 +64,7 @@ export class MidjourneyMessage {
           content,
           id: item.id,
           uri: imageUrl,
+          proxy_url: item.attachments[0].proxy_url,
           flags: item.flags,
           hash: this.UriToHash(imageUrl),
           progress: "done",
