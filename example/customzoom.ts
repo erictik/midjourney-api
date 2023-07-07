@@ -63,7 +63,11 @@ async function main() {
   console.log("Custom Zoom", zoomout2x);
   client.Close();
 }
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+main()
+  .then(() => {
+    console.log("done");
+  })
+  .catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });

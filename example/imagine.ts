@@ -13,6 +13,7 @@ async function main() {
     ChannelId: <string>process.env.CHANNEL_ID,
     SalaiToken: <string>process.env.SALAI_TOKEN,
     Debug: true,
+    Ws: false,
   });
 
   const msg = await client.Imagine(

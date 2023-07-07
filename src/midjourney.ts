@@ -254,6 +254,7 @@ export class Midjourney extends MidjourneyMessage {
       return await wsClient.waitImageMessage({
         nonce,
         loading,
+        messageId: msgId,
         prompt: content,
         onmodal: async (nonde, id) => {
           if (content === undefined || content === "") {
