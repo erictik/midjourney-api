@@ -44,6 +44,8 @@
   },
   "dependencies": {
     "@huggingface/inference": "^2.5.0",
+    "@types/async": "^3.2.20",
+    "async": "^3.2.4",
     "isomorphic-ws": "^5.0.0",
     "p-queue": "^6.6.2",
     "snowyflake": "^2.0.0",

@@ -9,31 +9,47 @@ import {
   UploadParam,
   UploadSlot,
 } from "./interfaces";
-import { CreateQueue } from "./queue";
+import async from "async";
 import { nextNonce, sleep } from "./utls";
 import path from "path";
 import { Command } from "./command";
 export class MidjourneyApi extends Command {
-  private apiQueue = CreateQueue(1);
   UpId = Date.now() % 10; // upload id
   constructor(public config: MJConfig) {
     super(config);
   }
-  // limit the number of concurrent interactions
-  protected async safeIteractions(payload: any) {
-    return this.apiQueue.addTask(
-      () =>
-        new Promise<number>((resolve) => {
-          this.interactions(payload, (res) => {
-            resolve(res);
-          });
-        })
-    );
-  }
-  protected async interactions(
-    payload: any,
-    callback?: (result: number) => void
-  ) {
+
+  private safeIteractions = (request: any) => {
+    return new Promise<number>((resolve, reject) => {
+      this.queue.push(
+        {
+          request,
+          callback: (any: any) => {
+            resolve(any);
+          },
+        },
+        (error: any, result: any) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(result);
+          }
+        }
+      );
+    });
+  };
+  private processRequest = async ({
+    request,
+    callback,
+  }: {
+    request: any;
+    callback: (any: any) => void;
+  }) => {
+    const httpStatus = await this.interactions(request);
+    callback(httpStatus);
+    await sleep(this.config.ApiInterval);
+  };
+  private interactions = async (payload: any) => {
     try {
       const headers = {
         "Content-Type": "application/json",
@@ -53,15 +69,13 @@ export class MidjourneyApi extends Command {
           config: this.config,
         });
       }
-      callback && callback(response.status);
-      //discord api rate limit
-      await sleep(950);
       return response.status;
     } catch (error) {
       console.error(error);
-      callback && callback(500);
+      return 500;
     }
-  }
+  };
+  private queue = async.queue(this.processRequest, 1);
   async ImagineApi(prompt: string, nonce: string = nextNonce()) {
     const payload = await this.imaginePayload(prompt, nonce);
     return this.safeIteractions(payload);
@@ -313,28 +327,6 @@ export class MidjourneyApi extends Command {
     const fileData = await response.arrayBuffer();
     const mimeType = response.headers.get("content-type");
     const filename = path.basename(fileUrl) || "image.png";
-    const file_size = fileData.byteLength;
-    if (!mimeType) {
-      throw new Error("Unknown mime type");
-    }
-    const { attachments } = await this.attachments({
-      filename,
-      file_size,
-      id: this.UpId++,
-    });
-    const UploadSlot = attachments[0];
-    await this.uploadImage(UploadSlot, fileData, mimeType);
-    const resp: DiscordImage = {
-      id: UploadSlot.id,
-      filename: path.basename(UploadSlot.upload_filename),
-      upload_filename: UploadSlot.upload_filename,
-    };
-    return resp;
-  }
-  async UploadImageByFile(file: File) {
-    const fileData = await file.arrayBuffer();
-    const mimeType = file.type;
-    const filename = file.name || "image.png";
     const file_size = fileData.byteLength;
     if (!mimeType) {
       throw new Error("Unknown mime type");
