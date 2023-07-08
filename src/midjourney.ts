@@ -160,7 +160,7 @@ export class Midjourney extends MidjourneyMessage {
   async Describe(imgUri: string) {
     const wsClient = await this.getWsClient();
     const nonce = nextNonce();
-    const DcImage = await this.MJApi.UploadImage(imgUri);
+    const DcImage = await this.MJApi.UploadImageByUri(imgUri);
     const httpStatus = await this.MJApi.DescribeApi(DcImage, nonce);
     if (httpStatus !== 204) {
       throw new Error(`DescribeApi failed with status ${httpStatus}`);
