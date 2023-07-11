@@ -1,4 +1,4 @@
-name: Node.js Package 4.1
+name: Package 4.1
 env:
   APPVERSION: 4.1.${{ github.run_number }}
 on:
