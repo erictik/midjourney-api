@@ -249,7 +249,7 @@ export class WsMessage {
       return;
     }
     const message = msg.d;
-    this.log("message event", msg.t);
+    // this.log("message event", msg.t);
     switch (msg.t) {
       case "READY":
         this.emitSystem("ready", message.user);
