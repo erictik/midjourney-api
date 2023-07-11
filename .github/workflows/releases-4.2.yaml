@@ -1,6 +1,6 @@
-name: Package 4.1
+name: Package
 env:
-  APPVERSION: 4.1.${{ github.run_number }}
+  APPVERSION: 4.2.${{ github.run_number }}
 on:
   workflow_dispatch:
   push:
