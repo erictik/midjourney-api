@@ -48,6 +48,7 @@ export class WsMessage {
       this.reconnect();
       return;
     }
+    this.log("heartbeat", this.heartbeatInterval);
     this.heartbeatInterval++;
     this.ws.send(
       JSON.stringify({
@@ -62,9 +63,25 @@ export class WsMessage {
     this.closed = true;
     this.ws.close();
   }
+  async checkWs() {
+    if (this.closed) return;
+    if (this.ws.readyState !== this.ws.OPEN) {
+      this.reconnect();
+      await this.onceReady();
+    }
+  }
 
+  async onceReady() {
+    return new Promise((resolve) => {
+      this.once("ready", (user) => {
+        //print user nickname
+        console.log(`🎊 ws ready!!! Hi: ${user.global_name}`);
+        resolve(this);
+      });
+    });
+  }
   //try reconnect
-  private reconnect() {
+  reconnect() {
     if (this.closed) return;
     this.ws = new this.config.WebSocket(this.config.WsBaseUrl);
     this.heartbeatInterval = 0;
@@ -201,6 +218,15 @@ export class WsMessage {
           return;
       }
     }
+    if (embeds?.[0]) {
+      var { description, title } = embeds[0];
+      if (title === "Duplicate images detected") {
+        const error = new Error(description);
+        this.EventError(id, error);
+        return;
+      }
+    }
+
     if (content) {
       this.processingImage(message);
     }
@@ -249,7 +275,8 @@ export class WsMessage {
       return;
     }
     const message = msg.d;
-    // this.log("message event", msg.t);
+    this.log("event", msg.t);
+    // console.log(data);
     switch (msg.t) {
       case "READY":
         this.emitSystem("ready", message.user);

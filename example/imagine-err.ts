@@ -13,12 +13,13 @@ async function main() {
     ChannelId: <string>process.env.CHANNEL_ID,
     SalaiToken: <string>process.env.SALAI_TOKEN,
     Debug: true,
-    Ws: true,
   });
-
-  await client.Connect();
+  await client.init();
   const msg = await client.Imagine(
-    "https://edge-runtime.vercel.app/features/available-apis",
+    `https://images.guapitu.com/chatgpt/5b9b907a/d3297338-ae3e-4276-9bd9-3b6ca27cedcf.png 
+    https://images.guapitu.com/chatgpt/762a2db4/459d52f1-23fd-41c3-a912-317e65155fcc.png 
+    https://images.guapitu.com/chatgpt/f86613ac/2e2497ae-9906-44d9-8396-e41abab2f47b.png 
+    cat`,
     (uri: string, progress: string) => {
       console.log("loading", uri, "progress", progress);
     }

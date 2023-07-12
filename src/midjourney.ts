@@ -35,14 +35,9 @@ export class Midjourney extends MidjourneyMessage {
       await this.MJApi.allCommand();
     }
     if (this.wsClient) return this;
-    return new Promise<Midjourney>((resolve) => {
-      this.wsClient = new WsMessage(this.config, this.MJApi);
-      this.wsClient.once("ready", (user) => {
-        //print user nickname
-        console.log(`🎊 ws ready!!! Hi: ${user.global_name}`);
-        resolve(this);
-      });
-    });
+    this.wsClient = new WsMessage(this.config, this.MJApi);
+    await this.wsClient.onceReady();
+    return this;
   }
   async init() {
     await this.Connect();
