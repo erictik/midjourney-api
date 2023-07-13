@@ -23,15 +23,6 @@ async function main() {
   if (!Describe) {
     console.log("failed to describe");
   }
-  const prompt = Describe?.descriptions[0] as string;
-  const imagine = await client.Imagine(
-    prompt,
-    (uri: string, progress: string) => {
-      console.log("Imagine.loading", uri, "progress", progress);
-    }
-  );
-  console.log(imagine);
-  client.Close();
 }
 main().catch((err) => {
   console.log("finished");
