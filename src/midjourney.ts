@@ -64,6 +64,8 @@ export class Midjourney extends MidjourneyMessage {
     if (!this.config.Ws) {
       const seed = random(1000000000, 9999999999);
       prompt = `[${seed}] ${prompt}`;
+    } else {
+      await this.getWsClient();
     }
 
     const nonce = nextNonce();
@@ -72,9 +74,8 @@ export class Midjourney extends MidjourneyMessage {
     if (httpStatus !== 204) {
       throw new Error(`ImagineApi failed with status ${httpStatus}`);
     }
-    if (this.config.Ws) {
-      const wsClient = await this.getWsClient();
-      return await wsClient.waitImageMessage({ nonce, loading, prompt });
+    if (this.wsClient) {
+      return await this.wsClient.waitImageMessage({ nonce, loading, prompt });
     } else {
       this.log(`await generate image`);
       const msg = await this.WaitMessage(prompt, loading);
@@ -242,6 +243,9 @@ export class Midjourney extends MidjourneyMessage {
     flags: number;
     loading?: LoadingHandler;
   }) {
+    if (this.config.Ws) {
+      await this.getWsClient();
+    }
     const nonce = nextNonce();
     const httpStatus = await this.MJApi.CustomApi({
       msgId,
@@ -252,9 +256,8 @@ export class Midjourney extends MidjourneyMessage {
     if (httpStatus !== 204) {
       throw new Error(`CustomApi failed with status ${httpStatus}`);
     }
-    if (this.config.Ws) {
-      const wsClient = await this.getWsClient();
-      return await wsClient.waitImageMessage({
+    if (this.wsClient) {
+      return await this.wsClient.waitImageMessage({
         nonce,
         loading,
         messageId: msgId,
