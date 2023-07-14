@@ -359,7 +359,7 @@ export class MidjourneyApi extends Command {
     return resp;
   }
 
-  async UploadImageByBole(blob: Blob, filename = "image.png") {
+  async UploadImageByBole(blob: Blob, filename = nextNonce() + ".png") {
     const fileData = await blob.arrayBuffer();
     const mimeType = blob.type;
     const file_size = fileData.byteLength;
@@ -434,5 +434,31 @@ export class MidjourneyApi extends Command {
   async DescribeApi(image: DiscordImage, nonce?: string) {
     const payload = await this.describePayload(image, nonce);
     return this.safeIteractions(payload);
+  }
+  async upImageApi(image: DiscordImage, nonce?: string) {
+    const { SalaiToken, DiscordBaseUrl, ChannelId, fetch } = this.config;
+    const payload = {
+      content: "",
+      nonce,
+      channel_id: ChannelId,
+      type: 0,
+      sticker_ids: [],
+      attachments: [image],
+    };
+
+    const url = new URL(
+      `${DiscordBaseUrl}/api/v9/channels/${ChannelId}/messages`
+    );
+    const headers = {
+      Authorization: SalaiToken,
+      "content-type": "application/json",
+    };
+    const response = await fetch(url, {
+      headers,
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+
+    return response.status;
   }
 }
