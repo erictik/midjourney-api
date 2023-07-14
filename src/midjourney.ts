@@ -6,8 +6,15 @@ import {
 } from "./interfaces";
 import { MidjourneyApi } from "./midjourne.api";
 import { MidjourneyMessage } from "./discord.message";
-import { toRemixCustom, custom2Type, nextNonce, random } from "./utls";
+import {
+  toRemixCustom,
+  custom2Type,
+  nextNonce,
+  random,
+  base64ToBlob,
+} from "./utls";
 import { WsMessage } from "./discord.ws";
+import { faceSwap } from "./face.swap";
 export class Midjourney extends MidjourneyMessage {
   public config: MJConfig;
   private wsClient?: WsMessage;
@@ -156,6 +163,7 @@ export class Midjourney extends MidjourneyMessage {
     const wsClient = await this.getWsClient();
     const nonce = nextNonce();
     const DcImage = await this.MJApi.UploadImageByUri(imgUri);
+    this.log(`Describe`, DcImage);
     const httpStatus = await this.MJApi.DescribeApi(DcImage, nonce);
     if (httpStatus !== 204) {
       throw new Error(`DescribeApi failed with status ${httpStatus}`);
@@ -359,6 +367,24 @@ export class Midjourney extends MidjourneyMessage {
       flags,
       loading,
     });
+  }
+
+  async FaceSwap(target: string, source: string) {
+    const wsClient = await this.getWsClient();
+    const app = new faceSwap(this.config.HuggingFaceToken);
+    const Target = await (await this.config.fetch(target)).blob();
+    const Source = await (await this.config.fetch(source)).blob();
+    const res = await app.changeFace(Target, Source);
+    this.log(res[0]);
+    const blob = await base64ToBlob(res[0] as string);
+    const DcImage = await this.MJApi.UploadImageByBole(blob);
+    const nonce = nextNonce();
+    const httpStatus = await this.MJApi.DescribeApi(DcImage, nonce);
+    if (httpStatus !== 204) {
+      throw new Error(`DescribeApi failed with status ${httpStatus}`);
+    }
+    const describe = await wsClient.waitDescribe(nonce);
+    return describe?.uri;
   }
 
   Close() {

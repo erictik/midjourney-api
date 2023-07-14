@@ -6,3 +6,4 @@ export * from "./midjourne.api";
 export * from "./command";
 export * from "./verify.human";
 export * from "./banned.words";
+export * from "./face.swap";

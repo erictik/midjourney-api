@@ -9,6 +9,7 @@ import {
   MJOptions,
   OnModal,
   MJShorten,
+  MJDescribe,
 } from "./interfaces";
 import { MidjourneyApi } from "./midjourne.api";
 import {
@@ -201,10 +202,16 @@ export class WsMessage {
           this.emit("settings", message);
           return;
         case "describe":
-          this.emitMJ(id, {
+          // console.log("describe", "meseesage", message);
+          const describe: MJDescribe = {
+            id: id,
+            flags: message.flags,
             descriptions: embeds?.[0]?.description.split("\n\n"),
+            uri: embeds?.[0]?.image?.url,
+            proxy_url: embeds?.[0]?.image?.proxy_url,
             options: formatOptions(components),
-          });
+          };
+          this.emitMJ(id, describe);
           break;
         case "prefer remix":
           if (content != "") {
@@ -606,10 +613,7 @@ export class WsMessage {
     });
   }
   async waitDescribe(nonce: string) {
-    return new Promise<{
-      options: MJOptions[];
-      descriptions: string[];
-    } | null>((resolve) => {
+    return new Promise<MJDescribe | null>((resolve) => {
       this.onceMJ(nonce, (message) => {
         resolve(message);
       });

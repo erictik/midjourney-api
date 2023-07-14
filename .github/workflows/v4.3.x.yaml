@@ -1,6 +1,6 @@
-name: Package
+name: verson 4.3.x
 env:
-  APPVERSION: 4.2.${{ github.run_number }}
+  APPVERSION: 4.3.${{ github.run_number }}
 on:
   workflow_dispatch:
   push:

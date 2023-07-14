@@ -152,3 +152,24 @@ export const toRemixCustom = (customID: string) => {
   const convertedString = `MJ::RemixModal::${parts[4]}::${parts[3]}::1`;
   return convertedString;
 };
+
+export async function base64ToBlob(base64Image: string): Promise<Blob> {
+  // 移除 base64 图像头部信息
+  const base64Data = base64Image.replace(
+    /^data:image\/(png|jpeg|jpg);base64,/,
+    ""
+  );
+
+  // 将 base64 数据解码为二进制数据
+  const binaryData = atob(base64Data);
+
+  // 创建一个 Uint8Array 来存储二进制数据
+  const arrayBuffer = new ArrayBuffer(binaryData.length);
+  const uint8Array = new Uint8Array(arrayBuffer);
+  for (let i = 0; i < binaryData.length; i++) {
+    uint8Array[i] = binaryData.charCodeAt(i);
+  }
+
+  // 使用 Uint8Array 创建 Blob 对象
+  return new Blob([uint8Array], { type: "image/png" }); // 替换为相应的 MIME 类型
+}
