@@ -1,5 +1,6 @@
 import "dotenv/config";
 import { Midjourney, detectBannedWords } from "../src";
+import { url } from "inspector";
 /**
  *
  * a simple example of how to use faceSwap
@@ -18,9 +19,8 @@ async function main() {
     Debug: true,
     HuggingFaceToken: <string>process.env.HUGGINGFACE_TOKEN,
   });
-
   const info = await client.FaceSwap(target, source);
-  console.log(info);
+  console.log(info?.uri);
 }
 main()
   .then(() => {
