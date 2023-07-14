@@ -1,6 +1,7 @@
 // https://tokenizedhq.com/list-of-banned-words-in-midjourney/
 // https://www.greataiprompts.com/imageprompt/list-of-banned-words-in-midjourney/
 export const bannedWords = [
+  "hot slut",
   "blood",
   "twerk",
   "making love",
