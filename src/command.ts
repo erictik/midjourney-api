@@ -18,13 +18,13 @@ export const Commands = [
   "shorten",
   "subscribe",
 ] as const;
-export type CommandName = typeof Commands[number];
-function getCommandName(name: string) : CommandName | undefined {
-    for (const command of Commands) {
-      if (command === name) {
-        return command;
-      }
+export type CommandName = (typeof Commands)[number];
+function getCommandName(name: string): CommandName | undefined {
+  for (const command of Commands) {
+    if (command === name) {
+      return command;
     }
+  }
 }
 
 export class Command {
@@ -35,7 +35,7 @@ export class Command {
     if (this.cache[name] !== undefined) {
       return this.cache[name];
     }
-    if (this.config.ServerId){
+    if (this.config.ServerId) {
       const command = await this.getCommand(name);
       this.cache[name] = command;
       return command;
@@ -58,7 +58,7 @@ export class Command {
     if (data?.application_commands) {
       data.application_commands.forEach((command: any) => {
         const name = getCommandName(command.name);
-        if(name){
+        if (name) {
           this.cache[name] = command;
         }
       });
