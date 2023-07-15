@@ -133,6 +133,8 @@ npx tsx example/imagine-ws.ts
 ---
 
 ## Support
+  If you find it valuable and would like to show your support, any donations would be greatly appreciated. Your contribution helps me maintain and improve the program. 
+
 <span style="word-spacing:15px">
 <img src="images/wechatpay.jpeg" height="200"/>
 <img src="images/alipay.png" height="200"/>
