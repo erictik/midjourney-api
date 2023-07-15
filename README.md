@@ -133,8 +133,11 @@ npx tsx example/imagine-ws.ts
 ---
 
 ## Support
+<span style="word-spacing:15px">
 <img src="images/wechatpay.jpeg" height="200"/>
+<img src="images/alipay.png" height="200"/>
 <a href='https://ko-fi.com/erictik' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee' /></a>
+</span>  
 
 ## Star History
 
