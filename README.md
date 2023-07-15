@@ -136,8 +136,8 @@ npx tsx example/imagine-ws.ts
   If you find it valuable and would like to show your support, any donations would be greatly appreciated. Your contribution helps me maintain and improve the program. 
 
 <span style="word-spacing:15px">
-<img src="images/wechatpay.jpeg" height="200"/>
-<img src="images/alipay.png" height="200"/>
+<img src="images/ali.png" height="200"/>
+<img src="images/wechat.png" height="200"/>
 <a href='https://ko-fi.com/erictik' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee' /></a>
 </span>  
 
