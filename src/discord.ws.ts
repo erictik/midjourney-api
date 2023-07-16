@@ -202,12 +202,18 @@ export class WsMessage {
           this.emit("settings", message);
           return;
         case "describe":
-          // console.log("describe", "meseesage", message);
+          let uri = embeds?.[0]?.image?.url;
+          if (this.config.ImageProxy !== "") {
+            uri = uri.replace(
+              "https://cdn.discordapp.com/",
+              this.config.ImageProxy
+            );
+          }
           const describe: MJDescribe = {
             id: id,
             flags: message.flags,
             descriptions: embeds?.[0]?.description.split("\n\n"),
-            uri: embeds?.[0]?.image?.url,
+            uri: uri,
             proxy_url: embeds?.[0]?.image?.proxy_url,
             options: formatOptions(components),
           };
@@ -378,13 +384,18 @@ export class WsMessage {
 
   private done(message: any) {
     const { content, id, attachments, components, flags } = message;
+    let uri = attachments[0].url;
+    if (this.config.ImageProxy !== "") {
+      uri = uri.replace("https://cdn.discordapp.com/", this.config.ImageProxy);
+    }
+
     const MJmsg: MJMessage = {
       id,
       flags,
       content,
       hash: uriToHash(attachments[0].url),
       progress: "done",
-      uri: attachments[0].url,
+      uri: uri,
       proxy_url: attachments[0].proxy_url,
       options: formatOptions(components),
     };
@@ -405,8 +416,13 @@ export class WsMessage {
     if (!attachments || attachments.length === 0) {
       return;
     }
+
+    let uri = attachments[0].url;
+    if (this.config.ImageProxy !== "") {
+      uri = uri.replace("https://cdn.discordapp.com/", this.config.ImageProxy);
+    }
     const MJmsg: MJMessage = {
-      uri: attachments[0].url,
+      uri: uri,
       proxy_url: attachments[0].proxy_url,
       content: content,
       flags: flags,

@@ -78,15 +78,20 @@ export class MidjourneyMessage {
           this.log("no attachment");
           break;
         }
-        const imageUrl = item.attachments[0].url;
-        //waiting
+        let uri = item.attachments[0].url;
+        if (this.config.ImageProxy !== "") {
+          uri = uri.replace(
+            "https://cdn.discordapp.com/",
+            this.config.ImageProxy
+          );
+        } //waiting
         if (
           item.attachments[0].filename.startsWith("grid") ||
           item.components.length === 0
         ) {
           this.log(`content`, item.content);
           const progress = this.content2progress(item.content);
-          loading?.(imageUrl, progress);
+          loading?.(uri, progress);
           break;
         }
         //finished
@@ -94,10 +99,10 @@ export class MidjourneyMessage {
         const msg: MJMessage = {
           content,
           id: item.id,
-          uri: imageUrl,
+          uri: uri,
           proxy_url: item.attachments[0].proxy_url,
           flags: item.flags,
-          hash: this.UriToHash(imageUrl),
+          hash: this.UriToHash(uri),
           progress: "done",
           options: formatOptions(item.components),
         };

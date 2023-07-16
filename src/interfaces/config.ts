@@ -21,6 +21,7 @@ export interface MJConfig {
   fetch: FetchFn;
   ApiInterval: number;
   WebSocket: WebSocketCl;
+  ImageProxy: string;
 }
 export interface MJConfigParam {
   SalaiToken: string; //DISCORD_TOKEN
@@ -35,6 +36,7 @@ export interface MJConfigParam {
   HuggingFaceToken?: string; //HuggingFaceToken for verify human
   SessionId?: string;
   DiscordBaseUrl?: string;
+  ImageProxy?: string;
   WsBaseUrl?: string;
   fetch?: FetchFn; //Node.js<18 need node.fetch Or proxy
   WebSocket?: WebSocketCl; //isomorphic-ws Or proxy
@@ -50,6 +52,7 @@ export const DefaultMJConfig: MJConfig = {
   Limit: 50,
   Ws: true,
   MaxWait: 200,
+  ImageProxy: "",
   DiscordBaseUrl: "https://discord.com",
   WsBaseUrl: "wss://gateway.discord.gg?v=9&encoding=json&compress=gzip-stream",
   fetch: fetch,
