@@ -10,7 +10,7 @@ import {
   UploadSlot,
 } from "./interfaces";
 
-import { nextNonce, sleep } from "./utls";
+import { nextNonce, sleep } from "./utils";
 import { Command } from "./command";
 import async from "async";
 import path from "path";

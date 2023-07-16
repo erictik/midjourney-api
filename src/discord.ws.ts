@@ -20,7 +20,7 @@ import {
   formatPrompts,
   nextNonce,
   uriToHash,
-} from "./utls";
+} from "./utils";
 import { VerifyHuman } from "./verify.human";
 import WebSocket from "isomorphic-ws";
 export class WsMessage {

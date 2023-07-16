@@ -12,7 +12,7 @@ import {
   nextNonce,
   random,
   base64ToBlob,
-} from "./utls";
+} from "./utils";
 import { WsMessage } from "./discord.ws";
 import { faceSwap } from "./face.swap";
 export class Midjourney extends MidjourneyMessage {
