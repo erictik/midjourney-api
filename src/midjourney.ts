@@ -171,6 +171,17 @@ export class Midjourney extends MidjourneyMessage {
     }
     return wsClient.waitDescribe(nonce);
   }
+  async DescribeByBlob(blob: Blob) {
+    const wsClient = await this.getWsClient();
+    const nonce = nextNonce();
+    const DcImage = await this.MJApi.UploadImageByBole(blob);
+    this.log(`Describe`, DcImage);
+    const httpStatus = await this.MJApi.DescribeApi(DcImage, nonce);
+    if (httpStatus !== 204) {
+      throw new Error(`DescribeApi failed with status ${httpStatus}`);
+    }
+    return wsClient.waitDescribe(nonce);
+  }
 
   async Shorten(prompt: string) {
     const wsClient = await this.getWsClient();
