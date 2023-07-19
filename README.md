@@ -2,7 +2,7 @@
 
 Node.js client for the unofficial MidJourney api.
 
-English / [中文文档](readme_zh.md)
+English / [中文文档](README_zh.md)
 
 <div align="center">
 	<p>
