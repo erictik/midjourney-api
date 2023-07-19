@@ -1,8 +1,8 @@
-# midjourney-client
+# midjourney-api
 
-Node.js client for the unofficial MidJourney api.
+非官方的 MidJourney api 的 Node.js 客户端。
 
-[中文文档](readme_zh.md)
+[English](readme.md)
 
 <div align="center">
 	<p>
@@ -11,25 +11,25 @@ Node.js client for the unofficial MidJourney api.
 	</p>
 </div>
 
-## What's new
+## 最近更新
 
-- [face swap](https://github.com/erictik/midjourney-client/blob/main/example/faceswap.ts)
-- [niji bot](https://github.com/erictik/midjourney-client/blob/main/example/imagine-niji.ts)
-- [custom zoom](https://github.com/erictik/midjourney-client/blob/main/example/customzoom.ts)
-- [remix mode](https://github.com/erictik/midjourney-client/blob/main/example/variation-ws.ts)
+- [换脸](https://github.com/erictik/midjourney-api/blob/main/example/faceswap.ts)
+- [支持 niji bot](https://github.com/erictik/midjourney-api/blob/main/example/imagine-niji.ts)
+- [custom zoom](https://github.com/erictik/midjourney-api/blob/main/example/customzoom.ts)
+- [remix mode](https://github.com/erictik/midjourney-api/blob/main/example/variation-ws.ts)
 
-## Example
+## 快速开始
 
-To run the included example, you must have [Node.js](https://nodejs.org/en/) installed. Then, run the following commands in the root directory of this project:
+运行本项目需要安装 [Node.js](https://nodejs.org/en/)，然后在本项目的根目录运行以下命令：
 
-1. clone the repository
+1. 下载项目代码
 
    ```bash
-   git clone https://github.com/erictik/midjourney-client.git
-   cd midjourney-client
+   git clone https://github.com/erictik/midjourney-api.git
+   cd midjourney-api
    ```
 
-2. install dependencies
+2. 安装依赖
 
    ```bash
    yarn
@@ -37,10 +37,10 @@ To run the included example, you must have [Node.js](https://nodejs.org/en/) ins
    npm install
    ```
 
-3. set the environment variables
+3. 设置环境变量
 
-- [Login Discord](https://discord.com/channels/@me)  
-  `F12` _OR_ `Ctrl + Shift + I` (or `Command + Option + I` on Mac) to open the developer tools _AND_ paste the following code into the console
+- 获取 Discord TOKEN
+  [登录 Discor](https://discord.com/channels/@me) F12 或者 [Ctrl + Shift + I] 或者 [Command + Option + I] 打开开发者工具，然后在 Console 中输入以下代码：
 
   ```javascript
   window.webpackChunkdiscord_app.push([
@@ -60,52 +60,55 @@ To run the included example, you must have [Node.js](https://nodejs.org/en/) ins
     },
   ]);
   console.log("%cWorked!", "font-size: 50px");
-  console.log(`%cYou now have your token in the clipboard!`, "font-size: 16px");
+  console.log(`%您的Token在剪贴板了!`, "font-size: 16px");
   ```
 
-  OR [use network your Discord TOKEN](https://www.androidauthority.com/get-discord-token-3149920/)
+  也可以通过 查看 network [获取 discord token](https://www.androidauthority.com/get-discord-token-3149920/)
 
-- [Join my discord server](https://discord.com/invite/GavuGHQbV4)
+- [加入我的 Discord 服务器](https://discord.com/invite/GavuGHQbV4)
   ```
   export SERVER_ID="1082500871478329374"
   export CHANNEL_ID="1094892992281718894"
   ```
-- OR [Create a server](https://discord.com/blog/starting-your-first-discord-server) and [Invite Midjourney Bot to Your Server](https://docs.midjourney.com/docs/invite-the-bot)
+- 或者 [创建一个 Discord 服务器](https://discord.com/blog/starting-your-first-discord-server) 并邀请 [Midjourney Bot](https://docs.midjourney.com/docs/invite-the-bot)
+
   ```bash
-  # How to get server and channel ids:
-  when you click on a channel in your server in the browser expect to have the follow URL pattern `https://discord.com/channels/$SERVER_ID/$CHANNEL_ID`
+  # 在浏览器中复制你的服务器网址
+  # `https://discord.com/channels/$SERVER_ID/$CHANNEL_ID`
   export SERVER_ID="your-server-id"
   export CHANNEL_ID="your-channel-id"
   ```
-- wirte your token to `.env` file or set the environment variables
+
+- 将环境变量写入`.env`文件或者 在控制台中设置
 
   ```bash
-    #example variables, please set up yours
+  #example variables, please set up yours
 
-    export SERVER_ID="1082500871478329374"
-    export CHANNEL_ID="1094892992281718894"
-    export SALAI_TOKEN="your-discord-token"
+  export SERVER_ID="1082500871478329374"
+  export CHANNEL_ID="1094892992281718894"
+  export SALAI_TOKEN="your-discord-token"
   ```
 
-- Then, run the example with the following command:
+4.  现在可以运行示例了
 
-  ```bash
-  npx tsx example/imagine-ws.ts
-  ```
+    ```bash
+    npx tsx example/imagine-ws.ts
+    ```
 
-  OR
+    或者
 
-  ```bash
-  yarn example:imagine
-  # or npm
-  npm run example:imagine
-  ```
+    ```bash
+    yarn example:imagine
+    # or npm
+    npm run example:imagine
+    ```
 
-- [more example](./example/)
+5.  更多使用案例
+    - [more example](./example/)
 
-## Usage
+## 在项目中使用
 
-1. Install
+1. 安装
 
    ```bash
    npm i midjourney
@@ -113,7 +116,7 @@ To run the included example, you must have [Node.js](https://nodejs.org/en/) ins
    yarn add midjourney
    ```
 
-2. Use Imagine 、Variation and Upscale
+2. 使用 Imagine 、Variation 和 Upscale
 
    ```typescript
    import { Midjourney } from "midjourney";
@@ -160,20 +163,20 @@ To run the included example, you must have [Node.js](https://nodejs.org/en/) ins
 - [x] `/imagine` `variation` `upscale` `reroll` `blend` `zoomout` `vary`
 - [x] `/info`
 - [x] `/fast ` and `/relax `
-- [x] [`/prefer remix`](https://github.com/erictik/midjourney-client/blob/main/example/prefer-remix.ts)
-- [x] [`variation (remix mode)`](https://github.com/erictik/midjourney-client/blob/main/example/variation-ws.ts)
+- [x] [`/prefer remix`](https://github.com/erictik/midjourney-api/blob/main/example/prefer-remix.ts)
+- [x] [`variation (remix mode)`](https://github.com/erictik/midjourney-api/blob/main/example/variation-ws.ts)
 - [x] `/describe`
-- [x] [`/shorten`](https://github.com/erictik/midjourney-client/blob/main/example/shorten.ts)
+- [x] [`/shorten`](https://github.com/erictik/midjourney-api/blob/main/example/shorten.ts)
 - [x] `/settings` `reset`
 - [x] verify human
 - [x] [proxy](https://github.com/erictik/midjourney-discord/blob/main/examples/proxy.ts)
-- [x] [niji bot](https://github.com/erictik/midjourney-client/blob/main/example/imagine-niji.ts)
-- [x] [custom zoom](https://github.com/erictik/midjourney-client/blob/main/example/customzoom.ts)
+- [x] [niji bot](https://github.com/erictik/midjourney-api/blob/main/example/imagine-niji.ts)
+- [x] [custom zoom](https://github.com/erictik/midjourney-api/blob/main/example/customzoom.ts)
 - [x] autoload command payload
 
 ---
 
-## Projects
+## 应用项目
 
 - [midjourney-ui](https://github.com/erictik/midjourney-ui/) next.js + vercel
 - [midjourney-discord](https://github.com/erictik/midjourney-discord)-bot
@@ -182,16 +185,16 @@ To run the included example, you must have [Node.js](https://nodejs.org/en/) ins
 
 ---
 
-## Support
+## 支持一下我吧
 
-If you find it valuable and would like to show your support, any donations would be greatly appreciated. Your contribution helps me maintain and improve the program.
+如果您觉得它很有价值，可以通过以下方式支持作者
 
 <span style="word-spacing:20px">
-<img src="images/ali.png" height="300"/>&nbsp;&nbsp;
+<img src="images/ali.png" height="300"/>  
 <img src="images/wechat.png" height="300"/>
 <a href='https://ko-fi.com/erictik' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee' /></a>
 </span>
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=erictik/midjourney-client&type=Date)](https://star-history.com/#erictik/midjourney-client&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=erictik/midjourney-api&type=Date)](https://star-history.com/#erictik/midjourney-api&Date)
