@@ -73,7 +73,9 @@ To run the included example, you must have [Node.js](https://nodejs.org/en/) ins
 - OR [Create a server](https://discord.com/blog/starting-your-first-discord-server) and [Invite Midjourney Bot to Your Server](https://docs.midjourney.com/docs/invite-the-bot)
   ```bash
   # How to get server and channel ids:
-  when you click on a channel in your server in the browser expect to have the follow URL pattern `https://discord.com/channels/$SERVER_ID/$CHANNEL_ID`
+  # when you click on a channel in your server in the browser
+  # expect to have the follow URL pattern
+  # `https://discord.com/channels/$SERVER_ID/$CHANNEL_ID`
   export SERVER_ID="your-server-id"
   export CHANNEL_ID="your-channel-id"
   ```
