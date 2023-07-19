@@ -1,6 +1,5 @@
 import "dotenv/config";
 import { Midjourney } from "../src";
-import { sleep } from "../src/utls";
 /**
  *
  * a simple example of how to use the vary
@@ -50,7 +49,6 @@ async function main() {
     console.log("no zoomout");
     return;
   }
-  await sleep(1400);
   const varyCustom = await client.Custom({
     msgId: <string>Upscale.id,
     flags: Upscale.flags,

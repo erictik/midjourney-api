@@ -124,37 +124,75 @@ To run the included example, you must have [Node.js](https://nodejs.org/en/) ins
      ChannelId: <string>process.env.CHANNEL_ID,
      SalaiToken: <string>process.env.SALAI_TOKEN,
      Debug: true,
-     Ws: true,
+     Ws: true, //enable ws is required for remix mode (and custom zoom)
    });
-   await client.Connect();
+   await client.init();
+   const prompt =
+     "Christmas dinner with spaghetti with family in a cozy house, we see interior details , simple blue&white illustration";
+   //imagine
    const Imagine = await client.Imagine(
-     "A little pink elephant",
+     prompt,
      (uri: string, progress: string) => {
-       console.log("Imagine", uri, "progress", progress);
+       console.log("loading", uri, "progress", progress);
      }
    );
-   console.log({ Imagine });
-
-   const Variation = await client.Variation({
-     index: 2,
+   console.log(Imagine);
+   if (!Imagine) {
+     console.log("no message");
+     return;
+   }
+   //U1 U2 U3 U4 V1 V2 V3 V4  "Vary (Strong)" ...
+   const V1CustomID = Imagine.options?.find((o) => o.label === "V1")?.custom;
+   if (!V1CustomID) {
+     console.log("no V1");
+     return;
+   }
+   // Varition V1
+   const Varition = await client.Custom({
      msgId: <string>Imagine.id,
-     hash: <string>Imagine.hash,
      flags: Imagine.flags,
+     customId: V1CustomID,
+     content: prompt, //remix mode require content
      loading: (uri: string, progress: string) => {
-       console.log("Variation.loading", uri, "progress", progress);
+       console.log("loading", uri, "progress", progress);
      },
    });
-   console.log({ Variation });
-   const Upscale = await client.Upscale({
-     index: 2,
-     msgId: <string>Variation.id,
-     hash: <string>Variation.hash,
-     flags: Variation.flags,
+   console.log(Varition);
+   const U1CustomID = Imagine.options?.find((o) => o.label === "U1")?.custom;
+   if (!U1CustomID) {
+     console.log("no U1");
+     return;
+   }
+   // Upscale U1
+   const Upscale = await client.Custom({
+     msgId: <string>Imagine.id,
+     flags: Imagine.flags,
+     customId: U1CustomID,
      loading: (uri: string, progress: string) => {
-       console.log("Upscale.loading", uri, "progress", progress);
+       console.log("loading", uri, "progress", progress);
      },
    });
-   console.log({ Upscale });
+   if (!Upscale) {
+     console.log("no Upscale");
+     return;
+   }
+   console.log(Upscale);
+   const zoomout = Upscale?.options?.find((o) => o.label === "Custom Zoom");
+   if (!zoomout) {
+     console.log("no zoomout");
+     return;
+   }
+   // Custom Zoom
+   const CustomZoomout = await client.Custom({
+     msgId: <string>Upscale.id,
+     flags: Upscale.flags,
+     content: `${prompt} --zoom 2`, // Custom Zoom  require content
+     customId: zoomout.custom,
+     loading: (uri: string, progress: string) => {
+       console.log("loading", uri, "progress", progress);
+     },
+   });
+   console.log(CustomZoomout);
    ```
 
 ## route-map
