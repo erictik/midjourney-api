@@ -2,7 +2,7 @@
 
 非官方的 MidJourney api 的 Node.js 客户端。
 
-[English](readme.md)
+[English](readme.md) / 中文文档
 
 <div align="center">
 	<p>
