@@ -18,7 +18,7 @@ async function main() {
   });
   await client.Connect(); // required
   const Imagine = await client.Imagine(
-    "Red hamster smoking a cigaret",
+    "Red hamster smoking a cigaret --fast",
     (uri: string, progress: string) => {
       console.log("Imagine.loading", uri, "progress", progress);
     }
@@ -66,8 +66,8 @@ async function main() {
 }
 main()
   .then(() => {
-    console.log("finished");
-    process.exit(0);
+    // console.log("finished");
+    // process.exit(0);
   })
   .catch((err) => {
     console.log("finished");

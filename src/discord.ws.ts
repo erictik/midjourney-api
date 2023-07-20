@@ -38,6 +38,7 @@ export class WsMessage {
     this.ws.addEventListener("open", this.open.bind(this));
     this.onSystem("messageCreate", this.onMessageCreate.bind(this));
     this.onSystem("messageUpdate", this.onMessageUpdate.bind(this));
+    this.onSystem("messageDelete", this.onMessageDelete.bind(this));
     this.onSystem("ready", this.onReady.bind(this));
     this.onSystem("interactionSuccess", this.onInteractionSuccess.bind(this));
   }
@@ -276,7 +277,7 @@ export class WsMessage {
     if (channel_id !== this.config.ChannelId) return;
     if (author?.id !== this.config.BotId) return;
     if (interaction && interaction.user.id !== this.UserId) return;
-    this.log("[messageCreate]", JSON.stringify(message));
+    // this.log("[messageCreate]", JSON.stringify(message));
     this.messageCreate(message);
   }
 
@@ -285,8 +286,17 @@ export class WsMessage {
     if (channel_id !== this.config.ChannelId) return;
     if (author?.id !== this.config.BotId) return;
     if (interaction && interaction.user.id !== this.UserId) return;
-    this.log("[messageUpdate]", JSON.stringify(message));
+    // this.log("[messageUpdate]", JSON.stringify(message));
     this.messageUpdate(message);
+  }
+  private async onMessageDelete(message: any) {
+    const { channel_id, id } = message;
+    if (channel_id !== this.config.ChannelId) return;
+    for (const [key, value] of this.waitMjEvents.entries()) {
+      if (value.id === id) {
+        this.waitMjEvents.set(key, { ...value, del: true });
+      }
+    }
   }
 
   // parse message from ws
@@ -296,6 +306,9 @@ export class WsMessage {
       return;
     }
     const message = msg.d;
+    if (message.channel_id === this.config.ChannelId) {
+      this.log(data);
+    }
     this.log("event", msg.t);
     // console.log(data);
     switch (msg.t) {
@@ -308,6 +321,8 @@ export class WsMessage {
       case "MESSAGE_UPDATE":
         this.emitSystem("messageUpdate", message);
         break;
+      case "MESSAGE_DELETE":
+        this.emitSystem("messageDelete", message);
       case "INTERACTION_SUCCESS":
         if (message.nonce) {
           this.emitSystem("interactionSuccess", message);
@@ -434,7 +449,9 @@ export class WsMessage {
     this.emitImage(event.nonce, eventMsg);
   }
 
-  private filterMessages(MJmsg: MJMessage) {
+  private async filterMessages(MJmsg: MJMessage) {
+    // delay 300ms for discord message delete
+    await this.timeout(300);
     const event = this.getEventByContent(MJmsg.content);
     if (!event) {
       this.log("FilterMessages not found", MJmsg, this.waitMjEvents);
@@ -447,6 +464,16 @@ export class WsMessage {
   }
   private getEventByContent(content: string) {
     const prompt = content2prompt(content);
+    //fist del message
+    for (const [key, value] of this.waitMjEvents.entries()) {
+      if (
+        value.del === true &&
+        prompt === content2prompt(value.prompt as string)
+      ) {
+        return value;
+      }
+    }
+
     for (const [key, value] of this.waitMjEvents.entries()) {
       if (prompt === content2prompt(value.prompt as string)) {
         return value;
@@ -499,7 +526,13 @@ export class WsMessage {
     this.event.push({ event, callback });
   }
   onSystem(
-    event: "ready" | "messageCreate" | "messageUpdate" | "interactionSuccess",
+    event:
+      | "ready"
+      | "messageCreate"
+      | "messageUpdate"
+      | "messageDelete"
+      | "interactionCreate"
+      | "interactionSuccess",
     callback: (message: any) => void
   ) {
     this.on(event, callback);
@@ -509,6 +542,7 @@ export class WsMessage {
       | "ready"
       | "messageCreate"
       | "messageUpdate"
+      | "messageDelete"
       | "interactionSuccess"
       | "interactionCreate",
     message: MJEmit

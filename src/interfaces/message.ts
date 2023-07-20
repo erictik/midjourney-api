@@ -16,6 +16,7 @@ export interface WaitMjEvent {
   nonce: string;
   prompt?: string;
   id?: string;
+  del?: boolean; // is delete message
   onmodal?: OnModal;
 }
 export interface MJEmit {
