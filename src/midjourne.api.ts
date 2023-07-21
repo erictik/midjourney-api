@@ -13,7 +13,6 @@ import {
 import { nextNonce, sleep } from "./utils";
 import { Command } from "./command";
 import async from "async";
-import path from "path";
 
 export class MidjourneyApi extends Command {
   UpId = Date.now() % 10; // upload id
@@ -339,7 +338,7 @@ export class MidjourneyApi extends Command {
     const response = await this.config.fetch(fileUrl);
     const fileData = await response.arrayBuffer();
     const mimeType = response.headers.get("content-type");
-    const filename = path.basename(fileUrl) || "image.png";
+    const filename = fileUrl.split("/").pop() || "image.png";
     const file_size = fileData.byteLength;
     if (!mimeType) {
       throw new Error("Unknown mime type");
@@ -353,7 +352,7 @@ export class MidjourneyApi extends Command {
     await this.uploadImage(UploadSlot, fileData, mimeType);
     const resp: DiscordImage = {
       id: UploadSlot.id,
-      filename: path.basename(UploadSlot.upload_filename),
+      filename: UploadSlot.upload_filename.split("/").pop() || "image.png",
       upload_filename: UploadSlot.upload_filename,
     };
     return resp;
@@ -375,7 +374,7 @@ export class MidjourneyApi extends Command {
     await this.uploadImage(UploadSlot, fileData, mimeType);
     const resp: DiscordImage = {
       id: UploadSlot.id,
-      filename: path.basename(UploadSlot.upload_filename),
+      filename: UploadSlot.upload_filename.split("/").pop() || "image.png",
       upload_filename: UploadSlot.upload_filename,
     };
     return resp;
