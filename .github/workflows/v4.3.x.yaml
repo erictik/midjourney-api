@@ -7,7 +7,7 @@ on:
     branches:
       - "main"
     paths:
-      - "**.ts"
+      - "src/**.ts"
 jobs:
   publish-gpr:
     runs-on: ubuntu-latest

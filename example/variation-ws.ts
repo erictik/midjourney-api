@@ -12,7 +12,7 @@ async function main() {
     ServerId: <string>process.env.SERVER_ID,
     ChannelId: <string>process.env.CHANNEL_ID,
     SalaiToken: <string>process.env.SALAI_TOKEN,
-    // Debug: true,
+    Debug: true,
     Ws: true, //enable ws is required for remix mode
   });
   await client.init(); //init auto enable remix mode
@@ -44,6 +44,7 @@ async function main() {
     console.log("no Variation");
     return;
   }
+
   const Upscale = await client.Upscale({
     index: 2,
     msgId: <string>Variation.id,
@@ -51,10 +52,10 @@ async function main() {
     flags: Variation.flags,
     content: prompt,
     loading: (uri: string, progress: string) => {
-      console.log("loading", uri, "progress", progress);
+      console.log("Upscale.loading", uri, "progress", progress);
     },
   });
-  console.log(Upscale);
+  console.log("Upscale", Upscale);
   // client
   //   .Variation({
   //     index: 2,
