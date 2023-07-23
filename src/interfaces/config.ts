@@ -32,6 +32,7 @@ export interface MJConfigParam {
   ApiInterval?: number; //ApiInterval request api interval
   Limit?: number; //Limit of get message list
   MaxWait?: number;
+  Remix?: boolean; //Remix:true use remix mode
   Ws?: boolean; //Ws:true use websocket get discord message (ephemeral message)
   HuggingFaceToken?: string; //HuggingFaceToken for verify human
   SessionId?: string;
