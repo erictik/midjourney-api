@@ -268,6 +268,7 @@ export class Midjourney extends MidjourneyMessage {
       throw new Error(`CustomApi failed with status ${httpStatus}`);
     }
     if (this.wsClient) {
+      console.log("Awaiting ImageMessage");
       return await this.wsClient.waitImageMessage({
         nonce,
         loading,
@@ -278,20 +279,34 @@ export class Midjourney extends MidjourneyMessage {
             return "";
           }
           const newNonce = nextNonce();
+          console.log("Got ImageMessage.  Type: "+custom2Type(customId));
           switch (custom2Type(customId)) {
-            case "customZoom":
-              const httpStatus = await this.MJApi.CustomZoomImagineApi({
+            case "customPan":
+              const panHttpStatus = await this.MJApi.CustomPanImagineApi({
                 msgId: id,
                 customId,
                 prompt: content,
                 nonce: newNonce,
               });
-              if (httpStatus !== 204) {
+              if (panHttpStatus !== 204) {
                 throw new Error(
-                  `CustomZoomImagineApi failed with status ${httpStatus}`
+                  `CustomPanImagineApi failed with status ${panHttpStatus}`
                 );
               }
               return newNonce;
+              case "customZoom":
+                const httpStatus = await this.MJApi.CustomZoomImagineApi({
+                  msgId: id,
+                  customId,
+                  prompt: content,
+                  nonce: newNonce,
+                });
+                if (httpStatus !== 204) {
+                  throw new Error(
+                    `CustomZoomImagineApi failed with status ${httpStatus}`
+                  );
+                }
+                return newNonce;
             case "variation":
               if (this.config.Remix !== true) {
                 return "";

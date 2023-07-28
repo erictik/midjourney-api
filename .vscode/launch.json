@@ -1,0 +1,20 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch example:pan",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "example:pan"
+            ],
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "console": "integratedTerminal", // this will run the script in the integrated terminal
+            "internalConsoleOptions": "neverOpen" // prevents the debug console from taking focus
+        }
+    ]
+}
