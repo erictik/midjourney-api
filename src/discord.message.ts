@@ -100,8 +100,8 @@ export class MidjourneyMessage {
         const msg: MJMessage = {
           content,
           id: item.id,
-          uri: uri,
-          proxy_url: proxy_url,
+          uri,
+          proxy_url,
           flags: item.flags,
           hash: this.UriToHash(uri),
           progress: "done",
