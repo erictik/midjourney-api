@@ -400,7 +400,7 @@ export class WsMessage {
   private done(message: any) {
     const { content, id, attachments, components, flags } = message;
     const { url, proxy_url, width, height } = attachments[0];
-    let uri = url;
+    let uri = attachments[0].url;
     if (this.config.ImageProxy !== "") {
       uri = uri.replace("https://cdn.discordapp.com/", this.config.ImageProxy);
     }
