@@ -399,7 +399,8 @@ export class WsMessage {
 
   private done(message: any) {
     const { content, id, attachments, components, flags } = message;
-    let uri = attachments[0].url;
+    const { url, proxy_url, width, height } = attachments[0];
+    let uri = url;
     if (this.config.ImageProxy !== "") {
       uri = uri.replace("https://cdn.discordapp.com/", this.config.ImageProxy);
     }
@@ -408,11 +409,13 @@ export class WsMessage {
       id,
       flags,
       content,
-      hash: uriToHash(attachments[0].url),
+      hash: uriToHash(url),
       progress: "done",
-      uri: uri,
-      proxy_url: attachments[0].proxy_url,
+      uri,
+      proxy_url,
       options: formatOptions(components),
+      width,
+      height,
     };
     this.filterMessages(MJmsg);
     return;
