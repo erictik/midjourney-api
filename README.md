@@ -16,6 +16,7 @@ English / [中文文档](README_zh.md)
 - [face swap](https://github.com/erictik/midjourney-client/blob/main/example/faceswap.ts)
 - [niji bot](https://github.com/erictik/midjourney-client/blob/main/example/imagine-niji.ts)
 - [custom zoom](https://github.com/erictik/midjourney-client/blob/main/example/customzoom.ts)
+- [pan right](https://github.com/erictik/midjourney-client/blob/main/example/custompan.ts)
 - [remix mode](https://github.com/erictik/midjourney-client/blob/main/example/variation-ws.ts)
 
 ## Example
@@ -255,7 +256,7 @@ To run the included example, you must have [Node.js](https://nodejs.org/en/) ins
 If you find it valuable and would like to show your support, any donations would be greatly appreciated. Your contribution helps me maintain and improve the program.
 
 <span style="word-spacing:20px">
-<img src="images/ali.png" height="300"/>  
+<img src="images/ali.png" height="300"/>  
 <img src="images/wechat.png" height="300"/>
 <a href='https://ko-fi.com/erictik' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee' /></a>
 </span>

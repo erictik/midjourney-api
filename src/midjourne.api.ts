@@ -5,6 +5,7 @@ import {
   MJConfig,
   ModalSubmitID,
   RemixModalSubmitID,
+  CustomPanModalSubmitID,
   ShortenModalSubmitID,
   UploadParam,
   UploadSlot,
@@ -180,6 +181,7 @@ export class MidjourneyApi extends Command {
         custom_id: customId,
       },
     };
+    console.log("CustomApi payload for safeIteractions: ", payload)
     return this.safeIteractions(payload);
   }
 
@@ -306,6 +308,36 @@ export class MidjourneyApi extends Command {
       customId,
       prompt,
       submitCustomId: CustomZoomModalSubmitID,
+    });
+  }
+
+  async CustomPanImagineApi({
+    nonce,
+    msgId,
+    customId,
+    prompt,
+  }: {
+    nonce: string;
+    msgId: string;
+    customId: string;
+    prompt: string;
+  }) {
+    customId = customId.replace(
+      "MJ::JOB::pan_right::1",
+      "MJ::PanModal::right"
+    );
+    
+    customId = customId.replace(
+      "::SOLO",
+      ""
+    );
+    console.log("Reformatted custom for modal (removed SOLO, etc): ", customId);
+    return this.ModalSubmitApi({
+      nonce,
+      msgId,
+      customId,
+      prompt,
+      submitCustomId: CustomPanModalSubmitID,
     });
   }
 

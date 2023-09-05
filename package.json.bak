@@ -10,7 +10,7 @@
     "build": "tsc",
     "prettier": "prettier --write .",
     "prettier:check": "prettier --check .",
-    "example:pan": "tsx ./example/custompan.ts"
+    "example:imagine": "tsx ./example/custompan.ts"
   },
   "files": [
     "libs/*",
