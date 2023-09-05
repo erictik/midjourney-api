@@ -349,6 +349,7 @@ export class WsMessage {
       });
       this.log("appeal.httpStatus", httpStatus);
       if (httpStatus == 204) {
+        //todo
         this.on(newnonce, (data) => {
           this.emit(nonce, data);
         });
@@ -646,17 +647,17 @@ export class WsMessage {
       this.waitMjEvents.set(nonce, {
         nonce,
         prompt,
-        onmodal: async (nonce, id) => {
+        onmodal: async (oldnonce, id) => {
           if (onmodal === undefined) {
             // reject(new Error("onmodal is not defined"))
             return "";
           }
-          var nonce = await onmodal(nonce, id);
+          var nonce = await onmodal(oldnonce, id);
           if (nonce === "") {
             // reject(new Error("onmodal return empty nonce"))
             return "";
           }
-          this.removeWaitMjEvent(nonce);
+          this.removeWaitMjEvent(oldnonce);
           this.waitMjEvents.set(nonce, { nonce });
           this.onceImage(nonce, handleImageMessage);
           return nonce;
