@@ -48,6 +48,7 @@
     "@huggingface/inference": "^2.5.0",
     "async": "^3.2.4",
     "isomorphic-ws": "^5.0.0",
+    "replicate": "^0.18.0",
     "semiver": "^1.1.0",
     "snowyflake": "^2.0.0",
     "tslib": "^2.5.0",
