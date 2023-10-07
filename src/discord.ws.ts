@@ -11,7 +11,7 @@ import {
   MJShorten,
   MJDescribe,
 } from "./interfaces";
-import { MidjourneyApi } from "./midjourne.api";
+import { MidjourneyApi } from "./midjourney.api";
 import {
   content2progress,
   content2prompt,
