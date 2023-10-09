@@ -4,7 +4,7 @@ import {
   MJConfig,
   MJConfigParam,
 } from "./interfaces";
-import { MidjourneyApi } from "./midjourne.api";
+import { MidjourneyApi } from "./midjourney.api";
 import { MidjourneyMessage } from "./discord.message";
 import {
   toRemixCustom,
