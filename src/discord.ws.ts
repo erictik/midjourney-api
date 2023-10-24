@@ -619,7 +619,6 @@ export class WsMessage {
     console.log("new skipMessageId: ", this.skipMessageId);
   }
   private removeWaitMjEvent(nonce: string) {
-    //this.waitMjEvents.delete(nonce);
     this.waitMjEvents.clear();
   }
   onceImage(nonce: string, callback: (data: MJEmit) => void) {
