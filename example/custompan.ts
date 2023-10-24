@@ -18,9 +18,9 @@ async function main() {
   });
   await client.init();
   const prompt =
-    "Blonde Boy plays with Golden Retreiever in dream-like grassy field ::3 happy :: blonde :: golden retriever :: green nature :: simple yellow and orange illustration";
+    "Blonde Boy plays with Golden Retreiever in dream-like grassy field ::3 happy :: blonde :: golden retriever :: green nature :: simple illustration";
   const remixPrompt =
-    "dream-like grassy field ::3 happy :: green nature :: simple yellow and orange illustration";
+    "empty ::5 grass ::2 dream-like grassy field ::3 green nature :: illustration --no woman, girl, human, dog, person";
   
   /* comment out imagine and upscale if using load from file */
   //imagine
@@ -37,7 +37,7 @@ async function main() {
   }
 
   // Upscale U1
-  const U1CustomID = Imagine.options?.find((o) => o.label === "U1")?.custom;
+  let U1CustomID = Imagine.options?.find((o) => o.label === "U1")?.custom;
   if (!U1CustomID) {
     console.log("no U1");
     return;
@@ -51,14 +51,13 @@ async function main() {
     },
   });
 
-  /* comment out save and load if using imagine and upscale
+  // comment out save and load if using imagine and upscale
   // save Upscale post-imagine so image doesnt have to be generated every time testing on custom pan is run
-  fs.writeFileSync('savedUpscale.json', JSON.stringify(Upscale, null, 2));
+  //fs.writeFileSync('savedUpscale.json', JSON.stringify(Upscale, null, 2));
   
   // load from file
-  const jsonString = fs.readFileSync('savedUpscale.json', 'utf-8');
-  const Upscale = JSON.parse(jsonString);
-  */
+  //const jsonString = fs.readFileSync('savedUpscale.json', 'utf-8');
+  //const Upscale = JSON.parse(jsonString);
 
   if(!Upscale){
     console.log("no Upscale");
@@ -81,8 +80,38 @@ async function main() {
       console.log("loading", uri, "progress", progress);
     },
   });
+  if (!CustomPan) {
+    console.log("no CustomPan");
+    return;
+  }
   console.log("Custom Pan", CustomPan);
-  client.Close();
+
+
+  // UPSCALE AGAIN
+  U1CustomID = CustomPan.options?.find((o) => o.label === "U1")?.custom;
+  if (!U1CustomID) {
+    console.log("no U1");
+    return;
+  }
+  const Upscale2 = await client.Custom({
+    msgId: <string>CustomPan.id,
+    flags: CustomPan.flags,
+    customId: U1CustomID,
+    loading: (uri: string, progress: string) => {
+      console.log("loading", uri, "progress", progress);
+    },
+  });
+  if(!Upscale2){
+    console.log("no Upscale2");
+    return;
+  }
+  console.log("UPSCALE2:", Upscale2);
+
+
+  console.log("FINISHED");
+  
+
+  // client.Close();
 }
 main()
   .then(() => {

@@ -1,71 +1,89 @@
 {
-  "id": "1134585311494688879",
+  "id": "1166252937849348106",
   "flags": 0,
-  "content": "**Blonde Boy plays with Golden Retreiever in dream-like grassy field ::3 happy :: blonde :: golden retriever :: green nature :: simple yellow and orange illustration** - Image #1 <@837174620934242314>",
-  "hash": "ad103d4c-1e5e-4726-b809-00a12f6ec6b6",
+  "content": "**Blonde Boy plays with Golden Retreiever in dream-like grassy field ::3 happy :: blonde :: golden retriever :: green nature :: simple illustration** - Image #1 <@837174620934242314>",
+  "hash": "4da0778d-9c4c-40a8-a8dc-ce2f3650c658",
   "progress": "done",
-  "uri": "https://cdn.discordapp.com/attachments/1093833579471065128/1134585310186065960/Stew_Blonde_Boy_plays_with_Golden_Retreiever_in_dream-like_gras_ad103d4c-1e5e-4726-b809-00a12f6ec6b6.png",
-  "proxy_url": "https://media.discordapp.net/attachments/1093833579471065128/1134585310186065960/Stew_Blonde_Boy_plays_with_Golden_Retreiever_in_dream-like_gras_ad103d4c-1e5e-4726-b809-00a12f6ec6b6.png",
+  "uri": "https://cdn.discordapp.com/attachments/1093833579471065128/1166252937568342087/stewod50_Blonde_Boy_plays_with_Golden_Retreiever_in_dream-like__4da0778d-9c4c-40a8-a8dc-ce2f3650c658.png?ex=6549d0b0&is=65375bb0&hm=0ae07efa5e6e09a3ec8a1f5cd2f00801787ebe680055ffcb8b975c1390e341a9&",
+  "proxy_url": "https://media.discordapp.net/attachments/1093833579471065128/1166252937568342087/stewod50_Blonde_Boy_plays_with_Golden_Retreiever_in_dream-like__4da0778d-9c4c-40a8-a8dc-ce2f3650c658.png?ex=6549d0b0&is=65375bb0&hm=0ae07efa5e6e09a3ec8a1f5cd2f00801787ebe680055ffcb8b975c1390e341a9&",
   "options": [
     {
       "type": 2,
       "style": 2,
       "label": "Vary (Strong)",
-      "custom": "MJ::JOB::high_variation::1::ad103d4c-1e5e-4726-b809-00a12f6ec6b6::SOLO"
+      "custom": "MJ::JOB::high_variation::1::4da0778d-9c4c-40a8-a8dc-ce2f3650c658::SOLO"
     },
     {
       "type": 2,
       "style": 2,
       "label": "Vary (Subtle)",
-      "custom": "MJ::JOB::low_variation::1::ad103d4c-1e5e-4726-b809-00a12f6ec6b6::SOLO"
+      "custom": "MJ::JOB::low_variation::1::4da0778d-9c4c-40a8-a8dc-ce2f3650c658::SOLO"
+    },
+    {
+      "type": 2,
+      "style": 2,
+      "label": "Vary (Region)",
+      "custom": "MJ::Inpaint::1::4da0778d-9c4c-40a8-a8dc-ce2f3650c658::SOLO"
+    },
+    {
+      "type": 2,
+      "style": 2,
+      "label": "Upscale (2x)",
+      "custom": "MJ::JOB::upsample_v5_2x::1::4da0778d-9c4c-40a8-a8dc-ce2f3650c658::SOLO"
+    },
+    {
+      "type": 2,
+      "style": 2,
+      "label": "Upscale (4x)",
+      "custom": "MJ::JOB::upsample_v5_4x::1::4da0778d-9c4c-40a8-a8dc-ce2f3650c658::SOLO"
     },
     {
       "type": 2,
       "style": 2,
       "label": "Zoom Out 2x",
-      "custom": "MJ::Outpaint::50::1::ad103d4c-1e5e-4726-b809-00a12f6ec6b6::SOLO"
+      "custom": "MJ::Outpaint::50::1::4da0778d-9c4c-40a8-a8dc-ce2f3650c658::SOLO"
     },
     {
       "type": 2,
       "style": 2,
       "label": "Zoom Out 1.5x",
-      "custom": "MJ::Outpaint::75::1::ad103d4c-1e5e-4726-b809-00a12f6ec6b6::SOLO"
+      "custom": "MJ::Outpaint::75::1::4da0778d-9c4c-40a8-a8dc-ce2f3650c658::SOLO"
     },
     {
       "type": 2,
       "style": 2,
       "label": "Custom Zoom",
-      "custom": "MJ::CustomZoom::ad103d4c-1e5e-4726-b809-00a12f6ec6b6"
+      "custom": "MJ::CustomZoom::4da0778d-9c4c-40a8-a8dc-ce2f3650c658"
     },
     {
       "type": 2,
       "style": 2,
       "label": "⬅️",
-      "custom": "MJ::JOB::pan_left::1::ad103d4c-1e5e-4726-b809-00a12f6ec6b6::SOLO"
+      "custom": "MJ::JOB::pan_left::1::4da0778d-9c4c-40a8-a8dc-ce2f3650c658::SOLO"
     },
     {
       "type": 2,
       "style": 2,
       "label": "➡️",
-      "custom": "MJ::JOB::pan_right::1::ad103d4c-1e5e-4726-b809-00a12f6ec6b6::SOLO"
+      "custom": "MJ::JOB::pan_right::1::4da0778d-9c4c-40a8-a8dc-ce2f3650c658::SOLO"
     },
     {
       "type": 2,
       "style": 2,
       "label": "⬆️",
-      "custom": "MJ::JOB::pan_up::1::ad103d4c-1e5e-4726-b809-00a12f6ec6b6::SOLO"
+      "custom": "MJ::JOB::pan_up::1::4da0778d-9c4c-40a8-a8dc-ce2f3650c658::SOLO"
     },
     {
       "type": 2,
       "style": 2,
       "label": "⬇️",
-      "custom": "MJ::JOB::pan_down::1::ad103d4c-1e5e-4726-b809-00a12f6ec6b6::SOLO"
+      "custom": "MJ::JOB::pan_down::1::4da0778d-9c4c-40a8-a8dc-ce2f3650c658::SOLO"
     },
     {
       "type": 2,
       "style": 2,
       "label": "❤️",
-      "custom": "MJ::BOOKMARK::ad103d4c-1e5e-4726-b809-00a12f6ec6b6"
+      "custom": "MJ::BOOKMARK::4da0778d-9c4c-40a8-a8dc-ce2f3650c658"
     }
   ]
 }

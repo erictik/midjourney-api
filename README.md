@@ -1,3 +1,31 @@
+HOW TO USE A CUSTOM PACKAGE
+
+Compile the TypeScript Code:
+
+Based on the package.json you've shared, there is a build script that uses the TypeScript Compiler (tsc). This will compile the .ts files from the src directory to .js files in the libs directory.
+
+In the root directory of the midjourney project, run:
+
+bash
+Copy code
+npm run build
+Package and Install in Your Own Project:
+
+If your main project is located in a different directory, you can package the improved midjourney module and install it in your project.
+
+Navigate to the midjourney directory and run:
+
+bash
+Copy code
+npm pack
+This will create a .tgz file, for instance, midjourney-4.0.0.tgz.
+
+Then, in your main project directory, install the .tgz file:
+
+bash
+Copy code
+npm install path_to_tgz_file/midjourney-4.0.0.tgz
+
 # midjourney-client
 
 Node.js client for the unofficial MidJourney api.

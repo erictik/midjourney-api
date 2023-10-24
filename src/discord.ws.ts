@@ -76,6 +76,7 @@ export class WsMessage {
 
   async onceReady() {
     return new Promise((resolve) => {
+      console.log(`once1`);
       this.once("ready", (user) => {
         //print user nickname
         console.log(`🎊 ws ready!!! Hi: ${user.global_name}`);
@@ -135,7 +136,7 @@ export class WsMessage {
   private async messageCreate(message: any) {
     const { embeds, id, nonce, components, attachments } = message;
     if (nonce) {
-      // this.log("waiting start image or info or error");
+      this.log("waiting start image or info or error");
       this.updateMjEventIdByNonce(id, nonce);
       if (embeds?.[0]) {
         const { color, description, title } = embeds[0];
@@ -175,6 +176,7 @@ export class WsMessage {
         }
       }
     }
+    else console.log("no nounce");
 
     if (!nonce && attachments?.length > 0 && components?.length > 0) {
       this.done(message);
@@ -274,10 +276,10 @@ export class WsMessage {
   }
   private async onMessageCreate(message: any) {
     const { channel_id, author, interaction } = message;
-    if (channel_id !== this.config.ChannelId) return;
-    if (author?.id !== this.config.BotId) return;
-    if (interaction && interaction.user.id !== this.UserId) return;
-    // this.log("[messageCreate]", JSON.stringify(message));
+    if (channel_id !== this.config.ChannelId) { console.log("wrong channel id"); return; }
+    if (author?.id !== this.config.BotId) { console.log("wrong author"); return; }
+    if (interaction && interaction.user.id !== this.UserId) { console.log("wrong interaction"); return; }
+    this.log("[messageCreate]", JSON.stringify(message));
     this.messageCreate(message);
   }
 
@@ -307,7 +309,7 @@ export class WsMessage {
     }
     const message = msg.d;
     if (message.channel_id === this.config.ChannelId) {
-      this.log(data);
+      this.log("[discord.ws.ts parseMessage()", data);
     }
     this.log("event", msg.t);
     // console.log(data);
@@ -508,6 +510,9 @@ export class WsMessage {
   }
 
   emit(event: string, message: any) {
+    console.log(`emit(): ${event} with message: `, message);
+    console.log(`emit(): event: `, this.event);
+
     this.event
       .filter((e) => e.event === event)
       .forEach((e) => e.callback(message));
@@ -517,12 +522,15 @@ export class WsMessage {
   }
   //FIXME: emitMJ rename
   private emitMJ(id: string, data: any) {
+    console.log(`emitMj(): ${id} with data: `, data);
     const event = this.getEventById(id);
     if (!event) return;
+    else console.log(`found event: `, event);
     this.emit(event.nonce, data);
   }
 
   on(event: string, callback: (message: any) => void) {
+    console.log(`cb1`);
     this.event.push({ event, callback });
   }
   onSystem(
@@ -535,6 +543,7 @@ export class WsMessage {
       | "interactionSuccess",
     callback: (message: any) => void
   ) {
+    console.log(`cb2`);
     this.on(event, callback);
   }
   private emitSystem(
@@ -547,16 +556,19 @@ export class WsMessage {
       | "interactionCreate",
     message: MJEmit
   ) {
+    console.log(`emitSystem: `, type);
     this.emit(type, message);
   }
   once(event: string, callback: (message: any) => void) {
     const once = (message: any) => {
+      console.log(`cb4`);
       this.remove(event, once);
       callback(message);
     };
     this.event.push({ event, callback: once });
   }
   remove(event: string, callback: (message: any) => void) {
+    console.log(`cb5 removing event ${event} with callback: `, callback);
     this.event = this.event.filter(
       (e) => e.event !== event && e.callback !== callback
     );
@@ -566,6 +578,7 @@ export class WsMessage {
   }
   //FIXME: USE ONCE
   onceInfo(callback: (message: any) => void) {
+    console.log(`cb6`);
     const once = (message: any) => {
       this.remove("info", once);
       callback(message);
@@ -576,36 +589,50 @@ export class WsMessage {
   onceSettings(callback: (message: any) => void) {
     const once = (message: any) => {
       this.remove("settings", once);
+      console.log(`cb6`);
       callback(message);
     };
     this.event.push({ event: "settings", callback: once });
   }
   onceMJ(nonce: string, callback: (data: any) => void) {
+    console.log(`cb7`);
     const once = (message: any) => {
+      console.log(`cb8`);
       this.remove(nonce, once);
       //FIXME: removeWaitMjEvent
       this.removeWaitMjEvent(nonce);
       callback(message);
     };
     //FIXME: addWaitMjEvent
+      
     this.waitMjEvents.set(nonce, { nonce });
+    console.log(`cb9`);
     this.event.push({ event: nonce, callback: once });
   }
   private removeSkipMessageId(messageId: string) {
+    
+    console.log("skipMessageId: ", this.skipMessageId);
     const index = this.skipMessageId.findIndex((id) => id !== messageId);
     if (index !== -1) {
       this.skipMessageId.splice(index, 1);
     }
+    console.log("new skipMessageId: ", this.skipMessageId);
   }
   private removeWaitMjEvent(nonce: string) {
-    this.waitMjEvents.delete(nonce);
+    //this.waitMjEvents.delete(nonce);
+    this.waitMjEvents.clear();
   }
   onceImage(nonce: string, callback: (data: MJEmit) => void) {
+    console.log(`cb10`);
     const once = (data: MJEmit) => {
+      console.log(`cb11`);
       const { message, error } = data;
       if (error || (message && message.progress === "done")) {
+        console.log(`cb12.  removing because message is done`);
         this.remove(nonce, once);
       }
+      console.log(`calling back data: `, data);
+      console.log(`call back: `, callback);
       callback(data);
     };
     this.event.push({ event: nonce, callback: once });
@@ -627,15 +654,21 @@ export class WsMessage {
     if (messageId) this.skipMessageId.push(messageId);
     return new Promise<MJMessage | null>((resolve, reject) => {
       const handleImageMessage = ({ message, error }: MJEmit) => {
+        console.log(`handling image message...`);
         if (error) {
+          console.log(`erroring...`);
           this.removeWaitMjEvent(nonce);
           reject(error);
           return;
         }
         if (message && message.progress === "done") {
+          console.log(`removing wait mjevent...`);
           this.removeWaitMjEvent(nonce);
+          console.log(`removing skip message id...`);
           messageId && this.removeSkipMessageId(messageId);
+          console.log(`resolving...`);
           resolve(message);
+          console.log(`returning...`);
           return;
         }
         message && loading && loading(message.uri, message.progress || "");
@@ -655,15 +688,18 @@ export class WsMessage {
           }
           this.removeWaitMjEvent(nonce);
           this.waitMjEvents.set(nonce, { nonce });
+          console.log(`once2`);
           this.onceImage(nonce, handleImageMessage);
           return nonce;
         },
       });
+      console.log(`once3`);
       this.onceImage(nonce, handleImageMessage);
     });
   }
   async waitDescribe(nonce: string) {
     return new Promise<MJDescribe | null>((resolve) => {
+      console.log(`once4`);
       this.onceMJ(nonce, (message) => {
         resolve(message);
       });
@@ -671,6 +707,7 @@ export class WsMessage {
   }
   async waitShorten(nonce: string) {
     return new Promise<MJShorten | null>((resolve) => {
+      console.log(`once5`);
       this.onceMJ(nonce, (message) => {
         resolve(message);
       });
@@ -678,6 +715,7 @@ export class WsMessage {
   }
   async waitContent(event: string) {
     return new Promise<string | null>((resolve) => {
+      console.log(`once6`);
       this.once(event, (message) => {
         resolve(message);
       });
@@ -685,6 +723,7 @@ export class WsMessage {
   }
   async waitInfo() {
     return new Promise<MJInfo | null>((resolve, reject) => {
+      console.log(`once7`);
       this.onceInfo((message) => {
         resolve(formatInfo(message));
       });
@@ -692,6 +731,7 @@ export class WsMessage {
   }
   async waitSettings() {
     return new Promise<MJSettings | null>((resolve, reject) => {
+      console.log(`once8`);
       this.onceSettings((message) => {
         resolve({
           id: message.id,

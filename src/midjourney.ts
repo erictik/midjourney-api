@@ -279,7 +279,7 @@ export class Midjourney extends MidjourneyMessage {
             return "";
           }
           const newNonce = nextNonce();
-          console.log("Got ImageMessage.  Type: "+custom2Type(customId));
+          console.log("[midjourney Custom()] Got ImageMessage.  Type: "+custom2Type(customId));
           switch (custom2Type(customId)) {
             case "customPan":
               const panHttpStatus = await this.MJApi.CustomPanImagineApi({
@@ -293,6 +293,7 @@ export class Midjourney extends MidjourneyMessage {
                   `CustomPanImagineApi failed with status ${panHttpStatus}`
                 );
               }
+              console.log(`returning newNounce`, newNonce);
               return newNonce;
               case "customZoom":
                 const httpStatus = await this.MJApi.CustomZoomImagineApi({
@@ -334,7 +335,9 @@ export class Midjourney extends MidjourneyMessage {
     if (content === undefined || content === "") {
       throw new Error(`content is required`);
     }
-    return await this.WaitMessage(content, loading);
+    const waitMessageResponse = await this.WaitMessage(content, loading)
+    return waitMessageResponse;
+
   }
 
   async ZoomOut({

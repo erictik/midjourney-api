@@ -26,6 +26,7 @@ export class MidjourneyApi extends Command {
         {
           request,
           callback: (any: any) => {
+            console.log(`cb13`);
             resolve(any);
           },
         },
@@ -46,6 +47,7 @@ export class MidjourneyApi extends Command {
     request: any;
     callback: (any: any) => void;
   }) => {
+    console.log(`cb14`);
     const httpStatus = await this.interactions(request);
     callback(httpStatus);
     await sleep(this.config.ApiInterval);
@@ -71,6 +73,7 @@ export class MidjourneyApi extends Command {
           config: this.config,
         });
       }
+      console.log("interactions() response: ", response);
       return response.status;
     } catch (error) {
       console.error(error);
@@ -224,7 +227,9 @@ export class MidjourneyApi extends Command {
       nonce,
     };
     console.log("submitCustomId", JSON.stringify(payload));
-    return this.safeIteractions(payload);
+    const safeIteractionsResponse = this.safeIteractions(payload);
+    console.log(`Returning safeIteractionsResponse: `, safeIteractionsResponse);
+    return safeIteractionsResponse;
   }
 
   async RemixApi({
@@ -331,14 +336,17 @@ export class MidjourneyApi extends Command {
       "::SOLO",
       ""
     );
-    console.log("Reformatted custom for modal (removed SOLO, etc): ", customId);
-    return this.ModalSubmitApi({
+    customId+="::1";
+    console.log("[midjourne.api CustomPanImagineApi] Reformatted custom for modal (removed SOLO, etc): ", customId);
+    const modalSubmitApi = this.ModalSubmitApi({
       nonce,
       msgId,
       customId,
       prompt,
       submitCustomId: CustomPanModalSubmitID,
     });
+    console.log(`Returning ModalSubmitApi(etc)`, modalSubmitApi);
+    return modalSubmitApi;
   }
 
   async InfoApi(nonce?: string) {

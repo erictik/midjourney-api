@@ -1,0 +1,71 @@
+{
+  "id": "1134650512625635418",
+  "flags": 0,
+  "content": "**Blonde Boy plays with Golden Retreiever in dream-like grassy field ::3 happy :: blonde :: golden retriever :: green nature :: simple yellow and orange illustration** - Image #1 <@837174620934242314>",
+  "hash": "588d8344-1e5e-47c5-b8ee-8f36811bd88f",
+  "progress": "done",
+  "uri": "https://cdn.discordapp.com/attachments/1093833579471065128/1134650512311074846/Stew_Blonde_Boy_plays_with_Golden_Retreiever_in_dream-like_gras_588d8344-1e5e-47c5-b8ee-8f36811bd88f.png",
+  "proxy_url": "https://media.discordapp.net/attachments/1093833579471065128/1134650512311074846/Stew_Blonde_Boy_plays_with_Golden_Retreiever_in_dream-like_gras_588d8344-1e5e-47c5-b8ee-8f36811bd88f.png",
+  "options": [
+    {
+      "type": 2,
+      "style": 2,
+      "label": "Vary (Strong)",
+      "custom": "MJ::JOB::high_variation::1::588d8344-1e5e-47c5-b8ee-8f36811bd88f::SOLO"
+    },
+    {
+      "type": 2,
+      "style": 2,
+      "label": "Vary (Subtle)",
+      "custom": "MJ::JOB::low_variation::1::588d8344-1e5e-47c5-b8ee-8f36811bd88f::SOLO"
+    },
+    {
+      "type": 2,
+      "style": 2,
+      "label": "Zoom Out 2x",
+      "custom": "MJ::Outpaint::50::1::588d8344-1e5e-47c5-b8ee-8f36811bd88f::SOLO"
+    },
+    {
+      "type": 2,
+      "style": 2,
+      "label": "Zoom Out 1.5x",
+      "custom": "MJ::Outpaint::75::1::588d8344-1e5e-47c5-b8ee-8f36811bd88f::SOLO"
+    },
+    {
+      "type": 2,
+      "style": 2,
+      "label": "Custom Zoom",
+      "custom": "MJ::CustomZoom::588d8344-1e5e-47c5-b8ee-8f36811bd88f"
+    },
+    {
+      "type": 2,
+      "style": 2,
+      "label": "⬅️",
+      "custom": "MJ::JOB::pan_left::1::588d8344-1e5e-47c5-b8ee-8f36811bd88f::SOLO"
+    },
+    {
+      "type": 2,
+      "style": 2,
+      "label": "➡️",
+      "custom": "MJ::JOB::pan_right::1::588d8344-1e5e-47c5-b8ee-8f36811bd88f::SOLO"
+    },
+    {
+      "type": 2,
+      "style": 2,
+      "label": "⬆️",
+      "custom": "MJ::JOB::pan_up::1::588d8344-1e5e-47c5-b8ee-8f36811bd88f::SOLO"
+    },
+    {
+      "type": 2,
+      "style": 2,
+      "label": "⬇️",
+      "custom": "MJ::JOB::pan_down::1::588d8344-1e5e-47c5-b8ee-8f36811bd88f::SOLO"
+    },
+    {
+      "type": 2,
+      "style": 2,
+      "label": "❤️",
+      "custom": "MJ::BOOKMARK::588d8344-1e5e-47c5-b8ee-8f36811bd88f"
+    }
+  ]
+}

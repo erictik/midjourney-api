@@ -47,6 +47,7 @@ export class MidjourneyMessage {
     callback: (any: any) => void;
   }) => {
     const httpStatus = await this.RetrieveMessages(request);
+    console.log(`got httpStatus, sending to callback...`);
     callback(httpStatus);
     await sleep(this.config.ApiInterval);
   };
@@ -63,6 +64,7 @@ export class MidjourneyMessage {
     const seed = prompt.match(/\[(.*?)\]/)?.[1];
     this.log(`seed:`, seed);
     const data = await this.safeRetrieveMessages(this.config.Limit);
+    console.log(`got data, assessing data...`);
     for (let i = 0; i < data.length; i++) {
       const item = data[i];
       if (
@@ -72,10 +74,12 @@ export class MidjourneyMessage {
         const itemTimestamp = new Date(item.timestamp).getTime();
         if (itemTimestamp < timestamp) {
           this.log("old message");
+          console.log(`old message`);
           continue;
         }
         if (item.attachments.length === 0) {
           this.log("no attachment");
+          console.log(`no attachment`);
           break;
         }
         let uri = item.attachments[0].url;
@@ -84,6 +88,7 @@ export class MidjourneyMessage {
             "https://cdn.discordapp.com/",
             this.config.ImageProxy
           );
+          console.log(`found image url`);
         } //waiting
         if (
           item.attachments[0].filename.startsWith("grid") ||
@@ -92,6 +97,7 @@ export class MidjourneyMessage {
           this.log(`content`, item.content);
           const progress = this.content2progress(item.content);
           loading?.(uri, progress);
+          console.log(`content found: `, item.content);
           break;
         }
         //finished
@@ -106,6 +112,7 @@ export class MidjourneyMessage {
           progress: "done",
           options: formatOptions(item.components),
         };
+        console.log(`ok to return msg: `, msg);
         return msg;
       }
     }
@@ -137,11 +144,13 @@ export class MidjourneyMessage {
     for (let i = 0; i < this.config.MaxWait; i++) {
       const msg = await this.FilterMessages(timestamp, prompt, loading);
       if (msg !== null) {
+        console.log(`waitMessage returning with msg: `, msg);
         return msg;
       }
       this.log(i, "wait no message found");
       await sleep(1000 * 2);
     }
+    console.log(`waitMessage returning...`);
     return null;
   }
 
@@ -161,6 +170,7 @@ export class MidjourneyMessage {
       this.log(`HTTP error! status: ${response.status}`);
     }
     const data: any = await response.json();
+    console.log(`Got response with data: `, data);
     return data;
   }
 }
