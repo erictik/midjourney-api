@@ -433,6 +433,21 @@ export class WsMessage {
     event.prompt = content;
     //not image
     if (!attachments || attachments.length === 0) {
+
+      const progress =  content2progress(content);
+
+      if (( this.config.UpdateProgressWithoutImage ) && ( progress !== "" )) {
+        const MJmsg: MJMessage = {
+          uri: this.config.EmptyImageUri ? this.config.EmptyImageUri : "",
+          content: content,
+          flags: flags,
+          progress: progress,
+        };
+        const eventMsg: MJEmit = {
+          message: MJmsg,
+        };
+        this.emitImage(event.nonce, eventMsg);  
+      }
       return;
     }
 
