@@ -1,56 +1,56 @@
 {
-  "name": "freezer-midjourney-api",
-  "version": "4.0.0",
-  "description": "Node.js client for the unofficial MidJourney API.",
-  "main": "libs/index.js",
-  "types": "libs/index.d.ts",
-  "source": "./src/index.ts",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
-    "prettier": "prettier --write .",
-    "prettier:check": "prettier --check .",
-    "example:imagine": "tsx ./examples/imagine-ws.ts"
-  },
-  "files": [
-    "libs/*",
-    "src/*",
-    "*.md"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/freezer/freezer-midjourney-client.git"
-  },
-  "keywords": [
-    "midjourney-client",
-    "midjourney"
-  ],
-  "engines": {
-    "node": ">=18"
-  },
-  "author": "Eric Yang <yanghao@10d.xin>",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/freezer/freezer-midjourney-client/issues"
-  },
-  "homepage": "https://github.com/freezer/freezer-midjourney-client#readme",
-  "devDependencies": {
-    "@types/async": "^3.2.20",
-    "@types/node": "^18.16.0",
-    "@types/ws": "^8.5.4",
-    "dotenv": "^16.0.3",
-    "prettier": "^2.8.8",
-    "ts-node": "^10.9.1",
-    "tsx": "^3.12.6",
-    "typescript": "^5.0.4"
-  },
-  "dependencies": {
-    "@huggingface/inference": "^2.5.0",
-    "async": "^3.2.4",
-    "isomorphic-ws": "^5.0.0",
-    "semiver": "^1.1.0",
-    "snowyflake": "^2.0.0",
-    "tslib": "^2.5.0",
-    "ws": "^8.13.0"
-  }
+    "name": "freezer-midjourney-api",
+    "version": "4.0.1",
+    "description": "Node.js client for the unofficial MidJourney API.",
+    "main": "libs/index.js",
+    "types": "libs/index.d.ts",
+    "source": "./src/index.ts",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "tsc",
+        "prettier": "prettier --write .",
+        "prettier:check": "prettier --check .",
+        "example:imagine": "tsx ./examples/imagine-ws.ts"
+    },
+    "files": [
+        "libs/*",
+        "src/*",
+        "*.md"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/freezer/freezer-midjourney-client.git"
+    },
+    "keywords": [
+        "midjourney-client",
+        "midjourney"
+    ],
+    "engines": {
+        "node": ">=18"
+    },
+    "author": "Eric Yang <yanghao@10d.xin>",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/freezer/freezer-midjourney-client/issues"
+    },
+    "homepage": "https://github.com/freezer/freezer-midjourney-client#readme",
+    "devDependencies": {
+        "@types/async": "^3.2.20",
+        "@types/node": "^18.16.0",
+        "@types/ws": "^8.5.4",
+        "dotenv": "^16.0.3",
+        "prettier": "^2.8.8",
+        "ts-node": "^10.9.1",
+        "tsx": "^3.12.6",
+        "typescript": "^5.0.4"
+    },
+    "dependencies": {
+        "@huggingface/inference": "^2.5.0",
+        "async": "^3.2.4",
+        "isomorphic-ws": "^5.0.0",
+        "semiver": "^1.1.0",
+        "snowyflake": "^2.0.0",
+        "tslib": "^2.5.0",
+        "ws": "^8.13.0"
+    }
 }
