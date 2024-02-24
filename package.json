@@ -1,6 +1,6 @@
 {
     "name": "freezer-midjourney-api",
-    "version": "4.0.1",
+    "version": "4.0.6",
     "description": "Node.js client for the unofficial MidJourney API.",
     "main": "libs/index.js",
     "types": "libs/index.d.ts",
@@ -19,7 +19,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/freezer/freezer-midjourney-client.git"
+        "url": "git+https://github.com/freezer71/freezer-midjourney-api.git"
     },
     "keywords": [
         "midjourney-client",
@@ -31,9 +31,9 @@
     "author": "Eric Yang <yanghao@10d.xin>",
     "license": "ISC",
     "bugs": {
-        "url": "https://github.com/freezer/freezer-midjourney-client/issues"
+        "url": "https://github.com/freezer71/freezer-midjourney-api/issues"
     },
-    "homepage": "https://github.com/freezer/freezer-midjourney-client#readme",
+    "homepage": "https://github.com/freezer71/freezer-midjourney-api#readme",
     "devDependencies": {
         "@types/async": "^3.2.20",
         "@types/node": "^18.16.0",
