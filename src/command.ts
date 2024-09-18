@@ -13,6 +13,7 @@ export const Commands = [
   "private",
   "public",
   "relax",
+  "turbo",
   "settings",
   "show",
   "stealth",
@@ -149,6 +150,10 @@ export class Command {
   }
   async fastPayload(nonce?: string) {
     const data = await this.commandData("fast");
+    return this.data2Paylod(data, nonce);
+  }
+  async turboPayload(nonce?: string) {
+    const data = await this.commandData("turbo");
     return this.data2Paylod(data, nonce);
   }
   async relaxPayload(nonce?: string) {

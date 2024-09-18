@@ -138,6 +138,14 @@ export class Midjourney extends MidjourneyMessage {
     }
     return null;
   }
+  async Turbo() {
+    const nonce = nextNonce();
+    const httpStatus = await this.MJApi.TurboApi(nonce);
+    if (httpStatus !== 204) {
+      throw new Error(`TurboApi failed with status ${httpStatus}`);
+    }
+    return null;
+  }
   async Relax() {
     const nonce = nextNonce();
     const httpStatus = await this.MJApi.RelaxApi(nonce);
@@ -151,7 +159,7 @@ export class Midjourney extends MidjourneyMessage {
     const nonce = nextNonce();
     const httpStatus = await this.MJApi.SwitchRemixApi(nonce);
     if (httpStatus !== 204) {
-      throw new Error(`RelaxApi failed with status ${httpStatus}`);
+      throw new Error(`SwitchRemix failed with status ${httpStatus}`);
     }
     return wsClient.waitContent("prefer-remix");
   }

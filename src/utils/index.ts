@@ -53,6 +53,7 @@ export const formatInfo = (msg: string) => {
     fastTimeRemaining: "",
     lifetimeUsage: "",
     relaxedUsage: "",
+    turboUsage: "",
     queuedJobsFast: "",
     queuedJobsRelax: "",
     runningJobs: "",
@@ -81,6 +82,8 @@ export const formatInfo = (msg: string) => {
         case "Relaxed Usage":
           jsonResult.relaxedUsage = value;
           break;
+        case "Turbo Usage":
+          jsonResult.turboUsage = value;
         case "Queued Jobs (fast)":
           jsonResult.queuedJobsFast = value;
           break;

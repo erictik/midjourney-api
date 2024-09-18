@@ -33,6 +33,7 @@ export interface MJInfo {
   fastTimeRemaining: string;
   lifetimeUsage: string;
   relaxedUsage: string;
+  turboUsage: string;
   queuedJobsFast: string;
   queuedJobsRelax: string;
   runningJobs: string;

@@ -324,6 +324,11 @@ export class MidjourneyApi extends Command {
     return this.safeIteractions(payload);
   }
 
+  async TurboApi(nonce?: string) {
+    const payload = await this.turboPayload(nonce);
+    return this.safeIteractions(payload);
+  }
+
   async RelaxApi(nonce?: string) {
     const payload = await this.relaxPayload(nonce);
     return this.safeIteractions(payload);
