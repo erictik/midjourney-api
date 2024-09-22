@@ -433,16 +433,32 @@ export class WsMessage {
     event.prompt = content;
     //not image
     if (!attachments || attachments.length === 0) {
+      console.log("no attachments");
+    } else {
+      let uri = attachments[0].url;
+      if (this.config.ImageProxy !== "") {
+        uri = uri.replace(
+          "https://cdn.discordapp.com/",
+          this.config.ImageProxy
+        );
+      }
+      const MJmsg: MJMessage = {
+        uri: uri,
+        proxy_url: attachments[0].proxy_url,
+        content: content,
+        flags: flags,
+        progress: content2progress(content),
+      };
+      const eventMsg: MJEmit = {
+        message: MJmsg,
+      };
+      this.emitImage(event.nonce, eventMsg);
       return;
     }
 
-    let uri = attachments[0].url;
-    if (this.config.ImageProxy !== "") {
-      uri = uri.replace("https://cdn.discordapp.com/", this.config.ImageProxy);
-    }
     const MJmsg: MJMessage = {
-      uri: uri,
-      proxy_url: attachments[0].proxy_url,
+      uri: '',
+      proxy_url: '',
       content: content,
       flags: flags,
       progress: content2progress(content),
