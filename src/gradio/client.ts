@@ -222,12 +222,6 @@ export function api_factory(fetch_implementation: typeof fetch) {
       };
 
       const transform_files = normalise_files ?? true;
-      // if (typeof window === "undefined" || !("WebSocket" in window)) {
-      //   const ws = await import("ws");
-      //   NodeBlob = (await import("node:buffer")).Blob;
-      //   //@ts-ignore
-      //   global.WebSocket = ws.WebSocket;
-      // }
 
       const { ws_protocol, http_protocol, host, space_id } =
         await process_endpoint(app_reference, hf_token);
@@ -1037,7 +1031,7 @@ export async function walk_and_store_blobs(
     return [
       {
         path: path,
-        blob: is_image ? false : new NodeBlob([param]),
+        blob: is_image ? false : new Blob([param]),
         data: is_image ? `${param.toString("base64")}` : false,
         type,
       },

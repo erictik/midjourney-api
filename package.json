@@ -1,7 +1,7 @@
 {
-  "name": "midjourney",
-  "version": "4.0.0",
-  "description": "Node.js client for the unofficial MidJourney API.",
+  "name": "midjourney-api-fork",
+  "version": "4.3.18-fork",
+  "description": "MidJourney API. Forked from erictik/midjourney-client. This fixes the bug of the websocket response for progress percentage.",
   "main": "libs/index.js",
   "types": "libs/index.d.ts",
   "source": "./src/index.ts",
@@ -19,7 +19,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/erictik/midjourney-client.git"
+    "url": "git+https://github.com/manuog1994/midjourney-api.git"
   },
   "keywords": [
     "midjourney-client",
@@ -28,12 +28,12 @@
   "engines": {
     "node": ">=18"
   },
-  "author": "Eric Yang <yanghao@10d.xin>",
+  "author": "manuog1994. Forked from erictik/midjourney-client",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/erictik/midjourney-client/issues"
+    "url": "https://github.com/manuog1994/midjourney-api"
   },
-  "homepage": "https://github.com/erictik/midjourney-client#readme",
+  "homepage": "https://github.com/manuog1994/midjourney-api#readme",
   "devDependencies": {
     "@types/async": "^3.2.20",
     "@types/node": "^18.16.0",
@@ -52,5 +52,8 @@
     "snowyflake": "^2.0.0",
     "tslib": "^2.5.0",
     "ws": "^8.13.0"
+  },
+  "directories": {
+    "test": "test"
   }
 }
