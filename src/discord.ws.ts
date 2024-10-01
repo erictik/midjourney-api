@@ -310,7 +310,6 @@ export class WsMessage {
       this.log(data);
     }
     this.log("event", msg.t);
-    // console.log(data);
     switch (msg.t) {
       case "READY":
         this.emitSystem("ready", message.user);
@@ -430,6 +429,7 @@ export class WsMessage {
     if (!event) {
       return;
     }
+    
     event.prompt = content;
     //not image
     if (!attachments || attachments.length === 0) {
@@ -448,6 +448,7 @@ export class WsMessage {
         content: content,
         flags: flags,
         progress: content2progress(content),
+        messageId: id,
       };
       const eventMsg: MJEmit = {
         message: MJmsg,
@@ -462,6 +463,7 @@ export class WsMessage {
       content: content,
       flags: flags,
       progress: content2progress(content),
+      messageId: id,
     };
     const eventMsg: MJEmit = {
       message: MJmsg,
@@ -652,13 +654,14 @@ export class WsMessage {
           reject(error);
           return;
         }
+        
         if (message && message.progress === "done") {
           this.removeWaitMjEvent(nonce);
           messageId && this.removeSkipMessageId(messageId);
           resolve(message);
           return;
         }
-        message && loading && loading(message.uri, message.progress || "");
+        message && loading && loading(message.uri, message.progress || "", message.messageId || "");
       };
       this.waitMjEvents.set(nonce, {
         nonce,

@@ -91,7 +91,8 @@ export class MidjourneyMessage {
         ) {
           this.log(`content`, item.content);
           const progress = this.content2progress(item.content);
-          loading?.(uri, progress);
+          const messageId = item.id;
+          loading?.(uri, progress, messageId);
           break;
         }
         //finished

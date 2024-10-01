@@ -9,9 +9,10 @@ export interface MJMessage {
   options?: MJOptions[];
   width?: number;
   height?: number;
+  messageId?: string;
 }
 
-export type LoadingHandler = (uri: string, progress: string) => void;
+export type LoadingHandler = (uri: string, progress: string, messageId?: string) => void;
 export type OnModal = (nonce: string, id: string) => Promise<string>;
 
 export interface WaitMjEvent {

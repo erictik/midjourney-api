@@ -1,6 +1,6 @@
 {
   "name": "midjourney-api-fork",
-  "version": "4.3.18-fork",
+  "version": "4.3.20-fork",
   "description": "MidJourney API. Forked from erictik/midjourney-client. This fixes the bug of the websocket response for progress percentage.",
   "main": "libs/index.js",
   "types": "libs/index.d.ts",
