@@ -22,6 +22,8 @@ export interface MJConfig {
   ApiInterval: number;
   WebSocket: WebSocketCl;
   ImageProxy: string;
+  UpdateProgressWithoutImage?: boolean;
+  EmptyImageUri?: string;
 }
 export interface MJConfigParam {
   SalaiToken: string; //DISCORD_TOKEN
@@ -41,6 +43,8 @@ export interface MJConfigParam {
   WsBaseUrl?: string;
   fetch?: FetchFn; //Node.js<18 need node.fetch Or proxy
   WebSocket?: WebSocketCl; //isomorphic-ws Or proxy
+  UpdateProgressWithoutImage?: boolean; // Send progress even if no image ( upscale 2x, 4x )
+  EmptyImageUri?: string;   // Uri for image progress when no image is available
 }
 
 export const DefaultMJConfig: MJConfig = {
@@ -58,4 +62,6 @@ export const DefaultMJConfig: MJConfig = {
   WsBaseUrl: "wss://gateway.discord.gg/?encoding=json&v=9",
   fetch: fetch,
   WebSocket: WebSocket,
+  UpdateProgressWithoutImage: false,
+  EmptyImageUri: "about:blank",
 };
