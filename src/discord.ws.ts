@@ -176,7 +176,7 @@ export class WsMessage {
       }
     }
 
-    if (!nonce && attachments?.length > 0 && components?.length > 0) {
+    if (attachments?.length > 0 && components?.length > 0) {
       this.done(message);
       return;
     }
