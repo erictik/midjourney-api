@@ -16,6 +16,7 @@ export interface MJConfig {
   Ws?: boolean;
   Remix?: boolean;
   HuggingFaceToken?: string;
+  ReplicateToken?: string;
   DiscordBaseUrl: string;
   WsBaseUrl: string;
   fetch: FetchFn;
@@ -35,6 +36,7 @@ export interface MJConfigParam {
   Remix?: boolean; //Remix:true use remix mode
   Ws?: boolean; //Ws:true use websocket get discord message (ephemeral message)
   HuggingFaceToken?: string; //HuggingFaceToken for verify human
+  ReplicateToken?: string; //HuggingFaceToken for verify human
   SessionId?: string;
   DiscordBaseUrl?: string;
   ImageProxy?: string;

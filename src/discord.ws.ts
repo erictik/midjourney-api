@@ -21,13 +21,12 @@ import {
   nextNonce,
   uriToHash,
 } from "./utils";
-import { VerifyHuman } from "./verify.human";
+import { VerifyHumanFactory, VerifyHumanHF } from "./verify.human";
 import WebSocket from "isomorphic-ws";
 export class WsMessage {
   ws: WebSocket;
   private closed = false;
-  private event: Array<{ event: string; callback: (message: any) => void }> =
-    [];
+  private event: Array<{ event: string; callback: (message: any) => void }> = [];
   private waitMjEvents: Map<string, WaitMjEvent> = new Map();
   private skipMessageId: string[] = [];
   private reconnectTime: boolean[] = [];
@@ -186,14 +185,7 @@ export class WsMessage {
 
   private messageUpdate(message: any) {
     // this.log("messageUpdate", message);
-    const {
-      content,
-      embeds,
-      interaction = {},
-      nonce,
-      id,
-      components,
-    } = message;
+    const { content, embeds, interaction = {}, nonce, id, components } = message;
 
     if (!nonce) {
       const { name } = interaction;
@@ -205,10 +197,7 @@ export class WsMessage {
         case "describe":
           let uri = embeds?.[0]?.image?.url;
           if (this.config.ImageProxy !== "") {
-            uri = uri.replace(
-              "https://cdn.discordapp.com/",
-              this.config.ImageProxy
-            );
+            uri = uri.replace("https://cdn.discordapp.com/", this.config.ImageProxy);
           }
           const describe: MJDescribe = {
             id: id,
@@ -255,13 +244,7 @@ export class WsMessage {
   }
 
   //interaction success
-  private async onInteractionSuccess({
-    nonce,
-    id,
-  }: {
-    nonce: string;
-    id: string;
-  }) {
+  private async onInteractionSuccess({ nonce, id }: { nonce: string; id: string }) {
     // this.log("interactionSuccess", nonce, id);
     const event = this.getEventByNonce(nonce);
     if (!event) {
@@ -357,35 +340,34 @@ export class WsMessage {
     }
   }
   private async verifyHuman(message: any) {
-    const { HuggingFaceToken } = this.config;
-    if (HuggingFaceToken === "" || !HuggingFaceToken) {
-      this.log("HuggingFaceToken is empty");
+    const verifyHumanClient = VerifyHumanFactory.create(this.config);
+    if (!verifyHumanClient) {
+      this.log("VerifyHumanClient Could not be created");
       return;
     }
+
     const { embeds, components, id, flags, nonce } = message;
     const uri = embeds[0].image.url;
     const categories = components[0].components;
     const classify = categories.map((c: any) => c.label);
-    const verifyClient = new VerifyHuman(this.config);
-    const category = await verifyClient.verify(uri, classify);
-    if (category) {
-      const custom_id = categories.find(
-        (c: any) => c.label === category
-      ).custom_id;
-      var newnonce = nextNonce();
-      const httpStatus = await this.MJApi.CustomApi({
-        msgId: id,
-        customId: custom_id,
-        flags,
-        nonce: newnonce,
-      });
-      if (httpStatus == 204) {
-        this.on(newnonce, (data) => {
-          this.emit(nonce, data);
-        });
-      }
-      this.log("verifyHumanApi", httpStatus, custom_id, message.id);
+    const category = await verifyHumanClient.verify(uri, classify);
+    if (!category) {
+      return;
     }
+    const custom_id = categories.find((c: any) => c.label === category).custom_id;
+    var newnonce = nextNonce();
+    const httpStatus = await this.MJApi.CustomApi({
+      msgId: id,
+      customId: custom_id,
+      flags,
+      nonce: newnonce,
+    });
+    if (httpStatus == 204) {
+      this.on(newnonce, (data) => {
+        this.emit(nonce, data);
+      });
+    }
+    this.log("verifyHumanApi", httpStatus, custom_id, message.id);
   }
   private EventError(id: string, error: Error) {
     const event = this.getEventById(id);
@@ -470,10 +452,7 @@ export class WsMessage {
     const prompt = content2prompt(content);
     //fist del message
     for (const [key, value] of this.waitMjEvents.entries()) {
-      if (
-        value.del === true &&
-        prompt === content2prompt(value.prompt as string)
-      ) {
+      if (value.del === true && prompt === content2prompt(value.prompt as string)) {
         return value;
       }
     }
@@ -512,9 +491,7 @@ export class WsMessage {
   }
 
   emit(event: string, message: any) {
-    this.event
-      .filter((e) => e.event === event)
-      .forEach((e) => e.callback(message));
+    this.event.filter((e) => e.event === event).forEach((e) => e.callback(message));
   }
   private emitImage(type: string, message: MJEmit) {
     this.emit(type, message);
@@ -561,9 +538,7 @@ export class WsMessage {
     this.event.push({ event, callback: once });
   }
   remove(event: string, callback: (message: any) => void) {
-    this.event = this.event.filter(
-      (e) => e.event !== event && e.callback !== callback
-    );
+    this.event = this.event.filter((e) => e.event !== event && e.callback !== callback);
   }
   removeEvent(event: string) {
     this.event = this.event.filter((e) => e.event !== event);
